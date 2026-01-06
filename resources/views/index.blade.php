@@ -466,8 +466,7 @@
                 <h3 class="section-title"><i class="fas fa-location-dot"></i> Location</h3>
                 <p class="text-muted mb-3"><small>{{$event->address}}</small></p>
                 <div class="map-container">
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3618.3205642742287!2d46.803344284995894!3d24.921147184025262!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e2ef840d318501d%3A0x34ce1212fec3df21!2z2YXZhtiq2KzYuSDYsdi02YjYtCDZhNmE2KXYrdiq2YHYp9mE2KfYqg!5e0!3m2!1sar!2seg!4v1736964707181!5m2!1sar!2seg" height="300" style="border:0;width:100%" allowfullscreen="" loading="lazy"></iframe>
-                </div>
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14464.092335816074!2d46.52809739112852!3d24.999331561902896!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e2ebfc851d7cd73%3A0xc9d53c5bd6d2da10!2z2YXZhtiq2KzYuSDYr9ix2Kkg2KfZhNix2YrYp9i2INin2YbYqtix2YPZiNmG2KrZitmG2YbYqtin2YQ!5e0!3m2!1sar!2seg!4v1767733508841!5m2!1sar!2seg" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
         </div>
     </div>
