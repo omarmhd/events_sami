@@ -480,7 +480,7 @@
 
                 <div class="map-responsive">
                     <iframe
-                        src="https://www.google.com/maps/embed?pb=..."
+                        src="https://maps.app.goo.gl/HfEKyERCViRTFoVBA"
                         style="border:0;"
                         allowfullscreen
                         loading="lazy"
