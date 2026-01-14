@@ -14,10 +14,25 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
     <style>
-        :root { --primary-color: #DABC9A; --primary-dark: #b89b7c; --text-dark: #1F2937; --bg-body: #Fcfbf9; --white: #ffffff; --shadow-card: 0 20px 40px -5px rgba(0, 0, 0, 0.08); --radius-lg: 24px; --beige-medium: #eaddca; --beige-deep: #d2b48c; }
+        :root {
+            --primary-color: #DABC9A;
+            --primary-dark: #b89b7c;
+            --text-dark: #1F2937;
+            --bg-body: #Fcfbf9;
+            --white: #ffffff;
+            --shadow-card: 0 20px 40px -5px rgba(0, 0, 0, 0.08);
+            --radius-lg: 24px;
+            --beige-medium: #eaddca;
+            --beige-deep: #d2b48c;
+
+            /* --- اللون الذي ستختاره (خلفية الشعار والعنوان العربي) --- */
+            /* يمكنك تغيير هذا الكود (#224D59) إلى أي لون تريده */
+            --custom-bg-color: #224D59;
+            --custom-text-color: #ffffff; /* لون النص/الأيقونة فوق الخلفية */
+        }
+
         body { font-family: 'Poppins', sans-serif; background-color: var(--bg-body); color: var(--text-dark); margin: 0; overflow-x: hidden; }
 
-        /* تعديل البانر ليسمح بتموضع الشعار */
         .top-banner {
             background: linear-gradient(135deg, var(--beige-medium) 0%, var(--beige-deep) 100%);
             height: 380px;
@@ -28,39 +43,59 @@
             text-align: center;
             border-bottom-left-radius: 40px;
             border-bottom-right-radius: 40px;
-            position: relative; /* ضروري عشان الشعار */
+            position: relative;
         }
 
-        /* تنسيق الشعار */
-        .banner-logo {
+        /* --- حاوية الشعار الجديدة (مع الخلفية) --- */
+        .logo-container {
             position: absolute;
-            top: 30px;     /* المسافة من الأعلى */
-            left: 30px;    /* المسافة من اليسار */
-            max-width: 100px; /* حجم الشعار */
-            height: auto;
+            top: 30px;
+            left: 30px;
+            background-color: var(--custom-bg-color); /* استخدام اللون المختار */
+            padding: 15px; /* مساحة داخلية حول الشعار */
+            border-radius: 16px; /* زوايا دائرية للخلفية */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1); /* ظل خفيف */
             z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .banner-logo {
+            width: 80px; /* التحكم بحجم الشعار هنا */
+            height: auto;
+            /* لم نعد بحاجة للـ absolute هنا لأن الحاوية تقوم بالمهمة */
         }
 
         .event-title { font-size: 2.8rem; font-weight: 800; color: #3e2b26; line-height: 1.2; }
 
-        /* تنسيق العنوان العربي */
+        /* --- تنسيق العنوان العربي (مع الخلفية) --- */
         .event-title-ar {
-            font-family: 'Cairo', sans-serif; /* خط عربي مميز */
-            font-size: 2.2rem;
+            font-family: 'Cairo', sans-serif;
+            font-size: 2rem;
             font-weight: 700;
-            color: #3e2b26;
-            margin-top: 5px;
+
+            background-color: var(--custom-bg-color); /* نفس لون خلفية الشعار */
+            color: var(--custom-text-color);          /* لون النص */
+
+            display: inline-block; /* ليأخذ حجم النص فقط */
+            padding: 5px 25px;     /* هوامش داخلية */
+            border-radius: 50px;   /* شكل كبسولة */
+            margin-top: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
-        /* تحسينات الموبايل للشعار */
         @media (max-width: 576px) {
-            .banner-logo {
-                max-width: 70px;
+            .logo-container {
                 top: 20px;
                 left: 20px;
+                padding: 10px;
+            }
+            .banner-logo {
+                width: 50px;
             }
             .event-title { font-size: 2rem; }
-            .event-title-ar { font-size: 1.6rem; }
+            .event-title-ar { font-size: 1.4rem; padding: 5px 15px; }
         }
 
         .main-card-container { margin-top: -100px; padding-bottom: 50px; }
@@ -85,11 +120,10 @@
         @keyframes slideDown { from { opacity: 0; transform: translateY(-15px); } to { opacity: 1; transform: translateY(0); } }
         .spinner-border-sm { --bs-spinner-width: 1.3rem; --bs-spinner-height: 1.3rem; }
 
-        /* --- تنسيق قسم الرسالة الجديد --- */
         /* --- تصميم بطاقة الوصف (Description Card) --- */
         .description-card {
-            background: #fdfcfb; /* لون خلفية فاتح جداً */
-            border: 1px solid #efe6dc; /* حدود بيج ناعمة */
+            background: #fdfcfb;
+            border: 1px solid #efe6dc;
             border-radius: 12px;
             padding: 30px 20px;
             margin: 0 auto 40px auto;
@@ -97,7 +131,6 @@
             position: relative;
         }
 
-        /* زخرفة بسيطة في الزوايا */
         .description-card::before, .description-card::after {
             content: '';
             position: absolute;
@@ -107,60 +140,17 @@
             transition: all 0.3s ease;
         }
 
-        .description-card::before {
-            top: -5px;
-            left: -5px;
-            border-right: none;
-            border-bottom: none;
-            border-radius: 12px 0 0 0;
-        }
+        .description-card::before { top: -5px; left: -5px; border-right: none; border-bottom: none; border-radius: 12px 0 0 0; }
+        .description-card::after { bottom: -5px; right: -5px; border-left: none; border-top: none; border-radius: 0 0 12px 0; }
 
-        .description-card::after {
-            bottom: -5px;
-            right: -5px;
-            border-left: none;
-            border-top: none;
-            border-radius: 0 0 12px 0;
-        }
-
-        /* النص الإنجليزي */
         .desc-en {
-            font-family: 'Poppins', sans-serif;
-            font-size: 1.1rem;
-            color: #555; /* لون رمادي متوسط */
-            font-weight: 500;
-            line-height: 1.6;
-            letter-spacing: 0.5px;
-            margin-bottom: 20px;
+            font-family: 'Poppins', sans-serif; font-size: 1.1rem; color: #555; font-weight: 500; line-height: 1.6; letter-spacing: 0.5px; margin-bottom: 20px;
         }
-
-        /* الفاصل الجمالي */
-        .desc-divider {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 15px 0;
-        }
-        .desc-divider span {
-            height: 1px;
-            width: 50px;
-            background-color: #eaddca;
-        }
-        .desc-divider i {
-            color: #DABC9A;
-            margin: 0 15px;
-            font-size: 10px;
-        }
-
-        /* النص العربي */
+        .desc-divider { display: flex; align-items: center; justify-content: center; margin: 15px 0; }
+        .desc-divider span { height: 1px; width: 50px; background-color: #eaddca; }
+        .desc-divider i { color: #DABC9A; margin: 0 15px; font-size: 10px; }
         .desc-ar {
-            font-family: 'Cairo', sans-serif;
-            font-size: 1.35rem; /* حجم أكبر قليلاً للقراءة */
-            color: #2c2c2c; /* لون داكن للوضوح */
-            font-weight: 700;
-            line-height: 1.7;
-            margin-bottom: 0;
-        }
+            font-family: 'Cairo', sans-serif; font-size: 1.35rem; color: #2c2c2c; font-weight: 700; line-height: 1.7; margin-bottom: 0;
         }
     </style>
 </head>
@@ -174,26 +164,28 @@
 
 <div class="top-banner">
 
-
-    <svg class="banner-logo" xmlns="http://www.w3.org/2000/svg" id="Layer_2" viewBox="0 0 327.46 134.25">
-        <defs>
-            <style>
-                /* تم توحيد اللونين إلى الأبيض */
-                .cls-1 { fill: #ffffff; }
-                .cls-2 { fill: #ffffff; }
-            </style>
-        </defs>
-        <g id="Layer_1-2">
-            <g>
-                <polygon class="cls-1" points="148.89 80.33 120.48 80.33 107.5 96.5 157.64 96.5 162.73 105.42 185.43 105.42 147.07 34.58 133.51 51.47 148.89 80.33"/>
-                <polygon class="cls-1" points="297.5 34.58 297.5 34.58 272.73 34.58 244.71 72.75 216.46 34.58 191.63 34.58 191.6 34.58 191.6 105.42 211.56 105.42 211.56 61.51 244.77 106.4 277.68 61.58 277.68 105.42 297.64 105.42 297.64 34.58 297.5 34.58"/>
-                <rect class="cls-1" x="307.5" y="34.58" width="19.96" height="70.85"/>
-                <polygon class="cls-2" points="118.2 34.58 65.09 134.25 67.05 134.25 147.07 34.58 118.2 34.58"/>
-                <polygon class="cls-2" points="149.8 0 124.42 25.37 149.8 25.37 149.8 0"/>
-                <path class="cls-1" d="M83.39,53.85v-19.27H15.8c-5.59,.17-8.31,1.77-11.17,4.62-2.86,2.86-4.63,6.81-4.63,11.17,0,8.86,6.26,12.66,13,15.99l40.38,19.95H.54v19.11H70.69l13.29-24.95L27.33,53.85h56.06Z"/>
+    <div class="logo-container">
+        <svg class="banner-logo" xmlns="http://www.w3.org/2000/svg" id="Layer_2" viewBox="0 0 327.46 134.25">
+            <defs>
+                <style>
+                    /* جعلنا الشعار أبيض ليظهر بوضوح فوق الخلفية الملونة */
+                    .cls-1 { fill: #ffffff; }
+                    .cls-2 { fill: #ffffff; }
+                </style>
+            </defs>
+            <g id="Layer_1-2">
+                <g>
+                    <polygon class="cls-1" points="148.89 80.33 120.48 80.33 107.5 96.5 157.64 96.5 162.73 105.42 185.43 105.42 147.07 34.58 133.51 51.47 148.89 80.33"/>
+                    <polygon class="cls-1" points="297.5 34.58 297.5 34.58 272.73 34.58 244.71 72.75 216.46 34.58 191.63 34.58 191.6 34.58 191.6 105.42 211.56 105.42 211.56 61.51 244.77 106.4 277.68 61.58 277.68 105.42 297.64 105.42 297.64 34.58 297.5 34.58"/>
+                    <rect class="cls-1" x="307.5" y="34.58" width="19.96" height="70.85"/>
+                    <polygon class="cls-2" points="118.2 34.58 65.09 134.25 67.05 134.25 147.07 34.58 118.2 34.58"/>
+                    <polygon class="cls-2" points="149.8 0 124.42 25.37 149.8 25.37 149.8 0"/>
+                    <path class="cls-1" d="M83.39,53.85v-19.27H15.8c-5.59,.17-8.31,1.77-11.17,4.62-2.86,2.86-4.63,6.81-4.63,11.17,0,8.86,6.26,12.66,13,15.99l40.38,19.95H.54v19.11H70.69l13.29-24.95L27.33,53.85h56.06Z"/>
+                </g>
             </g>
-        </g>
-    </svg>
+        </svg>
+    </div>
+
     <div class="container animate__animated animate__fadeIn" style="margin-top: -50px;">
         <h1 class="event-title mb-0">{{$event->title_en}}</h1>
 
