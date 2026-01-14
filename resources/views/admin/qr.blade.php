@@ -218,10 +218,10 @@
                     });
                 } else {
                     Swal.fire({
-                        title: 'Error',
-                        text: response.message || 'Invalid or expired QR code.',
-                        icon: 'error',
-                        confirmButtonColor: '#dc3545'
+                        title: 'Warning',
+                        text: response.message || 'This QR code is invalid or has expired.',
+                        icon: 'warning',
+                        confirmButtonColor: '#ffc107',
                     }).then(() => {
                         resetUI();
                     });
