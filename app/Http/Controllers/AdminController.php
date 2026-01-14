@@ -72,7 +72,7 @@ class AdminController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Check-in successful'
-        ]);
+        ],200);
 
 
 //        if($request->qrData){
