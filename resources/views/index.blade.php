@@ -303,8 +303,17 @@
                     }
                 })
                 .catch(error => {
-                    console.error('Error:', error);
-                    alert('Something went wrong.');
+                    if (error?.response?.data?.message) {
+                        // خطأ قادم من Laravel
+                        errorMessage = error.response.data.message;
+                    } else if (error?.message) {
+                        // خطأ JavaScript
+                        errorMessage = error.message;
+                    }
+
+                    alert(errorMessage);
+                    console.error('Error:', errorMessage);
+
                     activeBtn.disabled = false;
                     btnText.style.opacity = '1';
                     spinner.classList.add('d-none');
