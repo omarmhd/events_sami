@@ -49,10 +49,11 @@
             <tr>
                 <td style="padding: 40px 30px; text-align: center;">
 
-                    <div style="margin-bottom: 25px;">
-                        <svg xmlns="http://www.w3.org/2000/svg" id="Layer_2" viewBox="0 0 327.46 134.25" style="width: 180px; max-width: 100%; height: auto;">
-                            <defs><style>.cls-1{fill:#224d59;}.cls-2{fill:#63ae45;}</style></defs>
-                            <g id="Layer_1-2">
+                    <div style="max-width: 600px; margin: 0 auto; text-align: center; padding: 20px;">
+
+                        <div style="margin-bottom: 35px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 327.46 134.25" style="width: 160px; max-width: 100%; height: auto; display: inline-block;">
+                                <defs><style>.cls-1{fill:#224d59;}.cls-2{fill:#63ae45;}</style></defs>
                                 <g>
                                     <polygon class="cls-1" points="148.89 80.33 120.48 80.33 107.5 96.5 157.64 96.5 162.73 105.42 185.43 105.42 147.07 34.58 133.51 51.47 148.89 80.33"/>
                                     <polygon class="cls-1" points="297.5 34.58 297.5 34.58 272.73 34.58 244.71 72.75 216.46 34.58 191.63 34.58 191.6 34.58 191.6 105.42 211.56 105.42 211.56 61.51 244.77 106.4 277.68 61.58 277.68 105.42 297.64 105.42 297.64 34.58 297.5 34.58"/>
@@ -61,26 +62,33 @@
                                     <polygon class="cls-2" points="149.8 0 124.42 25.37 149.8 25.37 149.8 0"/>
                                     <path class="cls-1" d="M83.39,53.85v-19.27H15.8c-5.59,.17-8.31,1.77-11.17,4.62-2.86,2.86-4.63,6.81-4.63,11.17,0,8.86,6.26,12.66,13,15.99l40.38,19.95H.54v19.11H70.69l13.29-24.95L27.33,53.85h56.06Z"/>
                                 </g>
-                            </g>
-                        </svg>
+                            </svg>
+                        </div>
+
+                        <div style="margin-bottom: 25px;">
+                            <h2 style="margin: 0 0 5px 0; font-size: 26px; font-weight: 800; color: #2D3748; letter-spacing: -0.5px; line-height: 1.2;">
+                                {{$event->title_en}}
+                            </h2>
+                            <h2 style="margin: 0; font-size: 22px; font-weight: 600; color: #4A5568; line-height: 1.4; font-family: 'Segoe UI', Tahoma, sans-serif;">
+                                {{$event->title}}
+                            </h2>
+                        </div>
+
+                        <div style="width: 50px; height: 3px; background-color: #C5A065; margin: 0 auto 30px auto; border-radius: 2px;"></div>
+
+                        <div style="margin-bottom: 15px;" dir="ltr">
+                            <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #718096;">
+                                {{$event->description_en}}
+                            </p>
+                        </div>
+
+                        <div style="margin-bottom: 10px;" dir="rtl">
+                            <p style="margin: 0; font-size: 15px; line-height: 1.7; color: #C5A065; font-weight: 500;">
+                                {{$event->description}}
+                            </p>
+                        </div>
+
                     </div>
-
-                    <h2 style="margin: 0 0 8px 0; font-size: 24px; color: #2D3748; line-height: 1.3;">
-                        {{$event->title_en}}
-                    </h2>
-                    <h2 style="margin: 0 0 20px 0; font-size: 22px; color: #2D3748; line-height: 1.3;">
-                        {{$event->title}}
-                    </h2>
-
-                    <p style="margin: 0 0 25px 0; font-size: 15px; line-height: 1.8; color: #718096;" dir="auto">
-                        {{$event->description_en}}
-                        <br>
-                        <span style="color: #C5A065; font-size: 14px; display: block; margin-top: 5px;" dir="ltr">
-                          {{$event->description}}
-                        </span>
-                    </p>
-
-
 
                     <p style="margin: 0 0 20px 0; font-size: 14px; line-height: 1.6; color: #4A5568;">
                         Please click the button below to <strong>accept</strong> or <strong>decline</strong> the invitation.
