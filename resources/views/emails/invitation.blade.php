@@ -52,7 +52,7 @@
                     <div style="max-width: 600px; margin: 0 auto; text-align: center; padding: 20px;">
 
                         <div style="margin-bottom: 35px;">
-                            <img src="{{asset("top-banner.png")}}" alt="Logo-SAMI.png" style="width: 500px;height: 300px">
+                            <img src="{{asset("top-banner.png")}}" alt="Logo-SAMI.png" style="width: 500px;height: 200px">
                         </div>
 
                         <div style="margin-bottom: 25px;">

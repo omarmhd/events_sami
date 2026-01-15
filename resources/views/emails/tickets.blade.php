@@ -50,7 +50,7 @@
             <td align="center" style="padding-bottom: 40px;">
 
                 <div style="margin-bottom: 35px;">
-                    <img src="{{asset("top-banner.png")}}" alt="Logo-SAMI.png" style="width: 500px;height: 300px">
+                    <img src="{{asset("top-banner.png")}}" alt="Logo-SAMI.png" style="width: 500px;height: 200px">
                 </div>
 
                 <div style="margin-bottom: 25px;">
