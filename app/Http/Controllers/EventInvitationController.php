@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Throwable;
 
 use App\Mail\InvitationSent;
 use App\Mail\TicketDetailsMail;
