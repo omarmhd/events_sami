@@ -168,7 +168,7 @@
                 <div class="event-meta">
                     <div class="meta-item">
                         <i class="far fa-calendar-alt"></i>
-                        {{ \Carbon\Carbon::parse($event->date)->format('l, F j, Y') }}
+                        {{ \Carbon\Carbon::parse($event->date)->format('l, j F, Y') }}
                         <span style="opacity: 0.7; margin: 0 6px;">|</span>
                         {{ \Carbon\Carbon::parse($event->date)->locale('ar')->translatedFormat('l، j F Y') }}
                     </div>
