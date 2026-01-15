@@ -168,7 +168,7 @@
                 <div class="event-meta">
                     <div class="meta-item"><i class="far fa-calendar-alt"></i> {{ \Carbon\Carbon::parse($event->date)->format('l, F j, Y') }} <br> {{ \Carbon\Carbon::parse($event->date)->locale('ar')->translatedFormat('l، j F') }}</div>
                     <div class="meta-item"><i class="far fa-clock"></i> {{$event->from_time}}-{{$event->to_time}}</div>
-                    <div class="meta-item"><a href="https://maps.app.goo.gl/CcbukaXy4DyZckLy7" style="color: black">  <i class="fa fa-location-dot"></i> {{$event->address}}|منتجع الديرة </a></div>
+                    <div class="meta-item"><a href="https://maps.app.goo.gl/CcbukaXy4DyZckLy7" style="color: black">  <i class="fa fa-location-dot"></i> {{$event->address}}|منتجع درة الرياض </a></div>
                 </div>
 
                 <div class="text-center mb-5">
