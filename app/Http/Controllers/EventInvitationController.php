@@ -232,7 +232,7 @@ class EventInvitationController extends Controller
                     ];
                 }
 
-                $event = Event::whereNotNull('name')->first();
+                $event = Event::wher('name',"SAMI-AEC")->first();
 
                 \Mail::to($guest->invitee_email)
                     ->send(new TicketMail($guest, $tickets, $event));

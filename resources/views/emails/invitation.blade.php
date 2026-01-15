@@ -91,6 +91,7 @@
                             Respond to Invitation
                             <br><span style="font-weight: normal; font-size: 13px;">الرد على الدعوة</span>
                         </a>
+                        <p>If you faced any issues kindly contact Abdulrahman Al Henaki: +966551858731</p>
                     </div>
 
                     <p style="margin: 0; font-size: 12px; color: #CBD5E0;">
