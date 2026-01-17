@@ -36,13 +36,13 @@
             </a>
 
             <a href="{{ route('invitations.index') }}" class="nav-link-custom {{ request()->routeIs('emps') ? 'active' : '' }}">
-                <i class="fas fa-ticket-alt"></i>Invitations
+                <i class="fas fa-envelope-open-text"></i>Invitations
             </a>
             <a href="{{route("qr")}}" class="nav-link-custom">
                 <i class="fas fa-qrcode"></i>QR Scanner
             </a>
             <a href="{{route("attendance_list")}}" class="nav-link-custom">
-                <i class="fas fa-qrcode"></i>Tickets
+                <i class="fas fa-ticket"></i>Tickets
             </a>
 
             <a href="{{route("statistics")}}" class="nav-link-custom">

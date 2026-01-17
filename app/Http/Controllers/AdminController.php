@@ -140,7 +140,7 @@ class AdminController extends Controller
         $ticketStats = InvitationQr::selectRaw('
             count(*) as total_issued,
             sum(case when is_used = 1 then 1 else 0 end) as total_checked_in,
-
+$invitationStats->accepted + $invitationStats->total_guests_confirmed
             sum(case when type = "main" then 1 else 0 end) as main_issued,
             sum(case when type = "main" and is_used = 1 then 1 else 0 end) as main_checked_in,
 
