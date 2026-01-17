@@ -155,7 +155,6 @@
                             <form action="{{route("attendance.checked_in")}}" method="POST" class="d-block w-100">
                                 @csrf
                                 <input type="hidden" name="id" value="{{ $mainTicket ? $mainTicket->id : '' }}">
-                                 Mobile Button (Full Width)
                                 <button class="btn btn-outline-primary w-100 d-md-none" {{ !$mainTicket ? 'disabled' : '' }}>
                                     Check-in Main
                                 </button>
