@@ -62,7 +62,11 @@
                         </div>
 
                         <div style="width: 50px; height: 3px; background-color: #C5A065; margin: 0 auto 30px auto; border-radius: 2px;"></div>
-
+                        <div style="margin-bottom: 3px;">
+                            <h2 style="margin: 0; font-size: 22px; font-weight: 600; color: #4A5568; line-height: 1.4; font-family: 'Segoe UI', Tahoma, sans-serif;">
+                                {{$invitation->name}}
+                            </h2>
+                        </div>
                         <div style="margin-bottom: 15px;" dir="ltr">
                             <p style="margin: 0; font-size: 16px; line-height: 1.6; color: #718096;">
                                 {{$event->description_en}}
