@@ -187,16 +187,21 @@
                                     aria-labelledby="dropdownMenuButton-{{$row->id}}"
                                     style="min-width: 240px; max-height: 200px; overflow-y: auto; z-index: 1050;">
 
-                                    @foreach($guests as $index => $guest)
+                                    @foreach($guests as $guest)
                                         <li class="d-flex justify-content-between align-items-center mb-2 px-2 border-bottom pb-2">
-                                            <span class="small fw-bold text-dark">Guest {{ $index + 1 }}</span>
+        <span class="small fw-bold text-dark">
+            Guest {{ $loop->iteration + 1 }}
+        </span>
+
                                             @if($guest->is_used)
                                                 <span class="badge-soft badge-success"><i class="fas fa-check"></i></span>
                                             @else
-                                                <form action="{{route("attendance.checked_in")}}" method="POST" class="d-inline">
+                                                <form action="{{ route('attendance.checked_in') }}" method="POST" class="d-inline">
                                                     @csrf
                                                     <input type="hidden" name="id" value="{{ $guest->id }}">
-                                                    <button class="btn btn-sm btn-outline-primary py-0" style="font-size: 0.75rem">Check-in</button>
+                                                    <button class="btn btn-sm btn-outline-primary py-0" style="font-size: 0.75rem">
+                                                        Check-in
+                                                    </button>
                                                 </form>
                                             @endif
                                         </li>
