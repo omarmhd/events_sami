@@ -66,13 +66,11 @@
 
                 <!-- Actions -->
                 <div class="d-flex gap-2">
-{{--                    <button class="btn btn-light border text-muted btn-sm rounded-3 px-3 fw-bold">--}}
-{{--                        <i class="fas fa-filter me-1"></i> Filter--}}
-{{--                    </button>--}}
 
-{{--                    <button class="btn btn-light border text-muted btn-sm rounded-3 px-3 fw-bold">--}}
-{{--                        <i class="fas fa-download me-1"></i> Export--}}
-{{--                    </button>--}}
+
+                    <a href="{{route("invitations.export")}}" class="btn btn-light border text-muted btn-sm rounded-3 px-3 fw-bold">
+                        <i class="fas fa-download me-1"></i> Export
+                    </a>
                 </div>
 
             </div>

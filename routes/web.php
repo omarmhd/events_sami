@@ -28,7 +28,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get("search-on-ticket",[\App\Http\Controllers\AdminController::class,"search_on_ticket"])->name("search_on_ticket");
     Route::get("attendance-list",[\App\Http\Controllers\AdminController::class,"attendance_list"])->name("attendance_list");
     Route::get("statistics",[\App\Http\Controllers\AdminController::class,"statistics"])->name("statistics");
-    Route::get("export",[\App\Http\Controllers\AdminController::class,"export"])->name("export");
+    Route::get("invitations/export",[\App\Http\Controllers\AdminController::class,"export"])->name("invitations.export");
 
     Route::get("emps",[\App\Http\Controllers\AdminController::class,"all_emps"])->name("emps");
     Route::post("resendTickets",[\App\Http\Controllers\HomeController::class,"resendTickets"])->name("resendTickets");

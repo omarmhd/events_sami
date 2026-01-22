@@ -17,19 +17,32 @@ class TicketExport implements FromCollection, WithHeadings, WithMapping,WithStyl
     */
     public function collection()
     {
-        return Ticket::get();
+        return EventInvitation::get();
     }
     public function headings(): array
     {
+        $table->foreignId('event_id')->nullable()->constrained("events")->cascadeOnDelete();
+        $table->foreignId('company_id')->nullable()->constrained()->cascadeOnDelete();
+        $table->string('invitee_name');
+        $table->string('invitee_email')->nullable();
+        $table->string('invitee_phone')->nullable();
+        $table->string('invitee_position')->nullable();
+        $table->string('invitee_nationality')->nullable();
+        $table->uuid('invitation_token')->unique();
+        $table->string('status', 20)->default('pending')->index();
+        $table->unsignedTinyInteger('allowed_guests')->default(1);
+        $table->unsignedTinyInteger('selected_guests')->default(0);
+        $table->timestamp('responded_at')->nullable();
         return [
-            'Ticket #',
-            'job no',
-            'event name',
-            'employee name',
-            'employee email',
-            "Type",
-            'checked in at',
-            'register time',
+            'Invitation #',
+            'Invitee Name',
+            'Invitee Email',
+            'Invitee Position',
+            'Invitee Nationality',
+            'Guests',
+            "Status",
+            'Sent Date',
+            'Responded Date',
         ];
     }
 
@@ -37,14 +50,13 @@ class TicketExport implements FromCollection, WithHeadings, WithMapping,WithStyl
     {
         return [
             $ticket->id,
-            $ticket->employee_number, // Assuming you have a customer relationship
-            $ticket->event_name,
-            $ticket->employee_name,
-            $ticket->employee_email,
-            $ticket->is_children=="yes"?"child":"employee",
-            $ticket->checked_in_at,
+            $ticket->invitee_email, // Assuming you have a customer relationship
+            $ticket->invitee_position,
+            $ticket->invitee_nationality,
+            $ticket->selected_guests,
+            $ticket->status,
             $ticket->created_at,
-            // Add other columns as needed
+            $ticket->responded_at,
         ];
     }
     public function styles(Worksheet $sheet)

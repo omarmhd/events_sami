@@ -147,14 +147,12 @@ class AdminController extends Controller
             sum(case when type = "guest" and is_used = 1 then 1 else 0 end) as guest_checked_in
         ')->first();
 
-        // 3. تحليل أوقات الوصول (Peak Hours) - آخر 24 ساعة أو حسب الحدث
         $arrivalTimeline = InvitationQr::where('is_used', true)
             ->selectRaw('HOUR(used_at) as hour, count(*) as count')
             ->groupBy('hour')
             ->orderBy('hour')
             ->get();
 
-        // حساب النسب المئوية لتسهيل العرض
         $attendanceRate = $ticketStats->total_issued > 0
             ? round(($ticketStats->total_checked_in / $ticketStats->total_issued) * 100, 1)
             : 0;
@@ -173,17 +171,15 @@ class AdminController extends Controller
 
     public function export()
     {
-        $data = $this->someData;
+
 
         try {
-            return Excel::download(new TicketExport(), 'tickets.xlsx');
+            return Excel::download(new TicketExport(), 'Invitations.xlsx');
         } catch (\Exception $e) {
-            // تسجيل الخطأ
             \Log::error($e);
-            // إعادة توجيه المستخدم أو إظهار رسالة خطأ
-            return redirect()->back()->with('error', 'حدث خطأ أثناء التصدير');
+            return redirect()->back()->with('error', 'ERROR');
         }
     }
-    private $someData;
+
 
 }

@@ -27,15 +27,14 @@
 
         body { font-family: 'Poppins', sans-serif; background-color: var(--bg-body); color: var(--text-dark); margin: 0; overflow-x: hidden; }
 
-        /* --- تعديل البانر ليكون صورة فقط --- */
         .banner-wrapper {
             width: 100%;
-            height: 436px; /* يمكنك تعديل ارتفاع الصورة من هنا */
+            height: 436px;
             overflow: hidden;
             border-bottom-left-radius: 40px;
             border-bottom-right-radius: 40px;
             position: relative;
-            background-color: #eee; /* لون خلفية مؤقت حتى تظهر الصورة */
+            background-color: #eee;
         }
 
         .banner-img {
@@ -115,7 +114,6 @@
     $hasResponded = $guest->status !== 'pending';
     $isAccepted = $guest->status === 'accepted';
     $isMaybe = $guest->status === 'maybe';
-    // تأكد من وضع رابط الصورة الصحيح هنا
     $bannerImage = asset("top-banner.png");
 @endphp
 
