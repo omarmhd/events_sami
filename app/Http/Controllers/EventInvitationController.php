@@ -48,8 +48,6 @@ class EventInvitationController extends Controller
     ") ->first();;
         $rows = $query->latest()->paginate(6);
 
-
-
         $stats = [
             'all'      => $stats->all_count,
             'pending'  => $stats->pending,
@@ -59,7 +57,9 @@ class EventInvitationController extends Controller
 
         ];
 
-        return view('admin.invitations.index', compact('rows','stats'));
+        $event=Event::where("name","!=",null)->first();
+
+        return view('admin.invitations.index', compact('rows','stats','event'));
     }
 
     public function create(){
@@ -136,6 +136,7 @@ class EventInvitationController extends Controller
 
     public function showByToken($token)
     {
+
         $event=\Illuminate\Support\Facades\DB::table("events")->where("name","SAMI-AEC")->first();
 
         $guest = EventInvitation::where('invitation_token', $token)

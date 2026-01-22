@@ -124,8 +124,8 @@ class AdminController extends Controller
         }
         return view("admin.attendance_list",compact("tickets"));
     }
+
     public function statistics(){
-        // 1. إحصائيات الدعوات (Status Breakdown)
         $invitationStats = EventInvitation::selectRaw('
             count(*) as total,
             sum(case when status = "pending" then 1 else 0 end) as pending,

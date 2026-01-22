@@ -84,7 +84,6 @@
 </head>
 <body>
 
-{{-- Mobile Toggle Header --}}
 <div class="mobile-header d-lg-none">
     <div class="fw-bold fs-5 text-dark">Sami<span style="color: #6366f1;">Event</span></div>
     <button class="btn btn-light border" onclick="toggleSidebar()">
@@ -95,7 +94,6 @@
 <div class="container-fluid p-4">
     <div class="row g-4">
 
-        {{-- Sidebar Column --}}
         <div class="col-lg-3 col-xl-2 sidebar-col" id="sidebarArea">
             @include('layouts.partials.sidebar')
         </div>
@@ -144,7 +142,7 @@
     }).showToast();
     @endif
 
-    // 3. فحص أخطاء التحقق (Validation Errors) - اختياري ولكنه مفيد جداً
+
     @if($errors->any())
     @foreach($errors->all() as $error)
     Toastify({

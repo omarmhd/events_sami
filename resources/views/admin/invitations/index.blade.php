@@ -132,6 +132,29 @@
                                 </div>
                             </td>
                             <td class="text-end pe-4">
+
+                                @php
+                                    // 1. رابط الدعوة
+                                    $invitationLink = route('invitations.show', $row->id);
+
+                                    // 2. تنظيف الوصف من أي أكواد HTML ليظهر كنص عادي في الرسالة
+                                    // استخدمنا strip_tags لإزالة الـ HTML
+                                    $descEn = strip_tags($event->description_en);
+                                    $descAr = strip_tags($event->description);
+
+                                    // 3. صياغة الرسالة الكاملة
+                                    $whatsappMessage = " {$row->invitee_name},\n\n{$descEn}\n\nPlease view the details and RSVP via the link below:\n\n" .
+                                                       "--------------------\n\n" .
+                                                       " {$row->invitee_name}،\n\n{$descAr}\n\nيرجى الاطلاع على التفاصيل وتأكيد الحضور عبر الرابط أدناه:\n\n{$invitationLink}";
+                                @endphp
+
+                                {{-- زر النسخ --}}
+                                <button type="button"
+                                        class="btn btn-light btn-sm text-dark border shadow-sm me-1"
+                                        onclick="copyToClipboard(this, `{{ $whatsappMessage }}`)"
+                                        title="Copy Invitation Message">
+                                    <i class="fas fa-copy"></i>
+                                </button>
                                 <form action="{{ route('invitations.resend') }}" method="POST" class="d-inline" onsubmit="return confirm('Regenerate ticket?');">
                                     @csrf
                                     <input type="hidden" name="id" value="{{ $row->id }}">
@@ -200,3 +223,23 @@
     </div>
 
 @endsection
+
+@push('scripts') <script>
+    function copyToClipboard(button, text) {
+        navigator.clipboard.writeText(text).then(function() {
+            let icon = button.querySelector('i');
+
+            let originalClass = icon.className;
+
+            icon.className = 'fas fa-check text-success';
+
+            setTimeout(() => {
+                icon.className = originalClass;
+            }, 2000);
+
+        }, function(err) {
+            console.error('Could not copy text: ', err);
+        });
+    }
+</script>
+@endpush
