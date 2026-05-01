@@ -2,11 +2,13 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "keywords": [
+        "framework",
+        "laravel"
+    ],
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
-        "ar-php/ar-php": "^1.0",
         "bacon/bacon-qr-code": "3.0",
         "barryvdh/laravel-dompdf": "^2.2",
         "fruitcake/laravel-cors": "^2.0",
@@ -15,6 +17,7 @@
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
         "maatwebsite/excel": "^3.1",
+        "myclabs/php-enum": "^1.8",
         "phpoffice/phpspreadsheet": "^1.12",
         "picqer/php-barcode-generator": "^2.4",
         "swiftmailer/swiftmailer": "^6.3"

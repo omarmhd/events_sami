@@ -17,7 +17,7 @@ class CreateCompaniesTable extends Migration
             $table->id();
             $table->string("name");
             $table->string("subdomain")->unique();
-            $table->enum("status",["active","suspended"]);
+            $table->enum("status",["active","suspended", "trial"]);
             $table->text("custom_domain")->nullable();
 
             $table->timestamps();

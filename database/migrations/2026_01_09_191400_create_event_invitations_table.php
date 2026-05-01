@@ -13,6 +13,10 @@ class CreateEventInvitationsTable extends Migration
      */
     public function up()
     {
+        if (Schema::hasTable('event_invitations')) {
+            return;
+        }
+
         Schema::create('event_invitations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('event_id')->nullable()->constrained("events")->cascadeOnDelete();

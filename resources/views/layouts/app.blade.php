@@ -1,167 +1,386 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAMI Event - @yield('title')</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{{ __('ui.platform_name') }} - @yield('title')</title>
 
-    {{-- Fonts & Icons --}}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-    {{-- Global Styles --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" rel="stylesheet">
+
+    <link href="{{ asset('assets/saas-ui.css') }}" rel="stylesheet">
+
+    {{-- ─── App Modal System — shared styles used by every modal in the app ─── --}}
     <style>
-        :root {
-            --primary-bg: #F8FAFC;
-            --text-main: #0F172A;
-            --text-muted: #64748B;
-            --primary-color: #6366f1;
-            --grad-purple: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-            --grad-blue: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
-            --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            --input-bg: #f8fafc;
-            --input-border: #e2e8f0;
-            --input-focus-border: #6366f1;
-        }
+    /* ════════════════════════════════════════════════════════════
+       App Modal System
+       استخدم x-modal في كل صفحة لضمان مظهر موحد.
+       ضع المودال دائماً في stack(modals) لا داخل section(content)
+       لتجنب مشكلة backdrop-filter stacking context في .page-wrap
+    ════════════════════════════════════════════════════════════ */
 
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--primary-bg);
-            color: var(--text-main);
-            overflow-x: hidden;
-        }
+    /* ── Modal shell ──────────────────────────────────────────── */
+    .app-modal-content {
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--line);
+        box-shadow:
+            0 24px 56px -12px rgba(16,42,42,.18),
+            0 4px 16px -4px rgba(0,0,0,.08);
+        overflow: hidden;
+    }
 
-        /* Mobile Header */
-        .mobile-header {
-            display: none;
-            background: white; padding: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            margin-bottom: 20px; border-radius: 0 0 16px 16px;
-        }
+    /* ── Header ───────────────────────────────────────────────── */
+    .app-modal-header {
+        padding: 1.1rem 1.4rem;
+        border-bottom: 1px solid var(--line);
+        background: var(--surface-soft);
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: .75rem;
+    }
+    .app-modal-title {
+        font-size: .95rem;
+        font-weight: 700;
+        color: var(--text-main);
+        margin: 0 0 2px;
+        line-height: 1.3;
+    }
+    .app-modal-subtitle {
+        font-size: .78rem;
+        color: var(--text-soft);
+        margin: 0;
+        line-height: 1.4;
+    }
 
-        @media (max-width: 991px) {
-            .mobile-header { display: flex; justify-content: space-between; align-items: center; }
-            .sidebar-col { display: none; } /* Hide sidebar on mobile by default */
-            .sidebar-col.show { display: block; position: fixed; top: 0; left: 0; height: 100vh; z-index: 1000; background: rgba(255,255,255,0.95); width: 80%; max-width: 300px; padding-top: 20px; box-shadow: 5px 0 15px rgba(0,0,0,0.1); overflow-y: auto; }
-        }
+    /* ── Body + Footer defaults ───────────────────────────────── */
+    .app-modal-content .modal-body {
+        padding: 1.35rem 1.4rem;
+    }
+    .app-modal-content .modal-footer {
+        padding: .9rem 1.4rem;
+        border-top: 1px solid var(--line);
+        background: var(--surface-soft);
+        gap: .5rem;
+    }
 
-        .nav-link-custom.active { background: #eff6ff; color: var(--primary-color); font-weight: 700; }
-        .nav-link-custom i { width: 24px; }
+    /* ── Form fields inside modals ────────────────────────────── */
+    .app-modal-field label {
+        font-size: .8rem;
+        font-weight: 700;
+        color: var(--text-main);
+        margin-bottom: .35rem;
+        display: block;
+    }
+    .app-modal-field .form-control,
+    .app-modal-field .form-select {
+        background: var(--surface-soft);
+        border: 1.5px solid var(--line);
+        border-radius: var(--radius-sm);
+        color: var(--text-main);
+        font-size: .875rem;
+        padding: .6rem .9rem;
+        transition: border-color .2s, box-shadow .2s;
+    }
+    .app-modal-field .form-control:focus,
+    .app-modal-field .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(15,143,131,.12);
+        background: #fff;
+    }
 
-        /* --- جديد: تصميم بطاقة الإحصائيات --- */
-        .stats-card {
-            background: linear-gradient(135deg, #4f46e5 0%, #818cf8 100%); /* لون نيلي متدرج */
-            color: white;
-            border-radius: 20px;
-            padding: 1.5rem;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
-        }
+    /* ── Info banner inside modal ─────────────────────────────── */
+    .app-modal-info-banner {
+        background: rgba(15,143,131,.08);
+        border: 1px solid rgba(15,143,131,.2);
+        border-radius: var(--radius-md);
+        padding: .75rem 1rem;
+        color: var(--primary-color);
+        font-size: .83rem;
+        display: flex;
+        align-items: flex-start;
+        gap: .6rem;
+        margin-bottom: 1.1rem;
+    }
 
-        /* دائرة شفافة خلفية للزينة */
-        .stats-card::before {
-            content: ''; position: absolute; top: -20px; right: -20px;
-            width: 100px; height: 100px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%; pointer-events: none;
-        }
-
-        .stat-row {
-            display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 12px;
-        }
-        .stat-label { font-size: 0.85rem; opacity: 0.9; }
-        .stat-value { font-weight: 800; font-size: 1.1rem; }
-
-
-
+    /* ── Global Confirm Modal icon ────────────────────────────── */
+    .app-confirm-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto .9rem;
+        font-size: 1.3rem;
+        transition: background .25s, color .25s;
+    }
     </style>
 
     @stack('styles')
 </head>
+
 <body>
-
-<div class="mobile-header d-lg-none">
-    <div class="fw-bold fs-5 text-dark">Sami<span style="color: #6366f1;">Event</span></div>
-    <button class="btn btn-light border" onclick="toggleSidebar()">
-        <i class="fas fa-bars"></i>
-    </button>
-</div>
-
-<div class="container-fluid p-4">
-    <div class="row g-4">
-
-        <div class="col-lg-3 col-xl-2 sidebar-col" id="sidebarArea">
-            @include('layouts.partials.sidebar')
+    <div class="mobile-header d-lg-none">
+        {{-- Mobile header logo — always uses platform admin settings (SystemSetting).
+             Tenant branding (CompanyBranding) is only for email templates. --}}
+        @php
+            $mobileLogoUrl   = \App\Models\SystemSetting::get('platform_logo_url', '');
+            $mobileBrandName = \App\Models\SystemSetting::get('platform_name', config('app.name', 'Platform'));
+        @endphp
+        <div class="d-flex align-items-center gap-2">
+            @if(!empty($mobileLogoUrl))
+                <img src="{{ $mobileLogoUrl }}" alt="{{ $mobileBrandName }}"
+                     style="height:24px;max-width:110px;object-fit:contain;">
+            @else
+                <div class="brand-text">{{ $mobileBrandName }}</div>
+            @endif
         </div>
-
-        {{-- Main Content Column --}}
-        <div class="col-lg-9 col-xl-10 animate__animated animate__fadeIn">
-            @yield('content')
-        </div>
-
+        <button type="button" onclick="toggleSidebar()" aria-label="{{ __('ui.mobile.toggle_navigation') }}">
+            <i class="fas fa-bars"></i>
+        </button>
     </div>
-</div>
 
-{{-- Scripts --}}
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="closeSidebar()"></div>
 
-<script>
-    // إعدادات عامة للتوست
-    const toastConfig = {
-        duration: 3000,
-        gravity: "top", // top or bottom
-        position: "center", // left, center, right
-        close: true,
-        stopOnFocus: true, // يمنع اختفاء الرسالة عند وضع الماوس عليها
-    };
+    <div class="container-fluid app-shell">
+        <div class="row g-4">
+            <aside class="col-lg-3 col-xl-2 sidebar-col" id="sidebarArea">
+                @include('layouts.partials.sidebar')
+            </aside>
 
-    // 1. فحص رسائل النجاح (Success)
-    @if(session('success'))
-    Toastify({
-        text: "{{ session('success') }}",
-        ...toastConfig,
-        style: {
-            background: "linear-gradient(to right, #00b09b, #96c93d)", // لون أخضر متدرج
+            <main class="col-lg-9 col-xl-10 app-main">
+                <div class="page-wrap animate__animated animate__fadeIn">
+                    @yield('content')
+                </div>
+            </main>
+        </div>
+    </div>
+
+    {{-- ─── Global Modals Slot ─────────────────────────────────────────────
+         All page-level modals pushed via @push('modals') render here —
+         outside .page-wrap so backdrop-filter stacking context doesn't
+         trap position:fixed Bootstrap modals.
+    ──────────────────────────────────────────────────────────────────── --}}
+    @stack('modals')
+
+    {{-- ─── Global Confirm / Delete Modal ─────────────────────────────────
+         Controlled entirely via AppUI.confirm({ ... }) — no per-page HTML needed.
+    ──────────────────────────────────────────────────────────────────── --}}
+    <div class="modal fade app-modal" id="appConfirmModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content app-modal-content">
+
+                <div class="modal-body p-4 text-center">
+                    <div class="app-confirm-icon" id="appConfirmIconWrap">
+                        <i id="appConfirmIcon" class="fas fa-circle-question"></i>
+                    </div>
+                    <h6 class="fw-bold mb-2" id="appConfirmTitle" style="color:var(--text-main);font-size:.95rem;"></h6>
+                    <p class="mb-0" id="appConfirmBody" style="font-size:.84rem;color:var(--text-soft);line-height:1.5;"></p>
+                </div>
+
+                <div class="modal-footer border-0 pt-0 pb-4 justify-content-center gap-2">
+                    <button type="button"
+                            class="btn btn-outline-secondary rounded-pill px-4"
+                            style="font-size:.875rem;"
+                            data-bs-dismiss="modal"
+                            id="appConfirmCancelBtn">إلغاء</button>
+
+                    {{-- Callback mode (no form needed) --}}
+                    <button type="button"
+                            class="btn rounded-pill px-4"
+                            style="font-size:.875rem;"
+                            id="appConfirmOkBtn">تأكيد</button>
+
+                    {{-- Form mode (DELETE / POST / PATCH) --}}
+                    <form id="appConfirmForm" method="POST" class="d-none d-inline">
+                        @csrf
+                        <input type="hidden" name="_method" id="appConfirmMethod" value="DELETE">
+                        <button type="submit"
+                                class="btn rounded-pill px-4"
+                                style="font-size:.875rem;"
+                                id="appConfirmSubmitBtn">تأكيد</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebarArea');
+            const backdrop = document.getElementById('sidebarBackdrop');
+
+            if (!sidebar || !backdrop) {
+                return;
+            }
+
+            sidebar.classList.toggle('show');
+            backdrop.classList.toggle('show');
         }
-    }).showToast();
-    @endif
 
-    // 2. فحص رسائل الخطأ (Error)
-    @if(session('error'))
-    Toastify({
-        text: "{{ session('error') }}",
-        ...toastConfig,
-        style: {
-            background: "linear-gradient(to right, #ff5f6d, #ffc371)",
+        function closeSidebar() {
+            const sidebar = document.getElementById('sidebarArea');
+            const backdrop = document.getElementById('sidebarBackdrop');
+
+            if (!sidebar || !backdrop) {
+                return;
+            }
+
+            sidebar.classList.remove('show');
+            backdrop.classList.remove('show');
         }
-    }).showToast();
-    @endif
 
+        window.addEventListener('resize', function() {
+            if (window.innerWidth >= 992) {
+                closeSidebar();
+            }
+        });
 
-    @if($errors->any())
-    @foreach($errors->all() as $error)
-    Toastify({
-        text: "{{ $error }}",
-        ...toastConfig,
-        style: {
-            background: "#dc3545", // لون أحمر ثابت
-        }
-    }).showToast();
-    @endforeach
-    @endif
-</script>
+        // ════════════════════════════════════════════════════════
+        //  AppUI — Global UI helpers (toast + confirm modal)
+        //  استخدم AppUI.toast() و AppUI.confirm() من أي صفحة
+        // ════════════════════════════════════════════════════════
+        window.AppUI = (function () {
+
+            // ── Toast styles map ─────────────────────────────────
+            const _styles = {
+                success : { bg: 'linear-gradient(135deg,#10b981 0%,#34d399 100%)', shadow: 'rgba(16,185,129,.4)' },
+                error   : { bg: 'linear-gradient(135deg,#f43f5e 0%,#fb7185 100%)', shadow: 'rgba(244,63,94,.4)'  },
+                warning : { bg: 'linear-gradient(135deg,#f59e0b 0%,#fbbf24 100%)', shadow: 'rgba(245,158,11,.4)' },
+                info    : { bg: 'linear-gradient(135deg,#0ea5e9 0%,#38bdf8 100%)', shadow: 'rgba(14,165,233,.4)'  },
+            };
+
+            const _base = { duration: 3500, gravity: 'top', position: 'center', close: true, stopOnFocus: true };
+
+            // ── AppUI.toast(msg, type) ────────────────────────────
+            function toast(message, type = 'success') {
+                const s = _styles[type] || _styles.success;
+                Toastify({
+                    text: message,
+                    ..._base,
+                    style: {
+                        background: s.bg,
+                        borderRadius: '12px',
+                        boxShadow: `0 10px 25px ${s.shadow}`,
+                        fontWeight: '600',
+                    },
+                }).showToast();
+            }
+
+            // ── AppUI.confirm({ ... }) ────────────────────────────
+            //  title        : string   — عنوان التأكيد
+            //  body         : string   — نص HTML التوضيحي
+            //  icon         : string   — FontAwesome icon name (بدون fa-)
+            //  danger       : bool     — زر أحمر بدلاً من الأخضر
+            //  confirmLabel : string   — نص زر التأكيد
+            //  cancelLabel  : string   — نص زر الإلغاء
+            //  onConfirm    : function — callback (بدلاً من إرسال form)
+            //  formAction   : string   — URL لإرسال form تلقائياً
+            //  formMethod   : string   — DELETE | POST | PATCH (default: DELETE)
+            function confirm({
+                title        = 'تأكيد',
+                body         = '',
+                icon         = 'circle-question',
+                danger       = false,
+                confirmLabel = 'تأكيد',
+                cancelLabel  = 'إلغاء',
+                onConfirm    = null,
+                formAction   = null,
+                formMethod   = 'DELETE',
+            } = {}) {
+                const modal       = document.getElementById('appConfirmModal');
+                const iconWrap    = document.getElementById('appConfirmIconWrap');
+                const iconEl      = document.getElementById('appConfirmIcon');
+                const titleEl     = document.getElementById('appConfirmTitle');
+                const bodyEl      = document.getElementById('appConfirmBody');
+                const cancelBtn   = document.getElementById('appConfirmCancelBtn');
+                const okBtn       = document.getElementById('appConfirmOkBtn');
+                const form        = document.getElementById('appConfirmForm');
+                const methodInput = document.getElementById('appConfirmMethod');
+                const submitBtn   = document.getElementById('appConfirmSubmitBtn');
+
+                // Content
+                titleEl.textContent   = title;
+                bodyEl.innerHTML      = body;
+                cancelBtn.textContent = cancelLabel;
+
+                // Icon + color
+                const color  = danger ? 'var(--danger-color)' : 'var(--primary-color)';
+                const bgWrap = danger ? 'rgba(179,38,30,.1)'  : 'rgba(15,143,131,.1)';
+                iconWrap.style.background = bgWrap;
+                iconEl.className  = `fas fa-${icon}`;
+                iconEl.style.color = color;
+
+                const btnCls = danger ? 'btn-danger' : 'btn-primary';
+
+                if (formAction) {
+                    // Form mode
+                    okBtn.classList.add('d-none');
+                    form.classList.remove('d-none');
+                    form.classList.add('d-inline');
+                    form.action       = formAction;
+                    methodInput.value = formMethod;
+                    submitBtn.textContent = confirmLabel;
+                    submitBtn.className   = `btn ${btnCls} rounded-pill px-4`;
+                    submitBtn.style.fontSize = '.875rem';
+                } else {
+                    // Callback mode — clone to clear old listeners
+                    form.classList.add('d-none');
+                    form.classList.remove('d-inline');
+                    okBtn.classList.remove('d-none');
+                    okBtn.textContent = confirmLabel;
+                    okBtn.className   = `btn ${btnCls} rounded-pill px-4`;
+                    okBtn.style.fontSize = '.875rem';
+                    const fresh = okBtn.cloneNode(true);
+                    okBtn.parentNode.replaceChild(fresh, okBtn);
+                    if (onConfirm) {
+                        fresh.addEventListener('click', function () {
+                            bootstrap.Modal.getInstance(modal)?.hide();
+                            onConfirm();
+                        });
+                    }
+                }
+
+                new bootstrap.Modal(modal).show();
+            }
+
+            return { toast, confirm };
+        })();
+
+        // ─── Flash messages via AppUI.toast ─────────────────────
+        @if(session('success'))
+        AppUI.toast(@json(session('success')), 'success');
+        @endif
+
+        @if(session('error'))
+        AppUI.toast(@json(session('error')), 'error');
+        @endif
+
+        @if(session('warning'))
+        AppUI.toast(@json(session('warning')), 'warning');
+        @endif
+
+        @if($errors->any())
+        @foreach($errors->all() as $error)
+        AppUI.toast(@json($error), 'error');
+        @endforeach
+        @endif
+    </script>
+
+    @stack('scripts')
 </body>
-</html>
-<script>
-    function toggleSidebar() {
-        document.getElementById('sidebarArea').classList.toggle('show');
-    }
-</script>
-@stack('scripts')
-</body>
+
 </html>

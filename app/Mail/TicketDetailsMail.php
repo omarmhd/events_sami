@@ -2,92 +2,71 @@
 
 namespace App\Mail;
 
+use App\Models\EventInvitation;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Storage;
 
 class TicketDetailsMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-
-
-
     public $tickets;
     public $employee;
     public $event;
 
-    public function __construct($tickets, $employee,$event)
+    public function __construct($tickets, $employee, $event)
     {
         $this->tickets = $tickets;
         $this->employee = $employee;
-        $this->event=$event;
+        $this->event = $event;
     }
 
     public function build()
     {
-        $mail = $this->view('email')
-        ->subject('Ticket Details')
-        ->with([
-            'tickets' => $this->tickets,
-            'employee' => $this->employee,
-            'event' => $this->event,
+        $generatedTickets = [];
+        foreach ($this->tickets as $ticket) {
+            $file = $ticket->barcode ? storage_path('app/public/qr_codess/' . $ticket->barcode) : null;
+            if ($file && file_exists($file)) {
+                $data = base64_encode(file_get_contents($file));
+                $generatedTickets[] = [
+                    'label' => $ticket->type === 'employee' ? 'Main' : 'Guest',
+                    'qr' => 'data:image/png;base64,' . $data,
+                ];
+            }
+        }
+
+        $invitation = new EventInvitation([
+            'invitee_name' => $this->employee->name,
+            'invitee_email' => $this->employee->email,
+            'invitee_position' => $this->employee->position,
+            'status' => 'accepted',
         ]);
 
-        foreach ($this->tickets as $index => $ticket) {
-            $barcodePath = Storage::disk('public')->path("qr_codess/".$ticket->barcode);
+        $customSubject = trim((string) ($this->event->confirmation_email_subject ?? ''));
+        $subject = $customSubject !== '' ? $customSubject : 'Invitation Confirmed';
 
-            if (file_exists($barcodePath)) {
+        $mail = $this->subject($subject)
+            ->view('emails.tickets')
+            ->with([
+                'invitation' => $invitation,
+                'tickets' => $generatedTickets,
+                'event' => $this->event,
+            ]);
 
-                $mail->attach($barcodePath, [
-                    'mime' => 'image/png',
-                    'as' => 'ticket_qr_' . ($index + 1) . '.png',
-                ]);
+        foreach ($generatedTickets as $ticket) {
+            if (!empty($ticket['qr'])) {
+                $parts = explode(',', $ticket['qr'], 2);
+                if (count($parts) === 2) {
+                    $mail->attachData(
+                        base64_decode($parts[1]),
+                        ($ticket['label'] ?? 'ticket') . '.png',
+                        ['mime' => 'image/png']
+                    );
+                }
             }
-
-            // تحديد مسار الصورة باستخدام التخزين
-//            $barcodePath = Storage::disk('public')->path("qr_codess/".$ticket->barcode);
-//
-//            // التأكد من وجود الصورة في التخزين
-//            if (file_exists($barcodePath)) {
-//                // إرفاق الصورة من التخزين
-//                $mail->attachFromStorage($barcodePath, 'ticket_qr_' . ($index + 1), [
-//                    'mime' => 'image/png',  // تحديد نوع الصورة إذا كانت PNG
-//                    'as' => 'ticket_qr_' . ($index + 1) . '.png',  // اسم الصورة عند الإرفاق
-//                ]);
-//            }
         }
 
         return $mail;
     }
-
-    /*
-        public function build()
-        {
-            $mail = $this->view('email')  // عرض البريد الإلكتروني
-            ->subject('Ticket Details')  // الموضوع
-            ->with([
-                'tickets' => $this->tickets,
-                'employee' => $this->employee,
-            ]);
-
-
-            // هنا نقوم بإرفاق الصور لجميع التذاكر
-
-            foreach ($this->tickets as $index => $ticket) {
-
-    //            $mail->attach(public_path($ticket->barcode), [
-    //                'as' => $ticket->barcode . '.jpg',  // الاسم المرفق
-    //                'mime' => 'image/jpeg',
-    //                'contentId' => 'ticket_qr_' . ($index + 1) // Content-ID الذي سنستخدمه في الـ CID
-    //
-    //            ]);
-            }
-
-            return $mail;
-
-
-        }*/
 }

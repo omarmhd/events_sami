@@ -30,9 +30,11 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
+            \App\Http\Middleware\ResolveTenantFromSubdomain::class,
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
+            \App\Http\Middleware\SetLocaleFromSession::class,
             // \Illuminate\Session\Middleware\AuthenticateSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
@@ -56,9 +58,19 @@ class Kernel extends HttpKernel
     protected $routeMiddleware = [
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'admin' => \App\Http\Middleware\CheckAdmin::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
+        'company' => \App\Http\Middleware\EnsureCompanyContext::class,
+        'organizer.only' => \App\Http\Middleware\RedirectSystemAdminToSystemPanel::class,
+        'subscriber' => \App\Http\Middleware\CheckSubscriber::class,
+        'tenant.resolve' => \App\Http\Middleware\ResolveTenantFromSubdomain::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'system.admin' => \App\Http\Middleware\EnsureSystemAdmin::class,
+        'subscriptions'        => \App\Http\Middleware\CheckSubscriptionLimits::class,
+        'subscription.status'  => \App\Http\Middleware\CheckSubscriptionStatus::class,
+        'feature'              => \App\Http\Middleware\CheckFeatureAccess::class,
+        'public.tenant'        => \App\Http\Middleware\ResolvePublicTenant::class,
         'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
         'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,

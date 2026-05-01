@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() === 'ar' ? 'rtl' : 'ltr' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>@yield('title', config('app.name', 'SAMI Events'))</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-dark: #222222;
+            --primary-light: #F4F6F8;
+            --primary-accent: #DABC9A;
+            --card: rgba(255, 255, 255, 0.95);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', 'Manrope', sans-serif;
+            color: var(--primary-dark);
+            background: linear-gradient(135deg, var(--primary-light) 0%, #ffffff 100%);
+            margin: 0;
+            padding: 0;
+        }
+
+        html[dir="rtl"] body {
+            font-family: 'Cairo', serif;
+        }
+
+        .hero {
+            padding: 3rem 1rem 2rem;
+        }
+
+        .hero-shell {
+            border-radius: 28px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #0d3b37 0%, #0f6b62 50%, var(--primary-accent) 100%);
+            color: #fff;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            display: grid;
+            grid-template-columns: 1fr;
+        }
+
+        /* With image: side-by-side layout on md+ */
+        @media (min-width: 768px) {
+            .hero-shell--with-image {
+                grid-template-columns: 45% 55%;
+            }
+        }
+
+        /* No image: single full-width column, richer gradient background */
+        .hero-shell--no-image {
+            background: linear-gradient(135deg, #0d3b37 0%, #0f6b62 45%, #11857a 100%);
+            position: relative;
+        }
+
+        /* Subtle decorative pattern overlay when no image */
+        .hero-shell--no-image::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.04) 0%, transparent 60%),
+                              radial-gradient(circle at 80% 20%, rgba(255,255,255,0.06) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero-media {
+            min-height: 280px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .hero-copy {
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Full-width copy when no image: centre content, more generous padding */
+        .hero-copy--full {
+            padding: 3rem 2.5rem;
+            max-width: 720px;
+            margin: 0 auto;
+            text-align: center;
+            align-items: center;
+        }
+
+        .hero-copy--full .meta-pills {
+            justify-content: center;
+        }
+
+        @media (max-width: 767px) {
+            .hero-copy {
+                padding: 2rem 1.5rem;
+            }
+            .hero-copy--full {
+                padding: 2.5rem 1.5rem;
+            }
+        }
+
+        .hero-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            border-radius: 999px;
+            padding: 0.6rem 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            font-weight: 700;
+            width: fit-content;
+            margin-bottom: 1.2rem;
+        }
+
+        .hero-copy h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        @media (max-width: 767px) {
+            .hero-copy h1 {
+                font-size: 1.8rem;
+            }
+        }
+
+        .hero-copy p {
+            font-size: 1rem;
+            line-height: 1.6;
+            opacity: 0.95;
+            margin-bottom: 1.5rem;
+        }
+
+        .meta-pills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+
+        .meta-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.7rem 1rem;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.9rem;
+            color: #fff;
+        }
+
+        .glass-card {
+            background: var(--card);
+            border: 1px solid rgba(34, 34, 34, 0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            padding: 2rem;
+        }
+
+        @media (max-width: 767px) {
+            .glass-card {
+                padding: 1.5rem;
+            }
+        }
+
+        .card-header-section {
+            border-bottom: 1px solid rgba(34, 34, 34, 0.08);
+            padding-bottom: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-label {
+            text-transform: uppercase;
+            font-weight: 600;
+            color: var(--primary-accent);
+            font-size: 0.75rem;
+            letter-spacing: 0.12em;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 0.8rem;
+        }
+
+        .section-desc {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 0.5rem;
+        }
+
+        .schedule-line {
+            display: grid;
+            grid-template-columns: 100px 1fr;
+            gap: 1rem;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(34, 34, 34, 0.06);
+        }
+
+        .schedule-line:last-child {
+            border-bottom: none;
+        }
+
+        .schedule-time {
+            font-weight: 700;
+            color: var(--primary-accent);
+            font-size: 0.95rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--primary-dark);
+            font-size: 0.95rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .form-control,
+        .form-select {
+            border: 1px solid rgba(34, 34, 34, 0.1);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            background-color: #fff;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary-accent);
+            box-shadow: 0 0 0 3px rgba(218, 188, 154, 0.1);
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, #3d3d3d 100%);
+            border: none;
+            color: #fff;
+            font-weight: 700;
+            padding: 0.95rem 2rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .btn-submit:hover {
+            background: linear-gradient(135deg, #1a1a1a 0%, #222 100%);
+            box-shadow: 0 12px 28px rgba(34, 34, 34, 0.25);
+            transform: translateY(-2px);
+            color: #fff;
+        }
+
+        .alert-info {
+            background: linear-gradient(135deg, rgba(218, 188, 154, 0.1) 0%, rgba(212, 188, 154, 0.05) 100%);
+            border: 1px solid rgba(218, 188, 154, 0.3);
+            color: var(--primary-dark);
+            border-radius: 16px;
+            padding: 1rem;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .badge-event-type {
+            display: inline-block;
+            background: var(--primary-accent);
+            color: var(--primary-dark);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: capitalize;
+        }
+
+        @media (max-width: 576px) {
+            .hero {
+                padding: 2rem 0;
+            }
+
+            .hero-media {
+                min-height: 200px;
+            }
+
+            .hero-copy {
+                padding: 1.5rem;
+            }
+
+            .hero-copy h1 {
+                font-size: 1.5rem;
+            }
+
+            .schedule-line {
+                grid-template-columns: 80px 1fr;
+                gap: 0.8rem;
+            }
+
+            .meta-pills {
+                flex-direction: column;
+                gap: 0.6rem;
+            }
+
+            .meta-pill {
+                width: 100%;
+            }
+        }
+
+        .loading-spinner {
+            display: none;
+        }
+
+        .loading-spinner.show {
+            display: inline-block;
+        }
+    </style>
+
+    @stack('styles')
+</head>
+<body>
+@yield('content')
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+@stack('scripts')
+</body>
+</html>

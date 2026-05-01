@@ -1,0 +1,1073 @@
+var TTCheckout = {
+
+    init: function () {
+        //add anything that needs initialising only on page load
+        this.initAfterPageContentChange();
+        this.FormControls.init();
+        this.OrderSummary.init();
+        this.PaymentMethods.init();
+        this.PageLayout.init();
+        this.LayoutActions.init();
+        this.PageTimeout.init();
+        this.accessibility.init();
+
+        $('.overlay_wrapper .close_button').off('click.overlay').on('click.overlay', function() {
+            $('body').removeClass('checkout-modal-visible');
+            $('.overlay_wrapper').hide();
+            $('body').css('overflow', 'initial');
+            $('#overlay_window').attr('src', "");
+            $('body').css('max-height', 'auto');
+            TTCheckout.LayoutActions.setTabIndex('.event_page_footer', '0');
+            TTCheckout.LayoutActions.setTabIndex('.footer_compensation', '0');
+            if (window.accessibility.modal_initiator && typeof window.accessibility.modal_initiator != 'undefined') {
+                window.accessibility.modal_initiator.focus();
+                window.accessibility.modal_initiator = null;
+            }
+        });
+    },
+
+    PageLayout: {
+        init: function() {
+            $('.event_description iframe, .event-page-description iframe').each(function() {
+                if (!$(this).parent().hasClass('videoWrapper')) {
+                    $(this).wrap('<div class="videoWrapper"></div>');
+                }
+            });
+            const reveal_text_lines = 8;
+            const reveal_text_line_height = 22;
+            const reveal_text_max_height_threshold = reveal_text_lines * reveal_text_line_height;
+            let reveal_text_max_height = reveal_text_max_height_threshold;
+            $('.reveal_text').each(function() {
+                if ($(this).find('.reveal_text--content').length == 0) {
+                    $(this).wrapInner('<div class="reveal_text--content"></div>');
+                }
+                if ($(this).find('h1:first-child, h2:first-child', '.reveal_text--content').outerHeight(true) < reveal_text_max_height_threshold) {
+                    reveal_text_max_height = $(this).find('.reveal_text--content >').first().outerHeight(true) + reveal_text_max_height_threshold;
+                }
+                if ($(this).find('.reveal_text--content').height() > reveal_text_max_height) {
+                    $(this).append('<button class="reveal_text--button" aria-expanded="false" data-label-collapsed="Read more" data-label-revealed="Read less">Read more</button>');
+                    $(this).addClass('reveal_text--collapsed');
+                    $(this).find('.reveal_text--content').height(reveal_text_max_height);
+                }
+                $(this).find('.reveal_text--button').off('click.reveal_text').on('click.reveal_text', function() {
+                    const container = $(this).closest('.reveal_text');
+                    const content = container.find('.reveal_text--content');
+                    const button = $(this);
+                    let contentHeight = content.height();
+                    if (typeof revealTextTimeout != 'undefined') {
+                        clearTimeout(revealTextTimeout);
+                    }
+                    if (typeof revealTextTimeout2 != 'undefined') {
+                        clearTimeout(revealTextTimeout2);
+                    }
+                    if (typeof revealTextHideTimeout != 'undefined') {
+                        clearTimeout(revealTextHideTimeout);
+                    }
+                    if (content.hasClass('animate')) {
+                        button.text(button.data('label-collapsed'));
+                        container.addClass('reveal_text--collapsed').removeClass('reveal_text--active');
+                        content.removeClass('animate content_overflow');
+                        content.css('height', contentHeight);
+                        revealTextHideTimeout = setTimeout(function () {
+                            content.css('height', reveal_text_max_height);
+                        }, 20);
+                    } else {
+                        button.text(button.data('label-revealed'));
+                        container.removeClass('reveal_text--collapsed').addClass('reveal_text--active');
+                        content.addClass('force-height-reset');
+                        contentHeight = content.height();
+                        content.removeClass('force-height-reset');
+                        content.height(reveal_text_max_height);
+                        revealTextTimeout = setTimeout(function () {
+                            content.addClass('animate');
+                            content.css('height', contentHeight);
+                        }, 20);
+                        revealTextTimeout2 = setTimeout(function () {
+                            content.css('height', '');
+                        }, 300);
+                        content.focus();
+                    }
+                });
+            });
+        }
+    },
+
+    FormControls: {
+        init: function() {
+            const FormControls = this;
+            $('.form--controls-increment-quantity').each(function() {
+                $('.ticket_row select', this).each(function() {
+                    const input = $(this);
+                    const wrapper = $(this).closest('.quantity');
+                    const itemName = $.trim($(this).closest('.ticket_row').find('.ticket_name > label > var').text());
+                    $(wrapper).attr('data-name', itemName);
+                    if (!$(wrapper).hasClass('quantity__increment---initialised')) {
+                        $(wrapper).addClass('quantity__increment--increment-initialised');
+                        $(input).before($('<button>').addClass("quantity__increment_button quantity__increment_button--decrement").attr('aria-label', itemName + ': Remove 1 item').text('-'));
+                        $(input).after($('<button>').addClass("quantity__increment_button quantity__increment_button--increment").attr('aria-label', itemName + ': Add 1 item').text('+'));
+                        $(wrapper).append('<div class="quantity__increment--accessible-message visually-hidden"></div>');
+                    }
+                    FormControls.updateTicketRowStatus($(this));
+                });
+                $('.ticket_row select', this).off('change.quantity-increment-buttons').on('change.quantity-increment-buttons', function() {
+                    FormControls.updateTicketRowStatus($(this));
+                });
+                $('.quantity > button', this).off('click.quantity').on('click.quantity', function() {
+                    const input = $(this).siblings('select');
+                    const value = parseInt($(input).val());
+                    const prevVal = value - 1;
+                    const nextVal = value + 1;
+                    if ($(this).hasClass('quantity__increment_button--decrement')) {
+                        if (prevVal >= 0) {
+                            $(input).val(prevVal).trigger('change');
+                        }
+                    } else {
+                        if ($(input).find('option[value="' + nextVal + '"]').length) {
+                            $(input).val(nextVal).trigger('change');
+                        }
+                    }
+                    FormControls.updateTicketRowStatus(input);
+                    return false;
+                });
+            });
+
+            $('a.terms_document_button').off('click.terms_reveal').on('click.terms_reveal', function() {
+                const clickedElement = $(this);
+                $($(this).attr('href').split('?')[0]).slideToggle('fast', function() {
+                    $(this).css('overflow','auto');
+                    clickedElement.attr('aria-expanded', $(this).is(':visible'));
+                });
+                return false;
+            });
+        },
+        updateTicketRowStatus: function(input) {
+            const wrapper = $(input).closest('.quantity');
+            const itemName = wrapper.attr('data-name');
+            const value = parseInt($(input).val());
+            const decrementBtn = wrapper.find('.quantity__increment_button--decrement');
+            const incrementBtn = wrapper.find('.quantity__increment_button--increment');
+            const prevVal = value - 1;
+            const nextVal = value + 1;
+            if ($(input).find('option[value="' + nextVal + '"]').length == 0) {
+                incrementBtn.attr('disabled', 'disabled');
+            } else {
+                incrementBtn.removeAttr('disabled');
+            }
+            if (prevVal < 0) {
+                decrementBtn.attr('disabled', 'disabled');
+            } else {
+                decrementBtn.removeAttr('disabled');
+            }
+            $(input).closest('.event_product_form').find('.quantity__increment--accessible-message').removeAttr('aria-live').text('');
+            wrapper.find('.quantity__increment--accessible-message').text(value + ' item' + (value > 1 || value == 0 ? 's' : '')).attr('aria-live', 'polite');
+        }
+    },
+
+    OrderSummary: {
+        init: function () {
+            if ($('#order_summary_wrapper').length) {
+                if ($('.event_ticket_form').length) {
+                    $('select,input[type="text"]', '.event_ticket_form .ticket_row').off('change.order_summary').on('change.order_summary', function() {
+                        TTCheckout.OrderSummary.UpdateItem($(this).attr('id'), $(this).closest('.ticket_row'));
+                    }).trigger('change.order_summary');
+                    if ($('#donationAmount').length && !$('#order_summary_wrapper table tbody [data-related-item="donationAmount"]').length) {
+                        TTCheckout.OrderSummary.UpdateItem('donationAmount', $('#donationAmount').closest('.ticket_row'));
+                    }
+                }
+            }
+        },
+        FormatPrice: function (currencySymbol, price, prepend) {
+            prepend = typeof prepend != 'undefined' ? prepend : '';
+            price = typeof price != 'undefined' && price != '' ? price : 0.00;
+            if (typeof currencySymbol != 'undefined' && currencySymbol != '') {
+                return prepend + currencySymbol + parseFloat(price).toLocaleString("en", { minimumFractionDigits: 2 });
+            } else {
+                return '';
+            }
+        },
+        PriceStringToFloat: function (priceString) {
+            return priceString != '' ? parseFloat(priceString.replace(/[^0-9.]/g, '')) : '';
+        },
+        UpdateItem: function (id, row) {
+            if (!$(row).find('.ticket_name > label > var, .ticket_name > label[for="donationAmount"]').length) {
+                return;
+            }
+
+            const orderItemArea = $('#order_summary_wrapper table tbody');
+            const summaryItem = orderItemArea.find('[data-related-item="' + id + '"]');
+            const itemType = row.find('select[data-productid]').length ? 'ADD_ON' : row.find('#donationAmount').length ? 'DONATION' : 'TICKET';
+            const currencySymbol = row.find('select[data-currencysymbol]').length ? row.find('select[data-currencysymbol]').attr('data-currencysymbol') : row.find('.price_mobile > var, .currency-symbol').length ? row.find('.price_mobile > var, .currency-symbol').first().text().substring(0, 1) : '';
+            const priceFloat = this.PriceStringToFloat(row.find('#donationAmount').length ? row.find('#donationAmount').val() : row.find('.price_mobile > var').first().text());
+            const bookingFeeFloat = this.PriceStringToFloat(row.find('.booking_fees > var').first().text());
+            const quantityMultiplier = row.filter('[data-bundled-quantity]').length ? parseInt(row.data('bundled-quantity')) : 1;
+            const quantity = row.find('select').length ? parseInt(row.find('select').val()) * quantityMultiplier : (row.find('#donationAmount').length && row.find('#donationAmount').val() > 0 ? 1 : 0);
+
+            const item = {
+                'type': itemType,
+                'name': (itemType == 'ADD_ON' ? 'Add-on: ' : '') + row.find('.ticket_name > label > var, .ticket_name > label[for="donationAmount"]').first().text(),
+                'price': this.FormatPrice(currencySymbol, priceFloat),
+                'booking_fee': row.find('.booking_fees > var').length && this.PriceStringToFloat(row.find('.booking_fees > var').text()) > 0 ? this.FormatPrice(currencySymbol, bookingFeeFloat, '+&nbsp;') : '',
+                'quantity': quantity
+            };
+
+            if (item.quantity > 0 && currencySymbol != '') {
+                item['total_price'] = this.FormatPrice(currencySymbol, (priceFloat + bookingFeeFloat) * item.quantity);
+            }
+
+            const template = `
+                <tr class="ticket_row" data-related-item="${id}" data-item-type="${item.type}">
+                    <td class="ticket_row-name" notranslate>
+                        ${item.name}
+                    </td>
+                    <td class="align_right ticket_row-price">
+                        <span notranslate="">${item.price}</span>
+                        <small>${item.booking_fee}</small>
+                    </td>
+                    <td class="ticket_row-quantity" style="padding-left: 0;" notranslate>
+                        ×&nbsp;${item.quantity}
+                    </td>
+                    <td class="align_right ticket_row-subtotal" notranslate>${item.total_price}</td>
+                </tr>
+            `;
+
+            if (quantity == 0) {
+                summaryItem.remove();
+            } else if (summaryItem.length) {
+                summaryItem.replaceWith(template);
+            } else if (orderItemArea.find('.ticket_row[data-item-type="' + item.type + '"]').length) {
+                orderItemArea.find('.ticket_row[data-item-type="' + item.type + '"]').last().after(template);
+            } else if (item.type == 'PRODUCT' && orderItemArea.find('.ticket_row[data-item-type="TICKET"]').length) {
+                orderItemArea.find('.ticket_row[data-item-type="TICKET"]').last().after(template);
+            } else {
+                orderItemArea.append(template);
+            }
+
+            if ($('.ticket_row', orderItemArea).not('.ticket_row--no-items').length) {
+                orderItemArea.find('.ticket_row--no-items').hide();
+            } else {
+                orderItemArea.find('.ticket_row--no-items').show();
+            }
+
+            if (itemType == 'TICKET' || itemType == 'ADD_ON') {
+                let totalItems = 0;
+                const countContext = $('.order_summary_item_count[data-item-type="' + itemType + '"]');
+                $('.ticket_row .quantity select').each(function() {
+                    const rowQuantityMultiplier = $(this).closest('.ticket_row').filter('[data-bundled-quantity]').length ? parseInt($(this).closest('.ticket_row').data('bundled-quantity')) : 1;
+                    totalItems += parseInt($(this).val()) * rowQuantityMultiplier;
+                }).promise().done(function() {
+                    $('.item_count_number', countContext).text(totalItems);
+                    if (totalItems > 0) {
+                        countContext.show();
+                    } else {
+                        countContext.hide();
+                    }
+                    if (totalItems > 1) {
+                        $('.plural_modifier', countContext).show();
+                    } else {
+                        $('.plural_modifier', countContext).hide();
+                    }
+                });
+            }
+        }
+    },
+
+    get_window_document_context: function() {
+        try {
+            if (typeof window.parent.document != 'undefined' && window.parent.document != null) {
+                return window.parent.document;
+            } else {
+                return window.document;
+            }
+        } catch(err) {
+            return window.document;
+        }
+    },
+
+    PageTimeout: {
+        seconds: 0,
+        alerted: false,
+        timeoutInterval: null,
+        init: function() {
+            const PageTimeout = this;
+            PageTimeout.timeoutInterval = null;
+            PageTimeout.run();
+        },
+        run: function() {
+            const PageTimeout = this;
+            if ($('#page-expiry-alert[data-page-timeout-seconds]').length) {
+                const expiryAlertSeconds = 120;
+                const pageTimeoutExpirySeconds = $('#page-expiry-alert[data-page-timeout-seconds]').data('page-timeout-seconds');
+                if (pageTimeoutExpirySeconds) {
+                    PageTimeout.seconds = 0;
+                    PageTimeout.alerted = false;
+                    const alertAtSeconds = parseInt(pageTimeoutExpirySeconds) - expiryAlertSeconds;
+                    const countSeconds = function() {
+                        if (!PageTimeout.alerted) {
+                            PageTimeout.seconds += 1;
+                            if (PageTimeout.seconds >= alertAtSeconds) {
+                                $('#page-expiry-alert').text('You have ' + Math.round(expiryAlertSeconds/60) + ' minutes remaining to complete this form.').attr('aria-live', 'assertive');
+                                PageTimeout.alerted = true;
+                                clearInterval(PageTimeout.timeoutInterval);
+                            }
+                        }
+                    };
+                    if (PageTimeout.timeoutInterval) {
+                        clearInterval(PageTimeout.timeoutInterval);
+                    }
+                    PageTimeout.timeoutInterval = setInterval(countSeconds, 1000);
+                }
+            }
+        },
+        setFullExpiryTime: function() {
+            const PageTimeout = this;
+            if ($('#page-expiry-alert[data-page-timeout-seconds-full]').length) {
+                const pageTimeoutExpirySecondsFull = $('#page-expiry-alert[data-page-timeout-seconds-full]').data('page-timeout-seconds-full');
+                $('#page-expiry-alert[data-page-timeout-seconds]').attr('data-page-timeout-seconds', pageTimeoutExpirySecondsFull);
+                PageTimeout.run();
+            }
+        }
+    },
+
+    accessibility: {
+        init: function() {
+
+            $('body').on('keydown', function(e) {
+                if (e.which == 9) {
+                    $('body').addClass('tabbing-detected');
+                }
+                if ($('body', TTCheckout.get_window_document_context()).hasClass('checkout-modal-visible') && e.which == 27) {
+                    if ($('[role="combobox"][aria-expanded="true"]').length) {
+
+                    } else {
+                        let window_name = 'popup';
+                        if ($('#overlay_window_wrapper[aria-label]', TTCheckout.get_window_document_context()).length) {
+                            window_name = $('#overlay_window_wrapper[aria-label]', TTCheckout.get_window_document_context()).attr('aria-label').toLowerCase();
+                        }
+                        if (confirm('Are you sure you want to close the ' + window_name + ' window?') == true) {
+                            $('.overlay_wrapper .close_button', TTCheckout.get_window_document_context()).trigger('click');
+                        } else {
+
+                        }
+                    }
+                }
+            });
+            $('.tt-checkout--actions--focus-main-content').on('click', function() {
+                if ($('body').hasClass('tabbing-detected')) {
+                    $('#tt-checkout--accessibility--main-content').attr('tabindex', '0').focus();
+                }
+            });
+            $('a[role="button"]').off('keydown.accessibility').on('keydown.accessibility', function(e) {
+                if (e.which == 32 || e.which == 13) {
+                    if (typeof $._data(this, "events").click !== 'undefined') {
+                        $(this).trigger('click');
+                        return false;
+                    }
+                }
+            });
+            if ($('.notification.error').length) {
+                $('.notification.error').focus();
+            } else if ($('.errors').length == 1) {
+                $('.errors').wrap('<div class="error_wrapper">').closest('div').attr('role', 'alert').focus();
+            } else if ($('.notification.confirmation').length) {
+                $('.notification.confirmation').first().attr('role', 'alert').focus();
+            } else if ($('.notification.alert').length) {
+                $('.notification.alert').first().attr('role', 'alert').focus();
+            } else if ($('.notification-focus').length) {
+                $('.notification-focus').first().attr('role', 'alert').focus();
+            }  else if ($('.notification.highlight').length) {
+                $('.notification.highlight').first().attr('role', 'alert').focus();
+            }  else if ($('.banner.warning, .banner.confirmation').length) {
+                $('.banner.warning, .banner.confirmation').first().attr('role', 'alert').focus();
+            } else if ($('#overlay_window:visible', TTCheckout.get_window_document_context()).length) {
+                $('#overlay_window', TTCheckout.get_window_document_context()).focus();
+            }
+            if ($('#shop-front').length) {
+                this.checkout();
+            }
+            let video_number = 0;
+            const event_title = $('h1.event_heading_h1').length ? $('h1.event_heading_h1').first().text() : $('h1#dialog_header').first().text();
+            if (event_title && typeof event_title != 'undefined') {
+                $('iframe[src^="https://www.youtube.com"],iframe[src^="//www.youtube.com"],iframe[src^="https://player.vimeo.com"]').each(function() {
+                    video_number += 1;
+                    if (typeof $(this).attr('title') == 'undefined' || $(this).attr('title') == 'YouTube video player') {
+                        $(this).attr('title', event_title + ' video' + (video_number > 1 ? ' ' + video_number : ''));
+                    }
+                });
+            }
+            $('.event_listings .row.event_listing').each(function() {
+                if ($('a[href]:visible', this).length == 1) {
+                    const context = this;
+                    $('.event_image, .event_details', this).off('click.accessibility').on('click.accessibility', function(e) {
+                        if (e.target.nodeName != 'A') {
+                            window.location.href = $('a[href]', context).attr('href');
+                            return false;
+                        }
+                    });
+                    $('.event_image, .event_details', this).css('cursor', 'pointer');
+                }
+            });
+        },
+
+        checkout: function() {
+            if (window.top !== window.self) {
+                if ($('body', TTCheckout.get_window_document_context()).hasClass('tabbing-detected')) {
+                    $('body').addClass('tabbing-detected');
+                }
+            }
+            if ($('ul.errors, .error_wrapper').length) {
+                $('ul.errors, .error_wrapper').each(function() {
+                    const related_field = $(this).parent().find('input, select, textarea');
+                    if (related_field.length && related_field.attr('aria-describedby') === undefined) {
+                        const field_association_id = 'auto_assoc--' + related_field.attr('name');
+                        $(this).attr('id', field_association_id);
+                        related_field.attr('aria-describedby', field_association_id);
+                    }
+                })
+            }
+            $('x-var').each(function() {
+                var attrs = {};
+                $.each($(this).get(0).attributes, function(idx, attr) {
+                    attrs[attr.nodeName] = attr.nodeValue;
+                });
+                $(this).replaceWith(function() {
+                    return $("<span/>", attrs).append($(this).contents()).addClass('js-modified');
+                });
+            });
+            $('.zend_form').each(function() {
+                if ($(this).length && $('.wrapped_element', this).length == 0) {
+                    $('> .col_2', this).each(function() {
+                        $('> div:eq(0)', this).addClass('label_wrapper');
+                        $('> div:eq(1)', this).addClass('input_wrapper');
+                        $(this).addClass('wrapped_element');
+                    });
+                }
+            });
+        }
+    },
+
+    initAfterPageContentChange: function () {
+        //add anything that needs initialising after any page content change
+        this.DynamicDivs.init();
+        this.DatePicker.init();
+        if (typeof persistWidgetPrefsToUrlsOfAllLinks !== 'undefined') {
+            persistWidgetPrefsToUrlsOfAllLinks();
+        }
+        if ($('.modal_header').length) {
+            $('body').addClass('content-has-modal-header');
+        } else {
+            $('body').removeClass('content-has-modal-header');
+        }
+    },
+    LayoutActions: {
+        init: function () {
+            $('.action--show-hide').unbind('click.action_show_hide').bind('click.action_show_hide', function() {
+                const target_element = $('#' + $(this).data('element'));
+                if (target_element.length) {
+                    const button_text = $(this).text();
+                    if(!target_element.is(':visible')) {
+                        target_element.slideDown(250);
+                        target_element.focus();
+                        $(this).text(button_text.replace('Show','Hide'));
+                        $(this).attr('aria-expanded','true');
+                    } else {
+                        target_element.slideUp(250);
+                        target_element.removeAttr('tabindex');
+                        $(this).text(button_text.replace('Hide','Show'));
+                        $(this).attr('aria-expanded','false');
+                    }
+                }
+            });
+        },
+        setTabIndex: function(parentElement, tabIndex) {
+            $(parentElement).find('a, input, select, button, textarea, iframe').attr('tabindex', tabIndex);
+        }
+    },
+    PaymentMethods: {
+        status: {
+            initialisedPaymentMethods: {}
+        },
+        helpers: {
+            getPaymentMethodStatucContainerSelector(paymentMethodIdentifier) {
+                return '#payment-status-container_' + paymentMethodIdentifier;
+            },
+            getPaymentMethodFormUrl(paymentMethodIdentifier) {
+                return $('#payment-method-toggle-' + paymentMethodIdentifier).data('payment-form-url');
+            },
+            getHoldingScreenSelector(paymentMethodIdentifier) {
+                let holdingScreenSelector = '.pay_by_paypal_holding_screen.stripe'; // stripe has generic message - use as default
+                // remove the if check once all payments refactored
+                const form = document.getElementById(paymentMethodIdentifier);
+
+                if ('string' === typeof form.elements['payment_method_type'].value) {
+                    holdingScreenSelector = '.pay_by_paypal_holding_screen.' + form.elements['payment_method_type'].value.toLowerCase();
+                }
+
+                return holdingScreenSelector;
+            },
+            /**
+             * @param iterable<string> errorMessages
+             * @param string paymentMethodStatusContainerId
+             * @param string holdingScreenSelector
+             */
+            displayErrors: function (errorMessages, paymentMethodIdentifier) {
+                const submitButton = document.getElementById(paymentMethodIdentifier).querySelector('input[type=submit]');
+                if (submitButton) {
+                    submitButton.removeAttribute('disabled');
+                }
+
+                const paymentMethodStatucContainerSelector = TTCheckout.PaymentMethods.helpers.getPaymentMethodStatucContainerSelector(paymentMethodIdentifier);
+                const holdingScreenSelector = TTCheckout.PaymentMethods.helpers.getHoldingScreenSelector(paymentMethodIdentifier);
+
+                $(paymentMethodStatucContainerSelector)[0].innerText = errorMessages.join("\n");
+                //Add Styling for pay method error
+                $(paymentMethodStatucContainerSelector).addClass('notification warning').attr('role', 'alert').attr('tabindex', '0').focus();
+                $(holdingScreenSelector).hide();
+                $(holdingScreenSelector).removeAttr('role').removeAttr('tabindex').removeAttr('aria-live');
+            },
+            requestErrorHandler: function (result, paymentMethodIdentifier) {
+
+                const submitButton = document.getElementById(paymentMethodIdentifier).querySelector('input[type=submit]');
+                if (submitButton) {
+                    submitButton.removeAttribute('disabled');
+                }
+
+                if (result.hasOwnProperty('action') && 'redirect' === result.action.code) {
+                    // redirect user to another page
+                    window.location.href = result.action.parameters.url
+                    return;
+                } else if (result.hasOwnProperty('action') && 'reload' === result.action.code) {
+                    // reload payment method and show error messages
+                    const paymentMethodFormUrl = TTCheckout.PaymentMethods.helpers.getPaymentMethodFormUrl(paymentMethodIdentifier);
+
+                    TTCheckout.PaymentMethods.loadPaymentMethod(paymentMethodFormUrl, paymentMethodIdentifier, true, function () {
+                        TTCheckout.PaymentMethods.helpers.displayErrors(result.errorMessages, paymentMethodIdentifier);
+                    });
+                    return;
+                } else if (result.hasOwnProperty('action') && 'updateTotal' === result.action.code) {
+                    // reload with query string
+                    window.location.replace(window.location.pathname + '?error');
+                    return;
+                } else if (result.hasOwnProperty('action') && 'poll' === result.action.code) {
+
+                    const params = {
+                        orderStatusUrl: result.action.parameters.orderStatusUrl,
+                        completeUrl: result.action.parameters.completeUrl,
+                        errorUrl: result.action.parameters.errorUrl,
+                        paymentMethodIdentifier: paymentMethodIdentifier,
+                        interval1: 1,
+                        interval2: 1
+                    };
+
+                    TTCheckout.PaymentMethods.helpers.orderStatusPoll(params)
+                    return;
+                }
+                else if (result.errorMessages) {
+                    // only show error messages
+                    TTCheckout.PaymentMethods.helpers.displayErrors(result.errorMessages, paymentMethodIdentifier);
+                } else {
+                    // unexpected response from server, show generic error message
+                    TTCheckout.PaymentMethods.helpers.displayErrors(['Sorry, something went wrong. Please try again. You might need to reload the page. If the problem persists, please contact the event organiser.'], paymentMethodIdentifier);
+                }
+            },
+            orderStatusPoll: function (params) {
+                // interval = 13; timeout = 23.3s; total = 60.9s
+                // interval = 15; timeout = 61s; total = 2m 39.6s
+                if (params.interval1 >= 233) {
+                    window.location = params.errorUrl;
+                }
+
+                const timeout = params.interval1 * 100;
+                const interval1 = params.interval1;
+                const interval2 = params.interval2;
+
+                params.interval1 = interval2;
+                params.interval2 = interval1 + interval2;
+
+                $.ajax({
+                    method: 'GET',
+                    url: params.orderStatusUrl,
+                    crossDomain: false,
+                    success: function(data) {
+                        if (data['status'] == 'complete') {
+                            window.location = params.completeUrl;
+                        }
+                        else if (data['status'] == 'error') {
+                            TTCheckout.PaymentMethods.helpers.displayErrors([data['message']], params.paymentMethodIdentifier);
+                        }
+                        else if (data['status'] == 'paid_price_mismatch') {
+                            window.location = params.errorUrl + '?e=price_mismatch';
+                        }
+                        else if (data['status'] == 'basket_expired') {
+                            window.location.reload();
+                        }
+                        else {
+                            setTimeout(function() {
+                                TTCheckout.PaymentMethods.helpers.orderStatusPoll(params);
+                            }, timeout)
+                        }
+                    },
+                    error: function(data) {
+                        if (data.status == 401) {
+                            // Unauthorised request.
+                            window.location = params.errorUrl;
+                        }
+                        // On any other error, keep polling.
+                        setTimeout(function() {
+                            TTCheckout.PaymentMethods.helpers.orderStatusPoll(params);
+                        }, timeout)
+                    }
+                });
+            }
+        },
+        init: function () {
+            $('input.payment-method-toggle').change(function () {
+                TTCheckout.PaymentMethods.loadPaymentMethod($(this).data('payment-form-url'), $(this).val());
+            });
+
+            const paymentMethodRadioElements =  $('input.payment-method-toggle');
+            const paymentMethodsCount = paymentMethodRadioElements.length;
+
+            if (1 === paymentMethodsCount) {
+                // if only one payment method, expand it
+                $('.payment_method_caret').css('display', 'none');
+
+                const paymentMethodRadioElement = paymentMethodRadioElements.first();
+                paymentMethodRadioElement.prop('checked', true);
+                paymentMethodRadioElement.change();
+
+            } else {
+                // if multiple, expand the one that is checked
+                $('input.payment-method-toggle[type="radio"]:checked').first().change();
+            }
+
+            $('textarea[name="g-recaptcha-response"], textarea[name="h-recaptcha-response"], textarea[name="h-captcha-response"]').attr('aria-hidden', 'true');
+        },
+        loadPaymentMethod: function (paymentMethodFormUrl, paymentMethodIdentifier, forceReload = false, postLoadCallback = null) {
+            if (!paymentMethodFormUrl) {
+                // temporary block until all payment methods moved to dynamic div
+                // if paymentMethodUrl is falsey don't load it
+                return;
+            }
+            paymentMethodIdentifier = String(paymentMethodIdentifier).toLowerCase();
+
+            if (TTCheckout.PaymentMethods.status.initialisedPaymentMethods.hasOwnProperty(paymentMethodIdentifier) && false === forceReload) {
+                return;
+            }
+
+            $('#payment_method_content_' + paymentMethodIdentifier).attr('data-src', paymentMethodFormUrl);
+            $('#payment_method_content_' + paymentMethodIdentifier).attr('data-src-element', '#payment_method_content_' + paymentMethodIdentifier);
+            TTCheckout.DynamicDivs.loadDivById('payment_method_content_' + paymentMethodIdentifier, postLoadCallback);
+
+            TTCheckout.PaymentMethods.status.initialisedPaymentMethods[paymentMethodIdentifier] = true;
+        },
+        applyPrePaymentValidation: async function (validatePaymentUrl, event, paymentMethodIdentifier = null) {
+            const form = event.target;
+            return async function () {
+                const formdata = new FormData(form);
+                // pre-payment validation
+                const responseRaw = await fetch(validatePaymentUrl, {
+                    method: 'POST',
+                    body: formdata
+                });
+
+                if (200 !== responseRaw.status) {
+                    try {
+                        const result = await responseRaw.json();
+                        TTCheckout.PaymentMethods.helpers.requestErrorHandler(result, paymentMethodIdentifier);
+                        return true; // exit form submission handler function
+                    } catch (e) {
+                        throw 'Sorry, something went wrong. Please try refreshing the page.';
+                    }
+                }
+
+                return false;
+            }
+        },
+        formSubmissionHandler: async function (event, preSubmissionCallback = null) {
+            event.preventDefault();
+
+            const form = event.target;
+            const submitButton = form.querySelector('input[type=submit]');
+            if (submitButton) {
+                submitButton.setAttribute('disabled', 'disabled');
+            }
+            const paymentMethodIdentifier = form.id;
+            const holdingScreenSelector = TTCheckout.PaymentMethods.helpers.getHoldingScreenSelector(paymentMethodIdentifier);
+
+            $(holdingScreenSelector).show();
+            $(holdingScreenSelector).attr('role', 'alert').attr('tabindex', '0').attr('aria-live', 'assertive').focus();
+
+            TTCheckout.PageTimeout.setFullExpiryTime();
+
+            if (null !== preSubmissionCallback) {
+                try {
+                    if (await preSubmissionCallback(form)) {
+                        return;
+                    }
+                } catch (error) {
+                    TTCheckout.PaymentMethods.helpers.displayErrors([error], paymentMethodIdentifier);
+                    return;
+                }
+            }
+
+            const postData = new FormData(form);
+
+            $.ajax({
+                type: 'POST',
+                url: form.action,
+                accepts: {
+                    json: 'application/json'
+                },
+                processData: false,
+                contentType: false,
+                data: postData,
+                success: function (result) {
+                    window.location.href = result.action.parameters.url
+                },
+                error: function (request, textStatus, errorThrown) {
+                    const result = request.responseJSON;
+                    TTCheckout.PaymentMethods.helpers.requestErrorHandler(result, paymentMethodIdentifier);
+                },
+                dataType: 'json',
+            });
+        }
+    },
+    /**
+     * This should be kept in sync with the DynamicDivs method in TTDashboard.js
+     */
+    DynamicDivs: {
+        init: function() {
+            $("div[data-src]:not(.dynamicDivInitialised)").each(function() {
+                TTCheckout.DynamicDivs.initDiv($(this));
+            });
+        },
+        timeoutId: null,
+        initDiv: function(div) {
+            // Lock in the first part of the src of the url of the loaded page
+            if(div.attr('data-src') === "") {
+                div.attr('data-prevent-init', true);
+                div.attr('data-src-element',"#"+div.attr('id'));
+            }
+
+            if(div.data('criteria-form-id')) {
+                $('#'+div.attr('data-criteria-form-id')).change(function() {
+                    clearTimeout(this.timeoutId);
+                    this.timeoutId = setTimeout( function(){
+                        TTCheckout.DynamicDivs.loadDiv(div);
+                    } , 400);
+                    div.addClass('loading');
+                });
+            }
+            if(!div.data('prevent-init')) {
+                this.loadDiv(div);
+            }
+            TTCheckout.DynamicDivs.initDivPagination(div);
+            div.addClass('dynamicDivInitialised');
+        },
+        loadDiv: function(div, postLoadCallback = null) {
+            div.addClass('loading');
+
+            var url = new URL(window.location.href);
+
+            if (div.attr('data-src') !== "") {
+                url = new URL(div.attr('data-src'), document.location.origin);
+            }
+
+            if(div.attr('data-page')) {
+                url.searchParams.set('page', div.attr('data-page'));
+            }
+            if(div.data('criteria-form-id')) {
+                var formData = new URLSearchParams(this.getCriteriaFromForm(div.attr('data-criteria-form-id')));
+
+                for (let pair of formData.entries()) {
+                    url.searchParams.set(pair[0], pair[1]);
+                }
+            }
+
+            $.get({
+                url: url.toString(),
+                success: function(data) {
+                    if(div.attr('data-src-element')) {
+                        var newDiv = $(div.attr('data-src-element'), data);
+                        div.replaceWith(newDiv);
+                        div = newDiv;
+                    } else {
+                        div.html(data);
+                    }
+                    var flashMessages = $(".flash_message_wrapper",data);
+                    if(flashMessages.length > 0) {
+                        div.append(flashMessages);
+                    }
+                    div.removeClass('loading');
+                    TTCheckout.initAfterPageContentChange();
+                    TTCheckout.DynamicDivs.initDivPagination(div);
+                    if (null !== postLoadCallback) {
+                        postLoadCallback();
+                    }
+                },
+                error: function(error) {
+                    div.removeClass('loading');
+                    div.html("<div class='notification warning'><p>Something went wrong.</p></div>");
+                    $(div).attr('role', 'alert').attr('tabindex', '0').focus();
+                },
+                crossDomain: false
+            });
+        },
+        loadDivById: function(id, postLoadCallback = null) {
+            this.loadDiv($('#'+id), postLoadCallback);
+        },
+        loadDivByClassName: function(className) {
+            this.loadDiv($('.'+className));
+        },
+        getCriteriaFromForm: function(formId) {
+            return $('#'+formId).serialize();
+        },
+        initDivPagination: function(div) {
+            div.find('.dynamicPaginator a').click(function(e) {
+                e.preventDefault();
+                div.attr('data-page',$(this).attr('data-page'));
+                TTCheckout.DynamicDivs.loadDiv(div);
+                window.scrollTo(0, 0);
+            });
+        }
+    },
+    DatePicker: {
+        currentDatepickerInstance: null,
+        calendarModTimeout: undefined,
+        calendarDayTimeout: undefined,
+        calendarChangeMonthTimeout: undefined,
+
+        init: function() {
+            const DatePicker = this;
+            $('.tt-datepicker:not(.datepickerInitialised)').each(function() {
+                var dateFormat = 'd M y';
+                var preferredDateFormat = $(this).attr('data-datepicker-format');
+                if (typeof preferredDateFormat !== 'undefined' && preferredDateFormat !== false) {
+                    if (preferredDateFormat === 'D M j, Y') {
+                        dateFormat = 'D M d, yy';
+                    } else {
+                        dateFormat = 'D d M yy';
+                    }
+                }
+
+                var datepickerOptions = {
+                    dateFormat: dateFormat,
+                    onClose: function() {
+                        $('#ui-datepicker-div').unbind('keydown.esc_hide');
+                        $('#ui-datepicker-div').removeAttr('tabindex');
+                        $(DatePicker.currentDatepickerInstance).focus();
+                        $('a, input, select, textarea, button, [tabindex]').unbind('focus.datepicker_focus_out');
+                    },
+                    onChangeMonthYear: function() {
+                        DatePicker.calendarModifications();
+                    },
+                    beforeShow: function() {
+                        DatePicker.currentDatepickerInstance = this;
+                        DatePicker.calendarModifications();
+                        DatePicker.calendarChangeMonth();
+                        $('a, input, select, textarea, button, [tabindex]').unbind('focus.datepicker_focus_out').bind('focus.datepicker_focus_out', function() {
+                            if (!$(this).closest('#ui-datepicker-div').length && $(this).attr('id') != $(DatePicker.currentDatepickerInstance).attr('id')) {
+                                $(DatePicker.currentDatepickerInstance).datepicker('hide');
+                            }
+                        });
+                    },
+                    beforeShowDay: function() {
+                        DatePicker.calendarModifications();
+                        return [true, "", ""];
+                    },
+                    onUpdateDatepicker: function() {
+                        DatePicker.calendarModifications();
+                    }
+                };
+
+                var availableDates = $(this).attr('data-datepicker-available-dates');
+                if (typeof availableDates !== 'undefined' && availableDates !== false) {
+                    datepickerOptions.beforeShowDay = function(date) {
+                        var formattedDate = $.datepicker.formatDate(dateFormat, date);
+                        return [ availableDates.indexOf(formattedDate) !== -1 ];
+                    };
+                    datepickerOptions.minDate = availableDates.split('::')[0];
+                }
+
+                $(this).datepicker(datepickerOptions);
+                $(this).addClass('datepickerInitialised');
+            });
+        },
+
+        calendarChangeMonth: function() {
+            if (typeof TTCheckout.DatePicker.calendarChangeMonthTimeout !== 'undefined') {
+                clearTimeout(TTCheckout.DatePicker.calendarChangeMonthTimeout);
+            }
+            TTCheckout.DatePicker.calendarChangeMonthTimeout = setTimeout(function() {
+                $('#ui-datepicker-div .ui-datepicker-title').attr('tabindex', '0').focus();
+            }, 5);
+        },
+
+        focusDay: function(element, delay) {
+            delay = typeof delay != 'undefined' ? delay : 0;
+            if (element.length) {
+                $('.ui-datepicker-calendar td a').attr('tabindex', '-1');
+                setTimeout(function() {
+                    $(element).attr('tabindex', '0').focus();
+                }, delay);
+            } else {
+                $('#ui-datepicker-div .ui-datepicker-title').attr('tabindex', '0').first().focus();
+            }
+        },
+
+        handleCalendarDayKeypress: function(element, event) {
+            const DatePicker = this;
+            const calendars = $('.ui-datepicker-group');
+            const prevBtn = $('.ui-datepicker-prev');
+            const nextBtn = $('.ui-datepicker-next');
+            const prevCal = $(calendars).slice(0, $(element).closest('.ui-datepicker-group').index()).last();
+            const nextCal = $(calendars).slice($(element).closest('.ui-datepicker-group').index()+1).first();
+
+            const currentMonthElements = $(element).closest('tbody').find('td:not(.ui-datepicker-other-month)');
+            const currentMonth = parseInt($(element).closest('td').attr('data-month'));
+            const currentDay = parseInt($(element).text());
+
+            const daysBefore = currentMonthElements.slice(0, currentDay-1);
+            const prevElement = $(daysBefore).filter('td:not(.ui-state-disabled)').last().find('a');
+            const prevWeek = $(daysBefore).filter(':eq(' + (daysBefore.length - 7) + ')').filter('td:not(.ui-state-disabled)').find('a');
+
+            const daysAfter = currentMonthElements.slice(currentDay);
+            const nextElement = $(daysAfter).filter('td:not(.ui-state-disabled)').first().find('a');
+            const nextWeek = $(daysAfter).filter(':eq(6)').filter('td:not(.ui-state-disabled)').find('a');
+
+            switch (event.key) {
+
+                case ' ':
+                case 'Spacebar':
+                    $(element).trigger('click');
+                    event.preventDefault();
+                    break;
+
+                case 'Left':
+                case 'ArrowLeft':
+                    if (prevElement.length) {
+                        DatePicker.focusDay(prevElement);
+                    } else if (prevCal.length && $(prevCal).find('td:not(.ui-state-disabled):not(.ui-datepicker-other-month)').length) {
+                        DatePicker.focusDay($(prevCal).find('td:not(.ui-state-disabled):not(.ui-datepicker-other-month)').last().find('a'));
+                    } else if (prevBtn.not('.ui-state-disabled').length) {
+                        prevBtn.trigger('click');
+                        DatePicker.focusDay($('.ui-datepicker-calendar td:not(.ui-state-disabled):not(.ui-datepicker-other-month):not([data-month="' + currentMonth + '"])').last().find('a'), 10);
+                    }
+                    event.preventDefault();
+                    break;
+
+                case 'Right':
+                case 'ArrowRight':
+                    if (nextElement.length) {
+                        DatePicker.focusDay(nextElement);
+                    } else if (nextCal.length && $(nextCal).find('td:not(.ui-state-disabled):not(.ui-datepicker-other-month)').length) {
+                        DatePicker.focusDay($(nextCal).find('td:not(.ui-state-disabled):not(.ui-datepicker-other-month)').first().find('a'));
+                    } else if (nextBtn.not('.ui-state-disabled').length) {
+                        nextBtn.trigger('click');
+                        DatePicker.focusDay($('.ui-datepicker-calendar td:not(.ui-state-disabled):not(.ui-datepicker-other-month):not([data-month="' + currentMonth + '"])').first().find('a'), 10);
+                    }
+                    event.preventDefault();
+                    break;
+
+                case 'Up':
+                case 'ArrowUp':
+                    if (prevWeek.length) {
+                        DatePicker.focusDay(prevWeek);
+                    } else if (prevCal.length && $(prevCal).find('td:not(.ui-state-disabled):not(.ui-datepicker-other-month)').length) {
+                        DatePicker.focusDay($(prevCal).find('td:not(.ui-state-disabled):not(.ui-datepicker-other-month)').last().find('a'));
+                    } else if (prevBtn.not('.ui-state-disabled').length) {
+                        prevBtn.trigger('click');
+                        DatePicker.focusDay($('.ui-datepicker-calendar td:not(.ui-state-disabled):not(.ui-datepicker-other-month):not([data-month="' + currentMonth + '"])').last().find('a'), 10);
+                    }
+                    event.preventDefault();
+                    break;
+
+                case 'Down':
+                case 'ArrowDown':
+                    if (nextWeek.length) {
+                        DatePicker.focusDay(nextWeek);
+                    } else if (nextCal.length && $(nextCal).find('td:not(.ui-state-disabled):not(.ui-datepicker-other-month)').length) {
+                        DatePicker.focusDay($(nextCal).find('td:not(.ui-state-disabled):not(.ui-datepicker-other-month)').first().find('a'));
+                    } else if (nextBtn.not('.ui-state-disabled').length) {
+                        nextBtn.trigger('click');
+                        DatePicker.focusDay($('.ui-datepicker-calendar td:not(.ui-state-disabled):not(.ui-datepicker-other-month):not([data-month="' + currentMonth + '"])').first().find('a'), 10);
+                    }
+                    event.preventDefault();
+                    break;
+
+            };
+
+        },
+
+        calendarModifications: function() {
+            const DatePicker = this;
+            if (typeof TTCheckout.DatePicker.calendarModTimeout !== 'undefined') {
+                clearTimeout(TTCheckout.DatePicker.calendarModTimeout);
+            }
+            TTCheckout.DatePicker.calendarModTimeout = setTimeout(function() {
+                if (!$('#ui-datepicker-div .calendar-message').length) {
+                    $('#ui-datepicker-div').append('<div class="calendar-message visually-hidden"></div>')
+                }
+                $('#ui-datepicker-div').unbind('keydown.esc_hide').bind('keydown.esc_hide', function(e) {
+                    if (e.key === 'Escape') {
+                        $(DatePicker.currentDatepickerInstance).datepicker('hide');
+                    }
+                });
+                $('#ui-datepicker-div .ui-datepicker-calendar td a').unbind('keydown.datepicker_last_item_tab').bind('keydown.datepicker_last_item_tab', function(e) {
+                    var keyCode = e.keyCode || e.which;
+                    if (keyCode == 9 && !e.shiftKey) {
+                        $(DatePicker.currentDatepickerInstance).datepicker('hide');
+                    }
+                });
+                $('.ui-datepicker-prev, .ui-datepicker-next').removeAttr('title').attr('role', 'button').attr('href', '#').unbind('click.return_false').bind('click.return_false', function() {
+                    return false;
+                });
+                $('.ui-datepicker-prev').attr('aria-label', 'Show previous month');
+                $('.ui-datepicker-next').attr('aria-label', 'Show next month');
+                $('.ui-datepicker-calendar thead th > span').each(function() {
+                    $(this).closest('th').attr('abbr', $(this).attr('title'));
+                    $(this).removeAttr('title');
+                });
+                $('.ui-datepicker-group').each(function() {
+                    const associationId = 'calendar-' + $(this).find('td[data-month][data-year]').first().attr('data-month') + '-' + $(this).find('td[data-month][data-year]').first().attr('data-year');
+                    $('.ui-datepicker-title', this).attr('id', associationId);
+                    $('table.ui-datepicker-calendar', this).attr('aria-labelledby', associationId);
+                });
+                $('.ui-datepicker-calendar').attr('role', 'grid');
+                $('.ui-datepicker-calendar td a').each(function() {
+                    $(this).attr('tabindex', '-1').attr('role', 'button').addClass('selectable-calendar-button');
+                });
+                $('.ui-datepicker-calendar td a')
+                    .each(function() {
+                        if ($(this).attr('href').indexOf('#') == 0) {
+                            $(this).attr('href', '#');
+                        }
+                    })
+                    .off('focus.accessibility').on('focus.accessibility', function(e) {
+                        if ($('.calendar-message[aria-live]').length == 0) {
+                            $('.calendar-message').text('Cursor keys can navigate dates').attr('aria-live', 'polite');
+                        }
+                    })
+                    .off('blur.accessibility').on('blur.accessibility', function(e) {
+                        if (typeof TTCheckout.DatePicker.calendarDayTimeout !== 'undefined') {
+                            clearTimeout(TTCheckout.DatePicker.calendarDayTimeout);
+                        }
+                        TTCheckout.DatePicker.calendarDayTimeout = setTimeout(function() {
+                            if (!$(document.activeElement).hasClass('selectable-calendar-button')) {
+                                $('.calendar-message').text('').removeAttr('aria-live')
+                            }
+                        }, 10);
+                    })
+                ;
+                $('.ui-datepicker-calendar td a').off('keydown.accessibility').on('keydown.accessibility', function(e) {
+                    DatePicker.handleCalendarDayKeypress(this, e);
+                });
+                if ($('.ui-datepicker-calendar td a.ui-state-active').length) {
+                    $('.ui-datepicker-calendar td a.ui-state-active').first().attr('tabindex', '0');
+                } else {
+                    $('.ui-datepicker-calendar td a').first().attr('tabindex', '0');
+                }
+            }, 20);
+        }
+    }
+};

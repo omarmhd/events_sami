@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Mail\TicketDetailsMail;
 use App\Models\Employee;
 use App\Models\Ticket;
+use App\Http\Controllers\Subscriber\EventInvitationController;
+use App\Services\EmailTemplateService;
+use App\Services\QrCodeService;
+use App\Services\SubscriptionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -12,6 +16,52 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class HomeController extends Controller{
+
+    public function landingPage()
+    {
+        return view('home');
+    }
+
+    public function eventListPage()
+    {
+        return view('home');
+    }
+
+    public function eventResponsePage()
+    {
+        return view('home');
+    }
+
+    public function showByToken($token)
+    {
+        return app(EventInvitationController::class)->showByToken($token);
+    }
+
+    public function submit(Request $request, string $token, QrCodeService $qrService)
+    {
+        return app(EventInvitationController::class)->submit($request, $token, $qrService);
+    }
+
+    public function downloadPdf($token, QrCodeService $qrService)
+    {
+        return app(EventInvitationController::class)->downloadPdf($token, $qrService);
+    }
+
+    public function publicForm($eventSlug)
+    {
+        return app(\App\Http\Controllers\Subscriber\PublicRegistrationController::class)->publicForm($eventSlug);
+    }
+
+    public function submitPublicForm(Request $request, $eventSlug, SubscriptionService $subscriptionService, EmailTemplateService $templateService)
+    {
+        return app(\App\Http\Controllers\Subscriber\PublicRegistrationController::class)
+            ->submitPublicForm($request, $eventSlug, $subscriptionService, $templateService);
+    }
+
+    public function showPass($token, QrCodeService $qrCodeService)
+    {
+        return app(\App\Http\Controllers\Subscriber\PublicRegistrationController::class)->showPass($token, $qrCodeService);
+    }
 
 /*
     public function save(Request $request)
@@ -222,7 +272,7 @@ class HomeController extends Controller{
                         try {
                             Mail::to($guestData['email'])->send(new TicketDetailsMail([$guestTicket], $employee, $event));
                         } catch (\Exception $e) {
-                            \Log::error("Failed to send email to guest: " . $guestData['email']);
+                            Log::error("Failed to send email to guest: " . $guestData['email']);
                         }
                     }
                 }

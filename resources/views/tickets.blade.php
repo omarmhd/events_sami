@@ -4,7 +4,6 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Tickets PDF</title>
     <style>
-        /* --- 1. حل مشكلة الخط العربي --- */
         @font-face {
             font-family: 'DejaVu Sans';
             font-style: normal;

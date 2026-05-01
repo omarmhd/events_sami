@@ -1,0 +1,39 @@
+div.event-page-description h1, .redactor-dropdown-item-h1 { font-size: 28px !important; text-transform: none !important; font-weight: bold !important; margin: 0 0 20px 0 !important; padding: 0 !important; }
+div.event-page-description h2, .redactor-dropdown-item-h2 { font-size: 22px !important; text-transform: none !important; font-weight: bold !important; margin: 0 0 20px 0 !important; padding: 0 !important; }
+div.event-page-description p, .redactor-dropdown-item-p { font-size: 15px !important; margin: 0 0 20px 0 !important; padding: 0 !important; line-height: 25px !important; opacity: 0.9 !important; word-break: break-word; }
+div.event-page-description li { font-size:15px !important; opacity: 0.9 !important; }
+.redactor-dropdown .redactor-dropdown-item-h1, .redactor-dropdown .redactor-dropdown-item-h2, .redactor-dropdown .redactor-dropdown-item-p { margin: 0 !important; padding: 10px !important; }
+
+.re-icon-placeholders:before, .re-icon-placeholders:before { content: "\e901"; }
+
+.event-page-description img { max-width: 100%; }
+
+.page_content_wrapper .event-page-description iframe {
+    max-width: 100%;
+}
+
+.page_content_wrapper .event-page-description .videoWrapper {
+    position: relative;
+    display: block;
+    height: 0;
+    overflow: hidden;
+    padding: 0 0 56.25%; /* 16:9 */
+}
+
+.page_content_wrapper .event-page-description .videoWrapper  iframe {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+    border: 0;
+}
+
+@media (max-width: 639px) {
+    .event-page-description img { height: auto !important; }
+}
+
+.right_col .tickets .paypal-message {
+    padding-top: 10px;
+}

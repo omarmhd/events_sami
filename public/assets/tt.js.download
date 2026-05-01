@@ -1,0 +1,23 @@
+var TT = (function() {
+    var TTMethods = {};
+    var trackingEndpoint;
+
+    TTMethods.setEndpoint = function(endpoint) {
+        trackingEndpoint = endpoint;
+    };
+
+    TTMethods.track = function(event, data) {
+        $.ajax({
+            type: "POST",
+            url: trackingEndpoint,
+            dataType: 'json',
+            data: JSON.stringify({
+                'event': event,
+                'resource_id': data.resource_id
+            }),
+            crossDomain: false
+        })
+    };
+
+    return TTMethods;
+})();
