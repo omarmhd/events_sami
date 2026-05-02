@@ -89,6 +89,70 @@ return [
         'trial_short' => 'Trial',
     ],
 
+    'account' => [
+        'title'                => 'Account Settings',
+        'subtitle'             => 'Update your personal info, account security and organization details.',
+        'kicker'               => 'Account',
+
+        'tabs' => [
+            'profile'  => 'My Account',
+            'security' => 'Security',
+            'company'  => 'Organization',
+        ],
+
+        'sections' => [
+            'profile_title'    => 'Personal Information',
+            'profile_subtitle' => 'The name and phone number shown across the platform.',
+            'email_title'      => 'Email Address',
+            'email_subtitle'   => 'The email linked to your account. Your current password is required.',
+            'password_title'   => 'Password',
+            'password_subtitle'=> 'Use a strong password that you do not reuse on other accounts.',
+            'company_title'    => 'Organization Details',
+            'company_subtitle' => 'These details appear on invoices, events and outgoing invitations.',
+        ],
+
+        'field' => [
+            'name'                 => 'Full name',
+            'phone'                => 'Phone number',
+            'email'                => 'New email',
+            'email_confirmation'   => 'Confirm email',
+            'current_password'     => 'Current password',
+            'new_password'         => 'New password',
+            'new_password_confirm' => 'Confirm new password',
+            'company_name'         => 'Organization name',
+            'company_email'        => 'Organization contact email',
+            'company_phone'        => 'Organization phone',
+            'subdomain'            => 'Subdomain',
+            'timezone'             => 'Timezone',
+        ],
+
+        'buttons' => [
+            'save_profile'  => 'Save personal info',
+            'save_email'    => 'Update email',
+            'save_password' => 'Update password',
+            'save_company'  => 'Save organization',
+        ],
+
+        'flash' => [
+            'profile_updated'  => 'Your personal info has been updated.',
+            'email_updated'    => 'Your email has been updated.',
+            'password_updated' => 'Your password has been updated.',
+            'company_updated'  => 'Organization details updated.',
+        ],
+
+        'errors' => [
+            'current_password_invalid' => 'The current password is incorrect.',
+            'forbidden_company'        => 'You do not have permission to edit the organization. Owner only.',
+            'owner_only_hint'          => 'Editing organization details is available to the workspace owner only.',
+        ],
+
+        'hints' => [
+            'subdomain_suffix' => '.maaninvite.com',
+            'email_change_warning' => 'You will be asked to verify the new email at your next sign-in.',
+            'password_min'     => 'At least 8 characters. Mix letters, numbers and symbols.',
+        ],
+    ],
+
     'team' => [
         'title'               => 'Team Management',
         'subtitle'            => 'Add team members and define their workspace access permissions.',

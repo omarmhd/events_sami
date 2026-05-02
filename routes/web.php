@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\Subscriber\AccountController;
 use App\Http\Controllers\Subscriber\BillingController;
 use App\Http\Controllers\Subscriber\EventManagementController;
 use App\Http\Controllers\Subscriber\EmailSettingsController;
@@ -72,6 +73,16 @@ Route::middleware(['auth'])->group(function () {
     // a duplicate for intra-tenant navigation; this one is the canonical target.
     Route::get('/subscription/expired', [\App\Http\Controllers\Subscriber\OrganizerSubscriptionController::class, 'showExpiredPage'])
         ->name('subscription.expired');
+
+    // ── Account Settings ──────────────────────────────────────────────────────
+    // Editing account / security / company info must remain accessible even
+    // when the subscription is expired or suspended, so we register these
+    // outside the `subscription.status` middleware block.
+    Route::get('account', [AccountController::class, 'index'])->name('account.index');
+    Route::patch('account/profile', [AccountController::class, 'updateProfile'])->name('account.profile.update');
+    Route::patch('account/email', [AccountController::class, 'updateEmail'])->name('account.email.update');
+    Route::patch('account/password', [AccountController::class, 'updatePassword'])->name('account.password.update');
+    Route::patch('account/company', [AccountController::class, 'updateCompany'])->name('account.company.update');
 });
 
 

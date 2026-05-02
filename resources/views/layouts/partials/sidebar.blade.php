@@ -49,10 +49,9 @@
                     >
                 </div>
             @else
-                {{-- Text fallback using platform name --}}
+                {{-- Text fallback using platform name (no "workspace" badge) --}}
                 <div class="sidebar-brand-text-wrap">
                     <div class="sidebar-brand-text">{{ $brandName }}</div>
-                    <div class="sidebar-brand-badge">{{ __('ui.workspace') }}</div>
                 </div>
             @endif
         </div>
@@ -204,19 +203,32 @@
     </a>
     @endif
 
-    @yield('infoCard')
+    {{-- "Workspace" info card removed by user request — pages used to push
+         a stats-card here via @section('infoCard'); this slot is intentionally
+         left out so nothing renders even if a view still defines that section. --}}
 
     {{-- ── Footer / Logout ──────────────────────────────────────── --}}
     <div class="sidebar-footer">
-        <div class="sidebar-user-row">
-            <div class="sidebar-user-avatar" aria-hidden="true">
-                {{ strtoupper(substr($user?->name ?? 'U', 0, 1)) }}
+        {{-- The user-info box is a clickable link → opens Account Settings page.
+             Wrapped in an <a> so the entire block is a single keyboard- and
+             screen-reader-accessible target.
+             Active styling is applied via .sidebar-user-link.active when the
+             user is on the account page. --}}
+        <a href="{{ route('account.index') }}"
+           class="sidebar-user-link {{ request()->routeIs('account.*') ? 'active' : '' }}"
+           aria-label="{{ __('ui.account.title') }}"
+           title="{{ __('ui.account.title') }}">
+            <div class="sidebar-user-row">
+                <div class="sidebar-user-avatar" aria-hidden="true">
+                    {{ strtoupper(substr($user?->name ?? 'U', 0, 1)) }}
+                </div>
+                <div class="sidebar-user-info min-w-0">
+                    <div class="sidebar-user-name text-truncate">{{ $user?->name ?? '' }}</div>
+                    <div class="sidebar-user-email text-truncate">{{ $user?->email ?? '' }}</div>
+                </div>
+                <i class="fas fa-gear sidebar-user-cog" aria-hidden="true"></i>
             </div>
-            <div class="sidebar-user-info min-w-0">
-                <div class="sidebar-user-name text-truncate">{{ $user?->name ?? '' }}</div>
-                <div class="sidebar-user-email text-truncate">{{ $user?->email ?? '' }}</div>
-            </div>
-        </div>
+        </a>
 
         <form action="{{ route('logout') }}" method="POST">
             @csrf
@@ -226,5 +238,47 @@
             </button>
         </form>
     </div>
+
+    {{-- ── Inline styles for the new clickable user link ──────────
+         These are scoped to the sidebar so they don't pollute global CSS.
+         Living next to the markup makes future visual tweaks easier. --}}
+    <style>
+        .sidebar-user-link {
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            border-radius: 12px;
+            padding: 6px 8px;
+            margin: 0 -8px 10px;
+            transition: background-color .2s ease, transform .2s ease;
+        }
+        .sidebar-user-link:hover,
+        .sidebar-user-link:focus-visible {
+            background: rgba(255, 255, 255, .07);
+            color: inherit;
+            text-decoration: none;
+            outline: none;
+        }
+        .sidebar-user-link.active {
+            background: rgba(255, 255, 255, .12);
+        }
+        .sidebar-user-link .sidebar-user-row {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            margin-bottom: 0;
+        }
+        .sidebar-user-cog {
+            margin-inline-start: auto;
+            font-size: .82rem;
+            opacity: .55;
+            transition: opacity .2s ease, transform .2s ease;
+        }
+        .sidebar-user-link:hover .sidebar-user-cog,
+        .sidebar-user-link.active .sidebar-user-cog {
+            opacity: 1;
+            transform: rotate(35deg);
+        }
+    </style>
 
 </div>{{-- /sidebar-wrapper --}}
