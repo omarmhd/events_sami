@@ -70,6 +70,10 @@ Route::middleware(['public.tenant'])->group(function () {
         ->where('eventSlug', '^(?!create$)(?!edit$)[A-Za-z0-9_-]+$')
         ->name('events.public.show');
 
+    Route::post('/events/{eventSlug}', [HomeController::class, 'submitPublicForm'])
+        ->where('eventSlug', '^(?!create$)(?!edit$)[A-Za-z0-9_-]+$')
+        ->name('events.public.submit');
+
     Route::post('/events/{eventSlug}/register', [HomeController::class, 'submitPublicForm'])
         ->where('eventSlug', '^(?!create$)(?!edit$)[A-Za-z0-9_-]+$')
         ->name('events.public.register');

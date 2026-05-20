@@ -200,7 +200,7 @@
                 @endif
 
                 <!-- Registration Form -->
-                <form method="POST" action="{{ route('public.events.submit', $event->event_slug) }}" class="row g-3">
+                <form method="POST" action="{{ route('events.public.register', $event->event_slug) }}" class="row g-3">
                     @csrf
 
                     <!-- Full Name (Fixed) -->
