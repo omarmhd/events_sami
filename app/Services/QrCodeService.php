@@ -27,7 +27,7 @@ class QrCodeService
     private function renderPngFromMatrix(array $matrixRows, int $size): string
     {
         $matrixSize = count($matrixRows);
-        $margin = 4;
+        $margin = 0;
         $pointsOnSide = $matrixSize + ($margin * 2);
         $moduleSize = max(1, intdiv($size, $pointsOnSide));
         $contentSize = $pointsOnSide * $moduleSize;
