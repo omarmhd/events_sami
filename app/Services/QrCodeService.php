@@ -31,8 +31,8 @@ class QrCodeService
         $pointsOnSide = $matrixSize + ($margin * 2);
         $moduleSize = max(1, intdiv($size, $pointsOnSide));
         $contentSize = $pointsOnSide * $moduleSize;
-        $canvasSize = max($size, $contentSize);
-        $offset = intdiv($canvasSize - $contentSize, 2);
+        $canvasSize = $contentSize;
+        $offset = 0;
 
         $rawImage = '';
 
