@@ -30,6 +30,30 @@ use Throwable;
 
 class EventInvitationController extends Controller
 {
+    private function resolveEventForInvitation(EventInvitation $invitation): ?Event
+    {
+        if ($invitation->relationLoaded('event') && $invitation->event) {
+            return $invitation->event;
+        }
+
+        if ($invitation->event) {
+            return $invitation->event;
+        }
+
+        if ($invitation->company_id) {
+            $companyEvent = Event::query()
+                ->where('company_id', $invitation->company_id)
+                ->latest('id')
+                ->first();
+
+            if ($companyEvent) {
+                return $companyEvent;
+            }
+        }
+
+        return Event::query()->latest('id')->first();
+    }
+
     public function index(Request $request, SubscriptionService $subscriptionService)
     {
         $user = $request->user();
@@ -289,10 +313,7 @@ class EventInvitationController extends Controller
             'last_sent_at' => now(),
         ]);
 
-        $event = $invitation->event ?: Event::where('company_id', $invitation->company_id)->latest('id')->first();
-        if (!$event) {
-            $event = Event::whereNotNull('name')->latest('id')->first();
-        }
+        $event = $this->resolveEventForInvitation($invitation);
 
         // Resolve the correct company for this invitation so PublicUrlService
         // can decide whether to use a subdomain URL.
@@ -773,10 +794,7 @@ class EventInvitationController extends Controller
             ->where('invitation_token', $token)
             ->firstOrFail();
 
-        $event = $guest->event ?: Event::where('company_id', $guest->company_id)->latest('id')->first();
-        if (!$event) {
-            $event = Event::whereNotNull('name')->latest('id')->first();
-        }
+        $event = $this->resolveEventForInvitation($guest);
 
         return view('home.events.rsvp-page', compact('guest', 'event'));
     }
@@ -839,9 +857,10 @@ class EventInvitationController extends Controller
                     ];
                 }
 
-                $event = $guest->event ?: Event::where('company_id', $guest->company_id)->latest('id')->first();
+                $event = $this->resolveEventForInvitation($guest);
+
                 if (!$event) {
-                    $event = Event::whereNotNull('name')->latest('id')->first();
+                    throw new \RuntimeException('Unable to resolve the event for this invitation.');
                 }
 
                 try {
@@ -894,10 +913,7 @@ class EventInvitationController extends Controller
             ->where('invitation_token', $token)
             ->firstOrFail();
 
-        $event = $invitation->event ?: Event::where('company_id', $invitation->company_id)->latest('id')->first();
-        if (!$event) {
-            $event = Event::whereNotNull('name')->latest('id')->first();
-        }
+        $event = $this->resolveEventForInvitation($invitation);
 
         $tickets = [];
 
