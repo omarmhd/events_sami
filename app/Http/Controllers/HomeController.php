@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\TicketDetailsMail;
+use App\Models\Event;
 use App\Models\Employee;
 use App\Models\Ticket;
 use App\Http\Controllers\Subscriber\EventInvitationController;
@@ -16,6 +17,14 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class HomeController extends Controller{
+
+    private function resolveEvent(): ?Event
+    {
+        return Event::query()
+            ->where('name', 'SAMI-AEC')
+            ->first()
+            ?? Event::query()->latest('id')->first();
+    }
 
     public function landingPage()
     {
@@ -192,7 +201,11 @@ class HomeController extends Controller{
         DB::beginTransaction();
 
         try {
-        $event = DB::table("events")->where("name", "SAMI-AEC")->first();
+        $event = $this->resolveEvent();
+
+        if (!$event) {
+            return response()->json(["status" => false, "message" => "No event is configured for ticket generation."], 422);
+        }
 
         $employee = Employee::create([
             "name" => $request->name,
