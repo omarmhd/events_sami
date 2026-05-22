@@ -24,18 +24,32 @@ class TicketMail extends Mailable
 
     public function build()
     {
-        // confirmation_email_subject column was removed from events table.
-        // Subject is now always 'Invitation Confirmed' (or overridden by EmailTemplate system).
-        $subject = 'Invitation Confirmed';
-
-        // QR codes are embedded directly in the HTML as base64 data URIs.
-        // No attachments needed — the view renders them inline via <img src="data:image/png;base64,...">
-        return $this->subject($subject)
+        $email = $this->subject('Your Event Tickets')
             ->view('emails.tickets')
             ->with([
                 'invitation' => $this->invitation,
                 'tickets' => $this->tickets,
                 'event' => $this->event,
             ]);
+
+        foreach ($this->tickets as $index => $ticket) {
+            $qrData = (string) ($ticket['qr'] ?? '');
+            $parts = explode(',', $qrData, 2);
+
+            if (count($parts) !== 2 || $parts[1] === '') {
+                continue;
+            }
+
+            $email->attachData(
+                base64_decode($parts[1]),
+                ($ticket['label'] ?? 'ticket') . '.png',
+                [
+                    'mime' => 'image/png',
+                    'content_id' => 'ticket' . $index,
+                ]
+            );
+        }
+
+        return $email;
     }
 }
