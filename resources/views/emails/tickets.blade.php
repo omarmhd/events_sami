@@ -87,9 +87,21 @@
         if (str_starts_with($src, 'data:image/')) {
             $parts = explode(',', $src, 2);
             if (count($parts) === 2 && $parts[1] !== '') {
-                $mime = str_contains($parts[0], 'image/jpeg') ? 'image/jpeg' : 'image/png';
+                $mime = 'image/png';
+                $extension = 'png';
+
+                if (str_contains($parts[0], 'image/jpeg')) {
+                    $mime = 'image/jpeg';
+                    $extension = 'jpg';
+                } elseif (str_contains($parts[0], 'image/svg+xml')) {
+                    $mime = 'image/svg+xml';
+                    $extension = 'svg';
+                }
+
                 $binary = base64_decode($parts[1], true);
                 if ($binary !== false) {
+                    $name = preg_replace('/\.[a-z0-9]+$/i', '', $name) . '.' . $extension;
+
                     return $message->embedData($binary, $name, $mime);
                 }
             }
@@ -200,16 +212,31 @@
                                                 if (str_starts_with($qrSrc, 'data:image/') && isset($message)) {
                                                     $parts = explode(',', $qrSrc, 2);
                                                     if (count($parts) === 2 && $parts[1] !== '') {
-                                                        $mime = str_contains($parts[0], 'image/jpeg') ? 'image/jpeg' : 'image/png';
+                                                        $mime = 'image/png';
+                                                        $extension = 'png';
+
+                                                        if (str_contains($parts[0], 'image/jpeg')) {
+                                                            $mime = 'image/jpeg';
+                                                            $extension = 'jpg';
+                                                        } elseif (str_contains($parts[0], 'image/svg+xml')) {
+                                                            $mime = 'image/svg+xml';
+                                                            $extension = 'svg';
+                                                        }
+
                                                         $binary = base64_decode($parts[1], true);
                                                         if ($binary !== false) {
-                                                            $qrSrc = $message->embedData($binary, 'ticket-main-' . ($loop->index + 1) . '.png', $mime);
+                                                            $qrSrc = $message->embedData(
+                                                                $binary,
+                                                                'ticket-main-' . ($loop->index + 1) . '.' . $extension,
+                                                                $mime
+                                                            );
                                                         }
                                                     }
                                                 }
                                             @endphp
                                             <img src="{{ $qrSrc }}"
                                                  width="180" height="180" alt="Entrance QR Code" style="display: block;">
+                                            <div style="margin-top:10px;font-size:12px;color:#64748b;font-weight:600;letter-spacing:.04em;">Entrance QR Code</div>
                                         </div>
                                         <p style="margin: 15px 0 0 0; font-size: 11px; color: #94a3b8; letter-spacing: 1px; font-weight: 600;">PLEASE SCAN AT ENTRANCE</p>
 
@@ -236,16 +263,31 @@
                                                 if (str_starts_with($qrSrc, 'data:image/') && isset($message)) {
                                                     $parts = explode(',', $qrSrc, 2);
                                                     if (count($parts) === 2 && $parts[1] !== '') {
-                                                        $mime = str_contains($parts[0], 'image/jpeg') ? 'image/jpeg' : 'image/png';
+                                                        $mime = 'image/png';
+                                                        $extension = 'png';
+
+                                                        if (str_contains($parts[0], 'image/jpeg')) {
+                                                            $mime = 'image/jpeg';
+                                                            $extension = 'jpg';
+                                                        } elseif (str_contains($parts[0], 'image/svg+xml')) {
+                                                            $mime = 'image/svg+xml';
+                                                            $extension = 'svg';
+                                                        }
+
                                                         $binary = base64_decode($parts[1], true);
                                                         if ($binary !== false) {
-                                                            $qrSrc = $message->embedData($binary, 'ticket-guest-' . ($loop->index + 1) . '.png', $mime);
+                                                            $qrSrc = $message->embedData(
+                                                                $binary,
+                                                                'ticket-guest-' . ($loop->index + 1) . '.' . $extension,
+                                                                $mime
+                                                            );
                                                         }
                                                     }
                                                 }
                                             @endphp
                                             <img src="{{ $qrSrc }}"
                                                  width="140" height="140" alt="Guest QR Code" style="display: block;">
+                                            <div style="margin-top:10px;font-size:12px;color:#64748b;font-weight:600;letter-spacing:.04em;">Guest QR Code</div>
                                         </div>
 
                                         <p style="margin: 10px 0 0 0; font-size: 12px; color: #94a3b8;">Guest # {{ $loop->iteration }}</p>
