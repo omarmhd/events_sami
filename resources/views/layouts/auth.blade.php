@@ -21,7 +21,9 @@
 @endphp
 
 <div class="auth-shell">
-    <div class="auth-grid">
+    <div class="auth-grid {{ trim($__env->yieldContent('hide_visual_panel')) ? 'auth-grid--compact' : '' }}">
+
+        @if(!trim($__env->yieldContent('hide_visual_panel')))
 
         {{-- ══════════════════════════════════════════════════════════
              LEFT / TOP PANEL — Visual branding & feature highlights
@@ -99,6 +101,7 @@
                 </div>
             </div>
         </section>
+           @endif
 
         {{-- ══════════════════════════════════════════════════════════
              RIGHT / BOTTOM PANEL — Auth form

@@ -59,6 +59,26 @@ body.auth-body {
     animation: auth-fade-up 0.45s ease;
 }
 
+.auth-grid--compact {
+    grid-template-columns: 1fr;
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.auth-grid--compact .auth-panel-form {
+    min-height: calc(100dvh - 4rem);
+    padding: 2rem;
+}
+
+.auth-grid--compact .auth-card {
+    width: min(620px, 100%);
+    padding: 2rem 1.9rem;
+}
+
+.auth-grid--compact .auth-mobile-brand {
+    margin-bottom: 1.2rem !important;
+}
+
 .auth-panel-visual {
     padding: 2.15rem 2.35rem;
     background:
@@ -384,6 +404,15 @@ body.auth-rtl .auth-note-list {
     .auth-card {
         width: 100%;
         padding: 1.35rem;
+    }
+
+    .auth-grid--compact {
+        max-width: none;
+    }
+
+    .auth-grid--compact .auth-panel-form {
+        min-height: auto;
+        padding: 1rem;
     }
 
     .auth-kicker {
