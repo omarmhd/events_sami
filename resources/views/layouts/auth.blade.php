@@ -22,7 +22,7 @@
 @endphp
 
 <div class="auth-shell {{ trim($__env->yieldContent('hide_visual_panel')) ? 'auth-shell--full' : '' }}">
-    <div class="auth-grid {{ trim($__env->yieldContent('hide_visual_panel')) ? 'auth-grid--compact' : '' }} {{ trim($__env->yieldContent('visual_mode')) ? 'auth-grid--register' : '' }}">
+    <div class="auth-grid {{ trim($__env->yieldContent('hide_visual_panel')) ? 'auth-grid--compact' : '' }} {{ trim($__env->yieldContent('register_layout')) ? 'auth-grid--register' : '' }} {{ trim($__env->yieldContent('visual_mode')) ? 'auth-grid--register' : '' }}">
 
         @if(!trim($__env->yieldContent('hide_visual_panel')))
 
