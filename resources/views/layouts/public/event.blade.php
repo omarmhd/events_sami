@@ -325,6 +325,14 @@
             border-top: 1px solid rgba(34, 34, 34, 0.08);
         }
 
+        .event-footer-stack {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.75rem 1rem;
+        }
+
         .event-footer-brand {
             display: inline-flex;
             align-items: center;
@@ -362,6 +370,44 @@
             color: var(--primary-accent);
         }
 
+        .event-footer-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            border-radius: 999px;
+            padding: 0.6rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 700;
+            transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+        }
+
+        .event-footer-link:hover {
+            transform: translateY(-1px);
+        }
+
+        .event-footer-link--primary {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, #3d3d3d 100%);
+            color: #fff;
+            box-shadow: 0 10px 24px rgba(34, 34, 34, 0.16);
+        }
+
+        .event-footer-link--primary:hover {
+            color: #fff;
+        }
+
+        .event-footer-link--soft {
+            background: rgba(255, 255, 255, 0.72);
+            border: 1px solid rgba(34, 34, 34, 0.08);
+            color: var(--primary-dark);
+        }
+
+        .event-footer-link--soft:hover {
+            color: var(--primary-dark);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
+        }
+
         @media (max-width: 767px) {
             .event-footer {
                 padding-bottom: 1.75rem;
@@ -389,8 +435,20 @@
 
 <footer class="event-footer">
     <div class="event-footer-inner">
-        <div class="event-footer-brand">
-            <x-platform-logo size="sm" theme="light" />
+            <div class="event-footer-stack">
+                <div class="event-footer-brand">
+                    <x-platform-logo size="sm" theme="light" />
+                </div>
+
+                <a class="event-footer-link event-footer-link--soft" href="{{ route('platform.about') }}">
+                    <i class="fas fa-circle-info"></i>
+                    <span>تعرف على منصة معا</span>
+                </a>
+
+                <a class="event-footer-link event-footer-link--primary" href="{{ route('onboarding.otp.form') }}">
+                    <i class="fas fa-user-plus"></i>
+                    <span>ابدأ الاشتراك</span>
+                </a>
         </div>
 
         <p class="event-footer-copy">مع تحيات منصة {{ $platformName }}</p>

@@ -46,6 +46,8 @@ Route::get('/', function () {
     return redirect()->route('onboarding.otp.form');
 });
 
+Route::view('/platform/maana', 'home.platform-about')->name('platform.about');
+
 Route::post('save', [HomeController::class, 'save'])->name('save');
 Route::get('check-email', [HomeController::class, 'check_email'])->name('check_email');
 
