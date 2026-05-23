@@ -230,6 +230,27 @@ body.auth-body {
     padding: 1.5rem 1.4rem;
 }
 
+/* Plain register form: remove card background and heavy borders */
+.auth-grid--register .auth-card--plain,
+.auth-grid--register .auth-card {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+}
+
+.auth-grid--register .auth-card .auth-card-title {
+    margin-bottom: 0.35rem;
+}
+
+.auth-grid--register .auth-form {
+    margin-top: 0.6rem;
+}
+
+.auth-grid--register .form-control {
+    border-radius: 8px;
+}
+
 .auth-subheading {
     margin: 0;
     color: var(--auth-text-muted);
