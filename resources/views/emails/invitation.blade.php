@@ -3,9 +3,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Invitation</title>
+    <title>دعوة حضور فعالية</title>
 </head>
-<body style="margin:0;padding:24px 12px;background:#f3f8f6;font-family:'Segoe UI',Tahoma,Arial,sans-serif;color:#183532;direction:rtl;">
+<body style="margin:0;padding:24px 12px;background:#f3f6f4;font-family:'Segoe UI',Tahoma,Arial,sans-serif;color:#183532;direction:rtl;">
 @php
     use App\Models\SystemSetting;
 
@@ -114,9 +114,9 @@
 
     <tr>
         <td style="padding:28px 24px 18px;border-top:4px solid {{ $primaryColor }};">
-            <p style="margin:0 0 8px 0;font-size:13px;color:#5f7a76;text-transform:uppercase;letter-spacing:.06em;">Event Invitation</p>
+            <p style="margin:0 0 8px 0;font-size:12px;color:#5f7a76;letter-spacing:.08em;">دعوة حضور فعالية</p>
             <h1 style="margin:0 0 8px 0;font-size:24px;line-height:1.35;color:#102a2a;">{{ $event->title ?: $event->name }}</h1>
-            <p style="margin:0;font-size:16px;color:#334f4b;">مرحباً {{ $invitation->invitee_name }},</p>
+            <p style="margin:0;font-size:16px;color:#334f4b;">مرحباً {{ $invitation->invitee_name }}،</p>
         </td>
     </tr>
 
@@ -124,12 +124,10 @@
         <td style="padding:0 24px 8px;">
             @if(!empty($customInviteBody))
                 <p style="margin:0 0 14px 0;line-height:1.85;color:#395a56;">{!! nl2br(e($customInviteBody)) !!}</p>
-            @elseif(!empty($event->description_en))
-                <p style="margin:0 0 12px 0;line-height:1.75;color:#395a56;">{{ $event->description_en }}</p>
-            @endif
-
-            @if(!empty($event->description))
-                <p style="margin:0 0 14px 0;line-height:1.85;color:{{ $primaryColor }};font-weight:600;" dir="rtl">{{ $event->description }}</p>
+            @elseif(!empty($event->description))
+                <p style="margin:0 0 14px 0;line-height:1.85;color:#395a56;">{{ $event->description }}</p>
+            @else
+                <p style="margin:0 0 14px 0;line-height:1.85;color:#395a56;">يسرّنا دعوتكم لحضور هذه الفعالية. نرجو تأكيد الحضور عبر الزر أدناه.</p>
             @endif
         </td>
     </tr>
@@ -138,10 +136,10 @@
         <td style="padding:0 24px 4px;">
             <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f6fbfa;border:1px solid #e2eeea;border-radius:12px;">
                 <tr>
-                    <td style="padding:12px 14px;font-size:14px;color:#3b5a56;">
-                        <strong>Date:</strong> {{ optional($event->date)->format('Y-m-d') ?: '-' }}<br>
-                        <strong>Time:</strong> {{ $event->from_time ?: '-' }} - {{ $event->to_time ?: '-' }}<br>
-                        <strong>Location:</strong> {{ $event->location_name ?: ($event->address ?? '-') }}
+                    <td style="padding:12px 14px;font-size:14px;color:#3b5a56;line-height:1.8;">
+                        <strong>التاريخ:</strong> {{ optional($event->date)->format('Y-m-d') ?: '-' }}<br>
+                        <strong>الوقت:</strong> {{ $event->from_time ?: '-' }} - {{ $event->to_time ?: '-' }}<br>
+                        <strong>الموقع:</strong> {{ $event->location_name ?: ($event->address ?? '-') }}
                     </td>
                 </tr>
             </table>
@@ -150,8 +148,8 @@
 
     <tr>
         <td align="center" style="padding:24px;">
-            <a href="{{ $invitationLink }}" style="display:inline-block;padding:12px 22px;border-radius:10px;background:{{ $primaryColor }};color:#ffffff;text-decoration:none;font-weight:700;">
-                الرد على الدعوة
+            <a href="{{ $invitationLink }}" style="display:inline-block;padding:13px 26px;border-radius:12px;background:{{ $primaryColor }};color:#ffffff;text-decoration:none;font-weight:700;letter-spacing:.02em;">
+                تأكيد أو تعديل الرد
             </a>
         </td>
     </tr>
@@ -159,8 +157,8 @@
     <tr>
         <td style="padding:0 24px 24px;">
             <p style="margin:0;font-size:12px;line-height:1.7;color:#6b8480;word-break:break-all;text-align:center;">
-                إن لم يعمل الزر، استخدم الرابط التالي:<br>
-                <a href="{{ $invitationLink }}" style="color:{{ $primaryColor }};">{{ $invitationLink }}</a>
+                في حال لم يعمل الزر، استخدم الرابط التالي:<br>
+                <a href="{{ $invitationLink }}" style="color:{{ $primaryColor }};" dir="ltr">{{ $invitationLink }}</a>
             </p>
         </td>
     </tr>

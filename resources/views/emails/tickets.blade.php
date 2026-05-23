@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Invitation Confirmed</title>
+    <title>تأكيد الحضور والتذاكر</title>
     <style>
-        body { margin: 0; padding: 0; background-color: #F8FAFC; font-family: 'Segoe UI', Tahoma, Geneva, sans-serif; -webkit-font-smoothing: antialiased; }
+        body { margin: 0; padding: 0; background-color: #F8FAFC; font-family: 'Segoe UI', Tahoma, Arial, sans-serif; -webkit-font-smoothing: antialiased; direction: rtl; text-align: right; }
         table { border-collapse: collapse; }
         img { border: 0; display: block; line-height: 100%; outline: none; text-decoration: none; }
         a { text-decoration: none; }
@@ -58,7 +58,7 @@
     // footer_image_path column was removed from the events table.
     $footerImage = '';
 
-    $eventTitle = trim((string) ($event->title ?? '')) ?: (trim((string) ($event->name ?? '')) ?: 'Event');
+    $eventTitle = trim((string) ($event->title ?? '')) ?: (trim((string) ($event->name ?? '')) ?: 'الفعالية');
     $eventDate = optional($event->date)->format('d M Y') ?: '-';
     $eventFrom = trim((string) ($event->from_time ?? '')) ?: '-';
     $eventTo = trim((string) ($event->to_time ?? '')) ?: '-';
@@ -66,17 +66,7 @@
 
     $customConfirmationBody = trim((string) ($event->confirmation_email_body ?? ''));
 
-    $defaultIntroEn = 'Thank you for accepting our invitation. Enclosed are your admission tickets.';
     $defaultIntroAr = 'تشرفنا بقبولكم الدعوة. مرفق أدناه بطاقات الدخول الخاصة بكم.';
-
-    $introEn = '';
-    if ($customConfirmationBody === '') {
-        $introEn = trim((string) ($event->description_en ?? ''));
-    }
-    if ($introEn === '') {
-        $introEn = $defaultIntroEn;
-    }
-
     $introAr = '';
     if ($customConfirmationBody === '') {
         $introAr = trim((string) ($event->description ?? ''));
@@ -144,9 +134,7 @@
                 @if($customConfirmationBody !== '')
                     <p style="margin: 0; font-size: 15px; line-height: 1.8; max-width: 90%; color: #64748b;">{!! nl2br(e($customConfirmationBody)) !!}</p>
                 @else
-                    <p style="margin: 0; font-size: 15px; line-height: 1.6; max-width: 90%; color: #64748b;">
-                        {{ $introEn }}
-                        <br>
+                    <p style="margin: 0; font-size: 15px; line-height: 1.8; max-width: 90%; color: #64748b;">
                         <span style="color: {{ $brandPrimary }}; font-size: 16px; font-weight: 600; font-family: Tahoma, sans-serif;">{{ $introAr }}</span>
                     </p>
                 @endif
@@ -165,8 +153,8 @@
                                 <tr>
                                     <td align="center" style="padding: 35px 20px;">
 
-                                        <span style="background-color: {{ $brandPrimary }}; color: #ffffff; padding: 8px 18px; border-radius: 50px; font-size: 12px; font-weight: bold; letter-spacing: 1px; border: 1px solid {{ $brandPrimary }}; text-transform: uppercase;">
-                                         Main Guest
+                                        <span style="background-color: {{ $brandPrimary }}; color: #ffffff; padding: 8px 18px; border-radius: 50px; font-size: 12px; font-weight: bold; letter-spacing: 1px; border: 1px solid {{ $brandPrimary }};">
+                                         الضيف الرئيسي
                                         </span>
 
                                         <h2 style="margin: 20px 0 5px 0; color: #1e293b; font-size: 24px; font-family: 'Segoe UI', Tahoma, sans-serif;">{{ $invitation->invitee_name }}</h2>
@@ -183,9 +171,9 @@
                                                 </td>
                                                 <td align="center" style="padding: 15px; width: 50%;">
                                                     <div style="font-size: 20px;">📍</div>
-                                                    <div style="font-size: 13px; color: #1e293b; font-weight: bold; margin-top: 5px;">Location</div>
+                                                    <div style="font-size: 13px; color: #1e293b; font-weight: bold; margin-top: 5px;">الموقع</div>
                                                     <div style="font-size: 12px; margin-top: 2px;">
-                                                        <a href="{{ $eventMap }}" style="color: {{ $brandPrimary }}; text-decoration: none; font-weight: 600;">View Map →</a>
+                                                        <a href="{{ $eventMap }}" style="color: {{ $brandPrimary }}; text-decoration: none; font-weight: 600;">عرض الخريطة</a>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -219,11 +207,11 @@
                                                     }
                                                 }
                                             @endphp
-                                            <img src="{{ $qrSrc }}"
-                                                 width="180" height="180" alt="Entrance QR Code" style="display: block;">
-                                            <div style="margin-top:10px;font-size:12px;color:#64748b;font-weight:600;letter-spacing:.04em;">Entrance QR Code</div>
+                                                <img src="{{ $qrSrc }}"
+                                                    width="180" height="180" alt="رمز الدخول" style="display: block;">
+                                                <div style="margin-top:10px;font-size:12px;color:#64748b;font-weight:600;letter-spacing:.04em;">رمز الدخول</div>
                                         </div>
-                                        <p style="margin: 15px 0 0 0; font-size: 11px; color: #94a3b8; letter-spacing: 1px; font-weight: 600;">PLEASE SCAN AT ENTRANCE</p>
+                                            <p style="margin: 15px 0 0 0; font-size: 11px; color: #94a3b8; letter-spacing: 1px; font-weight: 600;">يرجى مسح الرمز عند المدخل</p>
 
                                     </td>
                                 </tr>
@@ -238,8 +226,8 @@
                                 <tr>
                                     <td align="center" style="padding: 25px 20px;">
 
-                                        <h3 style="margin: 0 0 15px 0; color: #64748b; font-size: 14px; letter-spacing: 1px; text-transform: uppercase;">
-                                            <span style="color: {{ $brandPrimary }};">Guest Ticket {{ $loop->iteration }}</span> / مرافق
+                                        <h3 style="margin: 0 0 15px 0; color: #64748b; font-size: 14px; letter-spacing: 1px;">
+                                            <span style="color: {{ $brandPrimary }};">تذكرة مرافق {{ $loop->iteration }}</span>
                                         </h3>
 
                                         <div class="qr-frame" style="border-color: {{ $brandPrimary }}; border-style: solid; padding: 10px;">
@@ -270,12 +258,12 @@
                                                     }
                                                 }
                                             @endphp
-                                            <img src="{{ $qrSrc }}"
-                                                 width="140" height="140" alt="Guest QR Code" style="display: block;">
-                                            <div style="margin-top:10px;font-size:12px;color:#64748b;font-weight:600;letter-spacing:.04em;">Guest QR Code</div>
+                                                <img src="{{ $qrSrc }}"
+                                                    width="140" height="140" alt="رمز المرافق" style="display: block;">
+                                                <div style="margin-top:10px;font-size:12px;color:#64748b;font-weight:600;letter-spacing:.04em;">رمز المرافق</div>
                                         </div>
 
-                                        <p style="margin: 10px 0 0 0; font-size: 12px; color: #94a3b8;">Guest # {{ $loop->iteration }}</p>
+                                            <p style="margin: 10px 0 0 0; font-size: 12px; color: #94a3b8;">مرافق رقم {{ $loop->iteration }}</p>
 
                                     </td>
                                 </tr>
@@ -295,15 +283,11 @@
                 @endif
 
                 <p style="margin: 0; font-size: 13px; color: #64748b; font-weight: 600;">
-                    This invitation was sent via {{ $brandName }} Event Management Platform
-                </p>
-                <p style="margin: 5px 0 0 0; font-size: 13px; color: #64748b; font-weight: 600;" dir="rtl">
-                    تم إرسال هذه الدعوة عبر منصة <span style="color:{{ $brandPrimary }};">معا</span> لإدارة الفعاليات
+                    تم إرسال هذه الرسالة عبر منصة {{ $brandName }} لإدارة الفعاليات
                 </p>
 
                 <p style="margin: 10px 0 0 0; font-size: 11px; color: #94a3b8; line-height: 1.5;">
-                    &copy; {{ date('Y') }} {{ $brandName }}. All rights reserved.<br>
-                    <span dir="rtl">جميع الحقوق محفوظة لدى منصة معا</span>
+                    &copy; {{ date('Y') }} {{ $brandName }}. جميع الحقوق محفوظة.
                 </p>
             </td>
         </tr>
