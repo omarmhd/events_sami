@@ -52,6 +52,8 @@ class TicketMail extends Mailable
                     'invitation' => $this->invitation,
                     'tickets' => $this->tickets,
                     'event' => $this->event,
+                    'email_vars' => $compiled['variables'] ?? [],
+                    'compiled_email' => $compiled,
                 ]);
 
             if (!empty($compiled['reply_to'])) {

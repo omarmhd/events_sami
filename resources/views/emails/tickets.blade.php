@@ -38,13 +38,19 @@
     $company = optional($event)->company;
     $branding = optional($company)->branding;
 
-    $brandPrimary = trim((string) ($branding->primary_color ?? '')) ?: '#DABC9A';
-    $brandSecondary = trim((string) ($branding->secondary_color ?? '')) ?: '#1F2937';
-    $brandName = trim((string) ($branding->brand_name ?? '')) ?: (trim((string) ($company->name ?? '')) ?: 'Maan Platform');
-    $logoUrl = trim((string) ($branding->logo_url ?? '')) ?: asset('Logo-SAMI.png');
+    // Prefer compiled variables passed from EmailTemplateService when available.
+    $compiled = $email_vars ?? [];
 
-    // Header image: use event-specific image if set, otherwise leave empty for fallback banner
-    $headerImage = trim((string) ($event->header_image_path ?? ''));
+    $brandPrimary = trim((string) ($compiled['primary_color'] ?? $branding->primary_color ?? '')) ?: '#DABC9A';
+    $brandSecondary = trim((string) ($compiled['secondary_color'] ?? $branding->secondary_color ?? '')) ?: '#1F2937';
+    $brandName = trim((string) ($compiled['brand_name'] ?? $branding->brand_name ?? $company->name ?? '')) ?: 'Maan Platform';
+    $logoUrl = trim((string) ($compiled['logo_url'] ?? $branding->logo_url ?? '')) ?: asset('Logo-SAMI.png');
+
+    // Header image: use compiled header variable, then event-specific image, then branding
+    $headerImage = trim((string) ($compiled['header_image_url'] ?? ''));
+    if ($headerImage === '') {
+        $headerImage = trim((string) ($event->header_image_path ?? ''));
+    }
     if ($headerImage === '') {
         $headerImage = trim((string) ($branding->header_image_url ?? ''));
     }
