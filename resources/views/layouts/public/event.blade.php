@@ -306,12 +306,103 @@
         .loading-spinner.show {
             display: inline-block;
         }
+
+        .event-footer {
+            padding: 0 1rem 2.25rem;
+        }
+
+        .event-footer-inner {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 1.1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.85rem 1.1rem;
+            text-align: center;
+            color: #4b5563;
+            border-top: 1px solid rgba(34, 34, 34, 0.08);
+        }
+
+        .event-footer-brand {
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .event-footer-copy {
+            margin: 0;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .event-footer-email {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-dark);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.72);
+            border: 1px solid rgba(34, 34, 34, 0.08);
+            padding: 0.55rem 0.9rem;
+            border-radius: 999px;
+            transition: all 0.2s ease;
+        }
+
+        .event-footer-email:hover {
+            transform: translateY(-1px);
+            color: var(--primary-dark);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
+        }
+
+        .event-footer-email i {
+            color: var(--primary-accent);
+        }
+
+        @media (max-width: 767px) {
+            .event-footer {
+                padding-bottom: 1.75rem;
+            }
+
+            .event-footer-inner {
+                padding: 1rem 0.75rem;
+            }
+
+            .event-footer-email {
+                width: 100%;
+                justify-content: center;
+            }
+        }
     </style>
 
     @stack('styles')
 </head>
 <body>
+@php
+    $platformName = \App\Models\SystemSetting::get('platform_name', config('app.name', 'SAMI Events'));
+    $supportEmail = \App\Models\SystemSetting::get('support_email', '');
+@endphp
 @yield('content')
+
+<footer class="event-footer">
+    <div class="event-footer-inner">
+        <div class="event-footer-brand">
+            <x-platform-logo size="sm" theme="light" />
+        </div>
+
+        <p class="event-footer-copy">مع تحيات منصة {{ $platformName }}</p>
+
+        @if(!empty($supportEmail))
+            <a class="event-footer-email" href="mailto:{{ $supportEmail }}">
+                <i class="fas fa-envelope"></i>
+                <span>{{ $supportEmail }}</span>
+            </a>
+        @endif
+    </div>
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 @stack('scripts')
