@@ -13,7 +13,10 @@
     $branding = optional($company)->branding;
 
     $customInviteBody = $event->invitation_email_body ?? null;
-    $headerImage = trim((string) ($event->header_image_path ?? ''));
+    $headerImage = trim((string) ($compiled['header_image_url'] ?? ''));
+    if ($headerImage === '') {
+        $headerImage = trim((string) ($event->header_image_path ?? ''));
+    }
     // footer_image_path column was removed from the events table.
     $footerImage = '';
 
@@ -33,6 +36,11 @@
     if ($headerImage === '') {
         $headerImage = trim((string) ($branding->header_image_url ?? ''));
     }
+
+    $eventDateText = optional($event->date)->format('Y-m-d') ?: '-';
+    $eventTimeText = trim((string) (($event->from_time ?? '') . ' - ' . ($event->to_time ?? '')));
+    $eventTimeText = $eventTimeText !== '' ? $eventTimeText : '-';
+    $eventLocationText = $event->location_name ?: ($event->address ?? '-');
 
     /**
      * Resolve an image source for use inside an email.
@@ -62,17 +70,36 @@
         // The path stored in the DB is always a public-relative URL (e.g. /uploads/event-images/headers/abc.jpg).
         $urlPath = parse_url($src, PHP_URL_PATH) ?: '';
         if ($urlPath !== '') {
-            $absPath = public_path(ltrim($urlPath, '/'));
-            if (is_file($absPath)) {
+            $relative = ltrim($urlPath, '/');
+            $publicPath = public_path($relative);
+            $storageRelative = preg_replace('#^storage/#', '', $relative);
+            $storagePath = storage_path('app/public/' . $storageRelative);
+            $absolutePath = '';
+
+            if (is_file($publicPath)) {
+                $absolutePath = $publicPath;
+            } elseif (is_file($storagePath)) {
+                $absolutePath = $storagePath;
+            }
+
+            if ($absolutePath !== '') {
                 if (isset($message)) {
-                    $binary = file_get_contents($absPath);
+                    $binary = file_get_contents($absolutePath);
                     if ($binary !== false) {
-                        $mime = mime_content_type($absPath) ?: 'image/jpeg';
-                        return $message->embedData($binary, basename($absPath), $mime);
+                        $mime = mime_content_type($absolutePath) ?: 'image/jpeg';
+                        return $message->embedData($binary, basename($absolutePath), $mime);
                     }
                 }
 
-                return asset(ltrim($urlPath, '/'));
+                if (str_starts_with($relative, 'storage/')) {
+                    return asset($relative);
+                }
+
+                if ($absolutePath === $publicPath) {
+                    return asset($relative);
+                }
+
+                return asset('storage/' . ltrim($storageRelative, '/'));
             }
         }
 
@@ -107,13 +134,18 @@
         </td>
     </tr>
     @else
-    {{-- No header image: full-width gradient banner centred on event title (Arabic) --}}
+    {{-- No header image: full-width gradient banner with event details (Arabic) --}}
     <tr>
-        <td style="padding:40px 24px;background:linear-gradient(135deg,{{ $primaryColor }} 0%,{{ $secondaryColor }} 100%);text-align:center;">
+        <td style="padding:32px 24px;background:linear-gradient(135deg,{{ $primaryColor }} 0%,{{ $secondaryColor }} 100%);text-align:center;">
             <p style="margin:0 0 8px 0;font-size:12px;font-weight:700;color:rgba(255,255,255,0.85);letter-spacing:.06em;">
                 دعوة لحضور فعالية
             </p>
             <p style="margin:8px 0 0 0;font-size:26px;font-weight:800;color:#ffffff;line-height:1.2;">{{ $event->title ?: $event->name }}</p>
+            <p style="margin:12px 0 0 0;font-size:12px;color:rgba(255,255,255,0.85);line-height:1.8;">
+                التاريخ: {{ $eventDateText }}<br>
+                الوقت: {{ $eventTimeText }}<br>
+                الموقع: {{ $eventLocationText }}
+            </p>
         </td>
     </tr>
     @endif

@@ -59,10 +59,11 @@
     $footerImage = '';
 
     $eventTitle = trim((string) ($event->title ?? '')) ?: (trim((string) ($event->name ?? '')) ?: 'الفعالية');
-    $eventDate = optional($event->date)->format('d M Y') ?: '-';
+    $eventDate = optional($event->date)->format('Y-m-d') ?: '-';
     $eventFrom = trim((string) ($event->from_time ?? '')) ?: '-';
     $eventTo = trim((string) ($event->to_time ?? '')) ?: '-';
     $eventMap = trim((string) ($event->google_map_url ?? '')) ?: '#';
+    $eventLocation = $event->location_name ?: ($event->address ?? '-');
 
     $customConfirmationBody = trim((string) ($event->confirmation_email_body ?? ''));
 
@@ -146,6 +147,7 @@
                     <h2 style="margin: 0; font-size: 24px; font-weight: 700; color: #1e293b; line-height: 1.4; font-family: 'Segoe UI', Tahoma, sans-serif;">
                         {{ $eventTitle }}
                     </h2>
+                    <p style="margin: 8px 0 0; font-size: 14px; color: #64748b;">تم تأكيد حضورك بنجاح، وهذه تذاكر الدخول الخاصة بك.</p>
                 </div>
 
                 <div style="width: 80px; height: 4px; background-color: {{ $brandPrimary }}; margin: 0 auto 30px auto; border-radius: 2px;"></div>
@@ -157,6 +159,25 @@
                         <span style="color: {{ $brandPrimary }}; font-size: 16px; font-weight: 600; font-family: Tahoma, sans-serif;">{{ $introAr }}</span>
                     </p>
                 @endif
+            </td>
+        </tr>
+
+        <tr>
+            <td align="center" style="padding: 0 20px 22px 20px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width: 520px; background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;">
+                    <tr>
+                        <td style="padding: 12px 14px; font-size: 13px; color: #475569; line-height: 1.8;">
+                            <strong style="color:#1f2937;">التاريخ:</strong> {{ $eventDate }}<br>
+                            <strong style="color:#1f2937;">الوقت:</strong> {{ $eventFrom }} - {{ $eventTo }}<br>
+                            <strong style="color:#1f2937;">الموقع:</strong> {{ $eventLocation }}
+                            @if($eventMap !== '#')
+                                <div style="margin-top:6px;">
+                                    <a href="{{ $eventMap }}" style="color: {{ $brandPrimary }}; font-weight: 600;">عرض الموقع على الخريطة</a>
+                                </div>
+                            @endif
+                        </td>
+                    </tr>
+                </table>
             </td>
         </tr>
 
