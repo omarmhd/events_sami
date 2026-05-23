@@ -34,9 +34,6 @@
             <div class="hero-banner">
                 <img src="{{ e($eventImage) }}" alt="{{ $eventTitle }}">
             </div>
-        @else
-            <div class="hero-banner hero-banner--fallback">
-            </div>
         @endif
 
         <div class="hero-body">

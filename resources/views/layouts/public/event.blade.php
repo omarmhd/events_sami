@@ -64,31 +64,6 @@
             display: block;
         }
 
-        .hero-banner--fallback {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: #ffffff;
-            padding: 3rem 1.5rem;
-        }
-
-        .hero-banner--fallback::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.08) 0%, transparent 60%),
-                              radial-gradient(circle at 80% 20%, rgba(255,255,255,0.08) 0%, transparent 50%);
-            pointer-events: none;
-        }
-
-        .hero-banner-fallback-title {
-            position: relative;
-            font-size: 1.6rem;
-            font-weight: 700;
-            margin: 0;
-        }
-
         .hero-body {
             padding: 1.8rem 0 0;
             text-align: center;
