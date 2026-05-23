@@ -120,16 +120,6 @@
             </div>
 
             <div class="col-12">
-                <label class="form-label" for="subdomain">النطاق الفرعي لمساحة العمل</label>
-                <div class="input-group">
-                    <input type="text" id="subdomain" name="subdomain" class="form-control @error('subdomain') is-invalid @enderror" value="{{ old('subdomain') }}" placeholder="mycompany" required>
-                    <span class="input-group-text" style="background:#f5faf8; border-color:#d8e7e3; color:#5f7a76; font-size:0.85rem;">.maaninvite.com</span>
-                </div>
-                <div id="subdomain-hint" class="mt-1" style="font-size:0.75rem; color:#a0b8b4;">يُستخدم لتعريف مساحتك: <span id="subdomain-preview">mycompany</span>.maaninvite.com</div>
-                @error('subdomain')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
-            </div>
-
-            <div class="col-12">
                 <label class="form-label" for="timezone">المنطقة الزمنية <span class="text-muted fw-normal">(اختياري)</span></label>
                 <select id="timezone" name="timezone" class="form-select @error('timezone') is-invalid @enderror">
                     <option value="Asia/Riyadh" {{ old('timezone','Asia/Riyadh') === 'Asia/Riyadh' ? 'selected' : '' }}>الرياض (GMT+3)</option>
@@ -147,33 +137,7 @@
             </div>
         </div>
 
-        @if(isset($plans) && $plans->count())
-            <div class="register-section-card mt-3">
-                <div class="register-section-head">
-                    <h3 class="auth-form-section-title mb-0">الخطة المفضلة بعد التجربة المجانية</h3>
-                    <span class="register-section-note">اختر الخطة التي تناسبك من البداية</span>
-                </div>
-
-                <div class="row g-2">
-                @foreach($plans as $plan)
-                    <div class="col-md-6">
-                        <label class="auth-plan-option p-3 d-block h-100">
-                            <div class="d-flex justify-content-between align-items-start gap-2">
-                                <div>
-                                    <input type="radio" class="form-check-input me-2" name="preferred_plan_code" value="{{ $plan->code }}" {{ old('preferred_plan_code', 'starter') === $plan->code ? 'checked' : '' }}>
-                                    <span class="fw-bold" style="font-size:0.9rem;">{{ $plan->name }}</span>
-                                    <div class="text-muted mt-1" style="font-size:0.78rem;">{{ $plan->description }}</div>
-                                </div>
-                                <span class="badge bg-dark-subtle text-dark text-uppercase" style="font-size:0.65rem;">{{ $plan->code }}</span>
-                            </div>
-                        </label>
-                    </div>
-                @endforeach
-                </div>
-            </div>
-        @else
-            <input type="hidden" name="preferred_plan_code" value="starter">
-        @endif
+        <input type="hidden" name="preferred_plan_code" value="starter">
 
         <div class="register-consent mb-3 mt-3">
             <div class="form-check">
@@ -264,11 +228,6 @@
     }
     document.getElementById('password_confirmation').addEventListener('input', checkMatch);
 
-    document.getElementById('subdomain').addEventListener('input', function () {
-        const val = this.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
-        this.value = val;
-        document.getElementById('subdomain-preview').textContent = val || 'mycompany';
-    });
 </script>
 @endpush
 

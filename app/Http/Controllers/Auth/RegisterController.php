@@ -11,6 +11,7 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 
 class RegisterController extends Controller
@@ -45,7 +46,7 @@ class RegisterController extends Controller
 
             // بيانات مساحة العمل
             'company_name'            => ['required', 'string', 'max:160'],
-            'subdomain'               => ['required', 'alpha_dash', 'min:3', 'max:40', 'unique:companies,subdomain'],
+            'subdomain'               => ['nullable', 'alpha_dash', 'min:3', 'max:40', 'unique:companies,subdomain'],
             'annual_events_estimate'  => ['required', 'integer', 'min:1', 'max:10000'],
             'timezone'                => ['nullable', 'string', 'max:64'],
             'preferred_plan_code'     => ['nullable', 'exists:subscription_plans,code'],
@@ -61,7 +62,6 @@ class RegisterController extends Controller
             'password.confirmed'               => 'كلمتا المرور غير متطابقتين.',
             'terms.accepted'                   => 'يجب الموافقة على شروط الاستخدام للمتابعة.',
             'company_name.required'            => 'اسم الجهة أو الشركة مطلوب.',
-            'subdomain.required'               => 'النطاق الفرعي مطلوب.',
             'subdomain.alpha_dash'             => 'يجب أن يحتوي النطاق الفرعي على أحرف إنجليزية وأرقام وشرطات فقط.',
             'subdomain.min'                    => 'يجب أن يتكون النطاق الفرعي من 3 أحرف على الأقل.',
             'subdomain.unique'                 => 'هذا النطاق الفرعي محجوز بالفعل، جرب اسمًا آخر.',
