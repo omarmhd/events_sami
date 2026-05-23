@@ -1,6 +1,7 @@
 @extends('layouts.auth')
 
 @section('title', 'إنشاء حساب ومساحة عمل' . ' - ' . \App\Models\SystemSetting::get('platform_name', config('app.name', 'Platform')))
+@section('visual_mode', 'register')
 @section('visual_title', 'اصنع مساحة عمل تبدو احترافية من أول لحظة')
 @section('visual_subtitle', 'واجهة التسجيل هنا تكمل الهوية البصرية للمنصة وتمنحك بداية واضحة، مرتبة، ومبهرة.')
 

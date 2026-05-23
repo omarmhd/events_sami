@@ -22,14 +22,14 @@
 @endphp
 
 <div class="auth-shell">
-    <div class="auth-grid {{ trim($__env->yieldContent('hide_visual_panel')) ? 'auth-grid--compact' : '' }}">
+    <div class="auth-grid {{ trim($__env->yieldContent('hide_visual_panel')) ? 'auth-grid--compact' : '' }} {{ trim($__env->yieldContent('visual_mode')) ? 'auth-grid--register' : '' }}">
 
         @if(!trim($__env->yieldContent('hide_visual_panel')))
 
         {{-- ══════════════════════════════════════════════════════════
              LEFT / TOP PANEL — Visual branding & feature highlights
         ══════════════════════════════════════════════════════════ --}}
-        <section class="auth-panel-visual">
+        <section class="auth-panel-visual {{ trim($__env->yieldContent('visual_mode')) ? 'auth-panel-visual--register' : '' }}">
 
             {{-- Decorative floating shapes --}}
             <div class="auth-deco auth-deco--1" aria-hidden="true"></div>
@@ -54,6 +54,7 @@
                     @yield('visual_badges')
                 @endif
 
+                @unless(trim($__env->yieldContent('visual_mode')) === 'register')
                 {{-- ── Illustrated feature cards ── --}}
                 <div class="auth-feature-cards" aria-label="Platform features">
                     <div class="auth-feat-card">
@@ -84,9 +85,11 @@
                         </div>
                     </div>
                 </div>
+                @endunless
             </div>
 
             {{-- ── Stats row ── --}}
+            @unless(trim($__env->yieldContent('visual_mode')) === 'register')
             <div class="auth-stats-grid">
                 <div class="auth-stat-card">
                     <span class="auth-stat-number">99.9%</span>
@@ -105,6 +108,7 @@
                     <span class="auth-stat-label">{{ __('ui.auth.stat_realtime') }}</span>
                 </div>
             </div>
+            @endunless
 
             @hasSection('visual_footer')
                 @yield('visual_footer')

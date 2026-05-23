@@ -91,6 +91,34 @@ body.auth-body {
     isolation: isolate;
 }
 
+.auth-panel-visual--register {
+    justify-content: center;
+    gap: 1rem;
+    padding: 1.65rem 2rem;
+}
+
+.auth-panel-visual--register .auth-visual-top {
+    max-width: 100%;
+}
+
+.auth-panel-visual--register .auth-feature-cards,
+.auth-panel-visual--register .auth-stats-grid,
+.auth-panel-visual--register .register-visual-card {
+    display: none;
+}
+
+.auth-panel-visual--register .register-visual-badges {
+    margin-top: 1rem;
+}
+
+.auth-panel-visual--register .auth-subheading {
+    max-width: 42ch;
+}
+
+.auth-panel-visual--register .auth-brand-row {
+    margin-bottom: 1rem;
+}
+
 .auth-panel-visual::before,
 .auth-panel-visual::after {
     content: '';
@@ -171,6 +199,15 @@ body.auth-body {
     font-size: clamp(1.45rem, 1.7vw, 2.05rem);
     line-height: 1.28;
     font-weight: 800;
+}
+
+.auth-grid--register .auth-panel-form {
+    align-items: flex-start;
+    padding-top: 2.1rem;
+}
+
+.auth-grid--register .auth-card {
+    margin-top: 0;
 }
 
 .auth-subheading {
