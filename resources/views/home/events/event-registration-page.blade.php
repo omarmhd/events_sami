@@ -327,25 +327,6 @@
                         @endforeach
                     @endif
 
-                    <!-- Info Alert -->
-                    <div class="col-12">
-                        <div class="alert-info">
-                            <i class="fas fa-info-circle"></i>
-                            {{ __('public-registration.free_trial_info') }}
-                        </div>
-                    </div>
-
-                    <!-- Terms Checkbox -->
-                    <div class="col-12">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="1" id="agreeTerms" required>
-                            <label class="form-check-label" for="agreeTerms">
-                                {{ __('public-registration.agree_terms') }}
-                                <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">{{ __('public-registration.view_terms') }}</a>
-                            </label>
-                        </div>
-                    </div>
-
                     <!-- Submit Button -->
                     <div class="col-12">
                         <button 
@@ -364,40 +345,13 @@
     </div>
 </div>
 
-<!-- Terms Modal -->
-<div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="termsModalLabel">{{ __('public-registration.terms_title') }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" style="max-height:60vh;overflow:auto;">
-                {{-- Put the commonly used terms text here; can be replaced by dynamic content later --}}
-                <p>شروط الاستخدام: يرجى قراءة الشروط والأحكام بعناية قبل التسجيل. بموافقتك على هذه الشروط، توافق على أن بياناتك قد تُستخدم وفقًا لسياسة الخصوصية.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('public-registration.close') }}</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 @push('scripts')
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.querySelector('form');
 
         if (form) {
-            form.addEventListener('submit', function(e) {
-                // Ensure terms checkbox is checked (HTML 'required' covers most browsers)
-                const agree = document.getElementById('agreeTerms');
-                if (agree && !agree.checked) {
-                    e.preventDefault();
-                    agree.focus();
-                    return false;
-                }
-
+            form.addEventListener('submit', function() {
                 // Show loading state
                 const btnText = document.getElementById('btn-text');
                 const btnSpinner = document.getElementById('btn-spinner');

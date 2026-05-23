@@ -104,14 +104,14 @@ class PublicRegistrationController extends Controller
         ]);
 
         if ($requiresManualApproval) {
-            return back()->with('success', 'تم إرسال طلب تسجيلك بنجاح. سيتم مراجعته والردّ عليك قريباً.');
+            return back()->with('success', 'تم استلام تسجيلك بنجاح. انتظر وراقب بريدك الإلكتروني، فقد يتم إرسال تذاكر الدخول عليه.');
         }
 
         // Issue pass and send ticket email using the same TicketMail used for
         // private invitations — it embeds QR and renders correctly in all clients.
         $this->issuePassAndNotify($event, $registration, $templateService);
 
-        return back()->with('success', 'تم تسجيلك بنجاح! تم إرسال بطاقة الدخول إلى بريدك الإلكتروني.');
+        return back()->with('success', 'تم تسجيلك بنجاح. انتظر وراقب بريدك الإلكتروني، فقد يتم إرسال تذاكر الدخول عليه.');
     }
 
     public function reviewQueue(Request $request, Event $event)
