@@ -233,12 +233,6 @@
                         @error('guest_email')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
                     </div>
 
-                    <!-- Company / Organization -->
-                    <div class="col-12">
-                        <label class="form-label">{{ __('public-registration.organization') }}</label>
-                        <input type="text" name="form_payload[company_name]" class="form-control" value="{{ old('form_payload.company_name') }}" placeholder="{{ app()->getLocale()==='ar' ? 'اسم الجهة / الشركة' : 'Organization or Company' }}" style="border:0;border-bottom:1px solid #e5e7eb;border-radius:0;padding:.75rem .5rem;">
-                    </div>
-
                     <!-- Dynamic Fields Only (exclude built-in name/email fields) -->
                     @php
                         $builtinKeys = ['full_name','email','guest_name','guest_email','name'];

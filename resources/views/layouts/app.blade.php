@@ -125,65 +125,138 @@
         transition: background .25s, color .25s;
     }
 
-    /* ── Subscriber Footer ─────────────────────────────────────── */
-    .app-footer {
-        padding: 0 1rem 1.75rem;
+    /* ── Subscriber Footer (shared with public event footer) ───── */
+    .event-footer {
+        padding: 0 1rem 2.25rem;
     }
-    .app-footer-inner {
-        max-width: 1200px;
+
+    .event-footer-inner {
+        max-width: 980px;
         margin: 0 auto;
-        padding: 1rem 1.25rem;
+        padding: 1.15rem 1.25rem;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 1rem 1.25rem;
+        align-items: center;
+        color: #4b5563;
+        background: rgba(255, 255, 255, 0.82);
+        border: 1px solid rgba(220, 232, 228, 0.92);
+        border-radius: 22px;
+        box-shadow: 0 18px 34px -28px rgba(10, 35, 37, 0.28);
+        backdrop-filter: blur(10px);
+    }
+
+    .event-footer-branding {
+        display: flex;
+        align-items: center;
+        gap: 0.95rem;
+        flex-wrap: wrap;
+    }
+
+    .event-footer-brand-copy {
+        display: grid;
+        gap: 0.2rem;
+    }
+
+    .event-footer-brand-title {
+        margin: 0;
+        font-size: 0.98rem;
+        font-weight: 600;
+        color: #1f2937;
+    }
+
+    .event-footer-brand-subtitle {
+        margin: 0;
+        font-size: 0.88rem;
+        line-height: 1.6;
+        color: #6b7280;
+    }
+
+    .event-footer-stack {
         display: flex;
         align-items: center;
         justify-content: center;
         flex-wrap: wrap;
-        gap: 0.85rem 1.1rem;
-        text-align: center;
-        border-top: 1px solid rgba(34, 34, 34, 0.08);
-        color: var(--text-soft);
+        gap: 0.75rem 1rem;
+        justify-self: end;
     }
-    .app-footer-copy {
-        margin: 0;
-        font-size: 0.95rem;
-        font-weight: 600;
-        color: var(--text-main);
+
+    .event-footer-brand {
+        display: inline-flex;
+        align-items: center;
     }
-    .app-footer-email {
+
+    .event-footer-email,
+    .event-footer-link {
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
         text-decoration: none;
-        color: var(--primary-color);
-        background: rgba(15, 143, 131, 0.08);
-        border: 1px solid rgba(15, 143, 131, 0.16);
         border-radius: 999px;
         padding: 0.55rem 0.95rem;
         font-size: 0.9rem;
         font-weight: 600;
         transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
     }
-    .app-footer-email:hover {
+
+    .event-footer-email {
+        color: var(--primary-color);
+        background: rgba(15, 143, 131, 0.08);
+        border: 1px solid rgba(15, 143, 131, 0.16);
+    }
+
+    .event-footer-email:hover,
+    .event-footer-email:focus-visible {
         transform: translateY(-1px);
         color: var(--primary-color);
         background: rgba(15, 143, 131, 0.12);
         box-shadow: 0 8px 18px rgba(15, 143, 131, 0.08);
+        outline: none;
     }
-    .app-footer-email i {
+
+    .event-footer-link {
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid rgba(34, 34, 34, 0.08);
+        color: var(--primary-color);
+    }
+
+    .event-footer-link:hover,
+    .event-footer-link:focus-visible {
+        transform: translateY(-1px);
+        color: var(--primary-color);
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
+        outline: none;
+    }
+
+    .event-footer-email i {
         color: var(--primary-accent);
     }
 
     @media (max-width: 767px) {
-        .app-footer {
-            padding-bottom: 1.25rem;
+        .event-footer {
+            padding-bottom: 1.75rem;
         }
-        .app-footer-inner {
+
+        .event-footer-inner {
             padding: 1rem 0.75rem;
+            grid-template-columns: 1fr;
+            text-align: center;
+            border-radius: 18px;
         }
-        .app-footer-email {
+
+        .event-footer-email,
+        .event-footer-link {
             width: 100%;
             justify-content: center;
         }
+
+        .event-footer-branding,
+        .event-footer-stack {
+            justify-content: center;
+            justify-self: center;
+        }
     }
+
     </style>
 
     @stack('styles')
@@ -221,18 +294,32 @@
         </div>
     </div>
 
-    <footer class="app-footer">
-        <div class="app-footer-inner">
-            <x-platform-logo size="sm" theme="light" />
+    <footer class="event-footer">
+        <div class="event-footer-inner">
+            <div class="event-footer-branding">
+                <div class="event-footer-brand">
+                    <x-platform-logo size="sm" theme="light" />
+                </div>
 
-            <p class="app-footer-copy">مع تحيات منصة {{ $platformName }}</p>
+                <div class="event-footer-brand-copy">
+                    <p class="event-footer-brand-title">مع تحيات منصة {{ $platformName }}</p>
+                    <p class="event-footer-brand-subtitle">منصة موحدة لإدارة الدعوات، التذاكر، والحضور بطريقة أوضح وأبسط.</p>
+                </div>
+            </div>
 
-            @if(!empty($contactEmail))
-                <a class="app-footer-email" href="mailto:{{ $contactEmail }}">
-                    <i class="fas fa-envelope"></i>
-                    <span>{{ $contactEmail }}</span>
+            <div class="event-footer-stack">
+                <a class="event-footer-link event-footer-link--soft" href="{{ route('platform.about') }}">
+                    <i class="fas fa-circle-info"></i>
+                    <span>تعرف على منصة معا</span>
                 </a>
-            @endif
+
+                @if(!empty($contactEmail))
+                    <a class="event-footer-email" href="mailto:{{ $contactEmail }}">
+                        <i class="fas fa-envelope"></i>
+                        <span>{{ $contactEmail }}</span>
+                    </a>
+                @endif
+            </div>
         </div>
     </footer>
 
