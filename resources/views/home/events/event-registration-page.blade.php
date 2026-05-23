@@ -29,44 +29,50 @@
 @endphp
 
 <div class="container hero">
-    <div class="hero-shell {{ $hasImage ? 'hero-shell--with-image' : 'hero-shell--no-image' }}">
+    <div class="hero-shell {{ $hasImage ? 'hero-shell--with-image' : 'hero-shell--no-image' }}" style="padding:1.25rem 0 1.5rem;">
         @if($hasImage)
-            <div class="hero-media" style="background-image: url('{{ e($eventImage) }}')"></div>
+            <div class="hero-media" style="background-image: url('{{ e($eventImage) }}'); filter: brightness(0.68);"></div>
         @endif
-        <div class="hero-copy {{ $hasImage ? '' : 'hero-copy--full' }}">
-            <div class="hero-chip">
-                <i class="fas fa-sparkles"></i>
-                {{ __('public-registration.public_registration') }}
-            </div>
-            <h1>{{ $eventTitle }}</h1>
-            <p>
-                @if(app()->getLocale() === 'ar' && $event->description)
-                    {{ $event->description }}
-                @elseif($selectedForm?->headline)
-                    {{ $selectedForm->headline }}
-                @else
-                    {{ __('public-registration.complete_details') }}
-                @endif
-            </p>
-            <div class="meta-pills">
-                @if($event->date)
-                    <div class="meta-pill">
-                        <i class="far fa-calendar-alt"></i>
-                        {{ $event->date->format(app()->getLocale() === 'ar' ? 'j F Y' : 'l, j F Y') }}
+        <div class="hero-copy {{ $hasImage ? '' : 'hero-copy--full' }}" style="padding: 2rem 1rem;">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+                <div style="flex:1;min-width:220px;text-align:right;">
+                    <div class="hero-chip" style="display:inline-block;background:#FEF3C7;color:#92400E;padding:6px 12px;border-radius:999px;font-weight:700;margin-bottom:.6rem;">
+                        {{ __('public-registration.public_registration') }}
                     </div>
-                @endif
-                @if($event->from_time || $event->to_time)
-                    <div class="meta-pill">
-                        <i class="far fa-clock"></i>
-                        {{ $event->from_time ?: '--' }} - {{ $event->to_time ?: '--' }}
+                    <h1 style="font-size:1.9rem;margin:.5rem 0 0.6rem;font-weight:800;">{{ $eventTitle }}</h1>
+                    <p style="color:#374151;margin:0 0 .6rem;">{{ app()->getLocale() === 'ar' && $event->description ? $event->description : ($selectedForm?->headline ?: __('public-registration.complete_details')) }}</p>
+
+                    <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.6rem;align-items:center;">
+                        @if($event->date)
+                            <div style="background:rgba(255,255,255,0.85);padding:8px 12px;border-radius:10px;border:1px solid rgba(0,0,0,0.04);">
+                                <i class="far fa-calendar-alt"></i>
+                                <span style="margin-left:.5rem;">{{ $event->date->format(app()->getLocale() === 'ar' ? 'j F Y' : 'l, j F Y') }}</span>
+                            </div>
+                        @endif
+                        @if($event->from_time || $event->to_time)
+                            <div style="background:rgba(255,255,255,0.85);padding:8px 12px;border-radius:10px;border:1px solid rgba(0,0,0,0.04);">
+                                <i class="far fa-clock"></i>
+                                <span style="margin-left:.5rem;">{{ $event->from_time ?: '--' }} - {{ $event->to_time ?: '--' }}</span>
+                            </div>
+                        @endif
+                        @if($eventAddress)
+                            <div style="background:rgba(255,255,255,0.85);padding:8px 12px;border-radius:10px;border:1px solid rgba(0,0,0,0.04);">
+                                <i class="fas fa-location-dot"></i>
+                                <span style="margin-left:.5rem;">{{ Str::limit($eventAddress, 42) }}</span>
+                            </div>
+                        @endif
                     </div>
-                @endif
-                @if($eventAddress)
-                    <div class="meta-pill">
-                        <i class="fas fa-location-dot"></i>
-                        {{ $eventAddress }}
-                    </div>
-                @endif
+                </div>
+
+                <div style="min-width:220px;text-align:left;display:flex;flex-direction:column;align-items:flex-end;gap:.6rem;">
+                    @if($hasImage)
+                        <div style="width:220px;height:120px;border-radius:12px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,0.12);background-size:cover;background-position:center;background-image:url('{{ e($eventImage) }}');"></div>
+                    @else
+                        <div style="width:220px;height:120px;border-radius:12px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,0.06);background:#f3f4f6;display:flex;align-items:center;justify-content:center;color:#9ca3af;">{{ __('public-registration.event') }}</div>
+                    @endif
+
+                    <a href="#mainFormCard" class="btn btn-primary" style="padding:10px 18px;border-radius:10px;">{{ __('public-registration.quick_register') }}</a>
+                </div>
             </div>
         </div>
     </div>
