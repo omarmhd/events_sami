@@ -383,7 +383,7 @@
 <body>
 @php
     $platformName = \App\Models\SystemSetting::get('platform_name', config('app.name', 'SAMI Events'));
-    $supportEmail = \App\Models\SystemSetting::get('support_email', '');
+    $contactEmail = \App\Models\SystemSetting::get('support_email', '');
 @endphp
 @yield('content')
 
@@ -395,10 +395,10 @@
 
         <p class="event-footer-copy">مع تحيات منصة {{ $platformName }}</p>
 
-        @if(!empty($supportEmail))
-            <a class="event-footer-email" href="mailto:{{ $supportEmail }}">
+        @if(!empty($contactEmail))
+            <a class="event-footer-email" href="mailto:{{ $contactEmail }}">
                 <i class="fas fa-envelope"></i>
-                <span>{{ $supportEmail }}</span>
+                <span>{{ $contactEmail }}</span>
             </a>
         @endif
     </div>

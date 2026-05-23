@@ -186,7 +186,7 @@
                     </div>
                     <div>
                         <h5 class="fw-bold mb-0" style="color:var(--text-main);">إعدادات النظام العامة</h5>
-                        <p class="mb-0 small" style="color:var(--text-soft);">بريد الدعم، الفترة التجريبية، حالة الصيانة</p>
+                        <p class="mb-0 small" style="color:var(--text-soft);">بريد التواصل، الفترة التجريبية، حالة الصيانة</p>
                     </div>
                 </div>
             </div>
@@ -195,11 +195,11 @@
                 <div class="row g-3">
 
                     <div class="col-md-5">
-                        <label class="field-label">بريد الدعم الفني</label>
+                           <label class="field-label">بريد التواصل</label>
                         <input name="support_email" type="email" class="form-control"
-                               placeholder="support@example.com"
+                               placeholder="info@example.com"
                                value="{{ old('support_email', $settings['support_email'] ?? '') }}">
-                        <span class="field-hint">يُستخدم في رسائل المنصة وصفحة الاتصال</span>
+                           <span class="field-hint">يُستخدم في الفوتر ورسائل المنصة وصفحة الاتصال</span>
                     </div>
 
                     <div class="col-md-3">

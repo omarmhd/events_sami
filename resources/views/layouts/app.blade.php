@@ -124,12 +124,76 @@
         font-size: 1.3rem;
         transition: background .25s, color .25s;
     }
+
+    /* ── Subscriber Footer ─────────────────────────────────────── */
+    .app-footer {
+        padding: 0 1rem 1.75rem;
+    }
+    .app-footer-inner {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 1rem 1.25rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.85rem 1.1rem;
+        text-align: center;
+        border-top: 1px solid rgba(34, 34, 34, 0.08);
+        color: var(--text-soft);
+    }
+    .app-footer-copy {
+        margin: 0;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--text-main);
+    }
+    .app-footer-email {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        color: var(--primary-color);
+        background: rgba(15, 143, 131, 0.08);
+        border: 1px solid rgba(15, 143, 131, 0.16);
+        border-radius: 999px;
+        padding: 0.55rem 0.95rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+        transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+    .app-footer-email:hover {
+        transform: translateY(-1px);
+        color: var(--primary-color);
+        background: rgba(15, 143, 131, 0.12);
+        box-shadow: 0 8px 18px rgba(15, 143, 131, 0.08);
+    }
+    .app-footer-email i {
+        color: var(--primary-accent);
+    }
+
+    @media (max-width: 767px) {
+        .app-footer {
+            padding-bottom: 1.25rem;
+        }
+        .app-footer-inner {
+            padding: 1rem 0.75rem;
+        }
+        .app-footer-email {
+            width: 100%;
+            justify-content: center;
+        }
+    }
     </style>
 
     @stack('styles')
 </head>
 
 <body>
+    @php
+        $platformName = \App\Models\SystemSetting::get('platform_name', config('app.name', 'Platform'));
+        $contactEmail = \App\Models\SystemSetting::get('support_email', '');
+    @endphp
     <div class="mobile-header d-lg-none">
         {{-- Mobile header logo — always uses platform admin settings (SystemSetting).
              Tenant branding (CompanyBranding) is only for email templates. --}}
@@ -156,6 +220,21 @@
             </main>
         </div>
     </div>
+
+    <footer class="app-footer">
+        <div class="app-footer-inner">
+            <x-platform-logo size="sm" theme="light" />
+
+            <p class="app-footer-copy">مع تحيات منصة {{ $platformName }}</p>
+
+            @if(!empty($contactEmail))
+                <a class="app-footer-email" href="mailto:{{ $contactEmail }}">
+                    <i class="fas fa-envelope"></i>
+                    <span>{{ $contactEmail }}</span>
+                </a>
+            @endif
+        </div>
+    </footer>
 
     {{-- ─── Global Modals Slot ─────────────────────────────────────────────
          All page-level modals pushed via @push('modals') render here —
