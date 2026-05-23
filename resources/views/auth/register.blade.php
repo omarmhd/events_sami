@@ -48,9 +48,9 @@
 
         <div class="mb-3">
             <label class="form-label" for="password">كلمة المرور</label>
-            <div class="auth-password-field">
+            <div class="auth-password-field input-group">
                 <input type="password" id="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="8 أحرف على الأقل" required>
-                <button type="button" class="auth-toggle-pw toggle-pw" data-target="password">
+                <button type="button" class="auth-toggle-pw toggle-pw" data-target="password" aria-label="إظهار أو إخفاء كلمة المرور">
                     <i class="fas fa-eye-slash auth-toggle-pw-icon"></i>
                 </button>
             </div>
@@ -60,9 +60,9 @@
 
         <div class="mb-3">
             <label class="form-label" for="password_confirmation">تأكيد كلمة المرور</label>
-            <div class="auth-password-field">
+            <div class="auth-password-field input-group">
                 <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" placeholder="أعد كتابة كلمة المرور" required>
-                <button type="button" class="auth-toggle-pw toggle-pw" data-target="password_confirmation">
+                <button type="button" class="auth-toggle-pw toggle-pw" data-target="password_confirmation" aria-label="إظهار أو إخفاء تأكيد كلمة المرور">
                     <i class="fas fa-eye-slash auth-toggle-pw-icon"></i>
                 </button>
             </div>

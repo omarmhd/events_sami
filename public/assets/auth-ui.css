@@ -460,14 +460,56 @@ body.auth-body {
     margin-bottom: 0.1rem;
 }
 
+.auth-password-field.input-group {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    width: 100%;
+}
+
 .auth-password-field .form-control {
     padding-inline-end: 3.55rem;
     padding-inline-start: 1rem;
 }
 
+.auth-password-field.input-group .form-control {
+    flex: 1 1 auto;
+    padding-inline-end: 1rem;
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+}
+
+.auth-password-field.input-group .auth-toggle-pw {
+    position: static;
+    transform: none;
+    inset-inline-end: auto;
+    inset-inline-start: auto;
+    flex: 0 0 3rem;
+    width: 3rem;
+    height: auto;
+    min-height: 46px;
+    padding: 0;
+    border: 1px solid #d8e7e3;
+    border-inline-start: 0;
+    border-radius: 0 12px 12px 0;
+}
+
 .auth-rtl .auth-password-field .form-control {
     padding-inline-end: 1rem;
     padding-inline-start: 3.55rem;
+}
+
+.auth-rtl .auth-password-field.input-group .form-control {
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+    border-start-end-radius: 12px;
+    border-end-end-radius: 12px;
+}
+
+.auth-rtl .auth-password-field.input-group .auth-toggle-pw {
+    border-inline-start: 1px solid #d8e7e3;
+    border-inline-end: 0;
+    border-radius: 12px 0 0 12px;
 }
 
 .auth-password-field .auth-toggle-pw {
@@ -501,12 +543,17 @@ body.auth-body {
     outline: none;
 }
 
-    .auth-password-field .auth-toggle-pw-icon {
-        font-size: 0.95rem;
-        color: #5f7a76;
-        line-height: 1;
-        display: inline-block;
-    }
+.auth-password-field .auth-toggle-pw-icon {
+    font-size: 0.95rem;
+    color: #5f7a76;
+    line-height: 1;
+    display: inline-block;
+}
+
+.auth-password-field.input-group .auth-toggle-pw:hover,
+.auth-password-field.input-group .auth-toggle-pw:focus-visible {
+    z-index: 2;
+}
 
 .auth-footer {
     padding: 0 1rem 2.25rem;
