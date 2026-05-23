@@ -1,7 +1,8 @@
 @extends('layouts.auth')
 
 @section('title', 'إنشاء حساب ومساحة عمل' . ' - ' . \App\Models\SystemSetting::get('platform_name', config('app.name', 'Platform')))
-@section('hide_visual_panel', '1')
+@section('visual_title', 'ابدأ مساحة عملك من شاشة تسجيل متوازنة.')
+@section('visual_subtitle', 'نفس الارتفاع ونفس الإيقاع البصري مثل شاشة الدخول، مع بداية أوضح لحسابك الجديد.')
 
 @section('auth_title', 'إنشاء حساب جديد')
 @section('auth_subtitle', 'أدخل بياناتك لبدء التجربة المجانية وتفعيل مساحة العمل.')

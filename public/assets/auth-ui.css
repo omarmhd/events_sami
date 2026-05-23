@@ -708,7 +708,6 @@ body.auth-rtl .auth-note-list {
 .auth-feat-icon--gold   { background: rgba(245,158,11,.25);  color: #fcd34d; }
 .auth-feat-icon--teal   { background: rgba(15,143,131,.35);  color: #99f6e4; }
 
-.auth-feat-body {}
 .auth-feat-title {
     font-size: .84rem;
     font-weight: 700;
