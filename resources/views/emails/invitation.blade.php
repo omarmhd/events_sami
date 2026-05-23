@@ -64,8 +64,14 @@
         if ($urlPath !== '') {
             $absPath = public_path(ltrim($urlPath, '/'));
             if (is_file($absPath)) {
-                // Use the public URL for event banners so the email matches the
-                // core template behavior and renders consistently in mail clients.
+                if (isset($message)) {
+                    $binary = file_get_contents($absPath);
+                    if ($binary !== false) {
+                        $mime = mime_content_type($absPath) ?: 'image/jpeg';
+                        return $message->embedData($binary, basename($absPath), $mime);
+                    }
+                }
+
                 return asset(ltrim($urlPath, '/'));
             }
         }

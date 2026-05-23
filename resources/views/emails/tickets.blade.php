@@ -76,8 +76,9 @@
     }
 
     $resolvePublicImageSrc = function (string $src): string {
-        if ($src === '' || !isset($message)) {
-            return $src;
+        $src = trim($src);
+        if ($src === '') {
+            return '';
         }
 
         if (str_starts_with($src, 'data:image/')) {
@@ -88,15 +89,30 @@
         if ($path !== '') {
             $abs = public_path(ltrim($path, '/'));
             if (is_file($abs)) {
+                if (isset($message)) {
+                    $binary = file_get_contents($abs);
+                    if ($binary !== false) {
+                        $mime = mime_content_type($abs) ?: 'image/jpeg';
+                        return $message->embedData($binary, basename($abs), $mime);
+                    }
+                }
+
                 return asset(ltrim($path, '/'));
             }
         }
 
-        return $src;
+        if (str_starts_with($src, 'http://') || str_starts_with($src, 'https://')) {
+            return $src;
+        }
+
+        return '';
     };
 
     $headerDisplaySrc = $resolvePublicImageSrc($headerImage);
     $logoDisplaySrc = $resolvePublicImageSrc($logoUrl);
+
+    $headerImageValid = $headerDisplaySrc !== '';
+    $logoValid = $logoDisplaySrc !== '';
 @endphp
 
 <center>
@@ -105,22 +121,25 @@
         <tr>
             <td align="center" style="padding-bottom: 30px;">
 
-                @if($headerImage !== '')
+                @if($headerImageValid)
                 {{-- Show event/brand header image when available --}}
                 <div style="margin-bottom: 30px; border-radius: 0 0 20px 20px; overflow: hidden; border-bottom: 4px solid {{ $brandPrimary }};">
-                    <img src="{{ $headerDisplaySrc }}" alt="Event Banner" style="width: 100%; max-width: 600px; display: block;">
+                    <img src="{{ $headerDisplaySrc }}" alt="ترويسة الفعالية" style="width: 100%; max-width: 600px; display: block;">
                 </div>
                 @else
                 {{-- Fallback: decorative gradient banner when no image is set --}}
-                <div style="margin-bottom: 30px; border-radius: 0 0 20px 20px; overflow: hidden; border-bottom: 4px solid {{ $brandPrimary }}; background: linear-gradient(135deg, {{ $brandPrimary }}, {{ $brandSecondary }}); height: 100px; display: flex; align-items: center; justify-content: center;">
-                    <p style="margin: 0; font-size: 20px; font-weight: 700; color: #ffffff; padding: 0 20px; text-align: center;">
-                        {{ $eventTitle }}
-                    </p>
+                <div style="margin-bottom: 30px; border-radius: 0 0 20px 20px; overflow: hidden; border-bottom: 4px solid {{ $brandPrimary }}; background: linear-gradient(135deg, {{ $brandPrimary }}, {{ $brandSecondary }}); padding: 22px 16px; text-align: center;">
+                    <div style="font-size: 12px; letter-spacing: .08em; color: rgba(255,255,255,.85); margin-bottom: 6px;">تأكيد الحضور</div>
+                    <div style="font-size: 20px; font-weight: 700; color: #ffffff;">{{ $eventTitle }}</div>
                 </div>
                 @endif
 
                 <div style="margin-bottom: 12px;">
-                    <img src="{{ $logoDisplaySrc }}" alt="{{ $brandName }}" style="max-width: 180px; max-height: 44px; margin: 0 auto; object-fit: contain;">
+                    @if($logoValid)
+                        <img src="{{ $logoDisplaySrc }}" alt="{{ $brandName }}" style="max-width: 180px; max-height: 44px; margin: 0 auto; object-fit: contain;">
+                    @else
+                        <div style="display:inline-block;font-size:16px;font-weight:700;color:{{ $brandPrimary }};">{{ $brandName }}</div>
+                    @endif
                 </div>
 
                 <div style="margin-bottom: 20px; padding: 0 15px;">
