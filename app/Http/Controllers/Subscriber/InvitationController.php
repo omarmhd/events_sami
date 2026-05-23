@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 
 use App\Models\Event;
 use App\Models\EventInvitation;
+use App\Models\InvitationQr;
 use App\Mail\InvitationSent;
 use App\Services\EventAnalyticsService;
 use App\Services\PublicUrlService;
@@ -203,6 +204,9 @@ class InvitationController extends Controller
                 $invitation->save();
             }
 
+            $invitation->accessPasses()->delete();
+            InvitationQr::where('event_invitation_id', $invitation->id)->delete();
+
             $token = $invitation->invitation_token ?? $invitation->token;
             $company = $invitation->company ?? $event->company ?? null;
 
@@ -213,7 +217,11 @@ class InvitationController extends Controller
             Mail::to($email)->send(new InvitationSent($invitation, $invitationLink, $event));
 
             $invitation->update([
-                'last_sent_at' => now(),
+                'status'          => 'pending',
+                'responded_at'     => null,
+                'selected_guests'  => 0,
+                'source'           => 'resend',
+                'last_sent_at'     => now(),
             ]);
 
             return response()->json([

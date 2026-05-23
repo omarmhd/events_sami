@@ -590,6 +590,7 @@
                                     type="button"
                                     class="action-btn js-resend-invitation"
                                     data-resend-url="{{ route('events.invitations.resend', $inv) }}"
+                                    data-confirm="{{ __('invitations.index.confirm_resend_email') }}"
                                     title="{{ __('invitations.actions.resend') }}"
                                 >
                                     <i class="fas fa-paper-plane"></i>
@@ -827,7 +828,21 @@ if (selectAllCheckbox) {
 }
 
 document.querySelectorAll('.js-resend-invitation').forEach((button) => {
-    button.addEventListener('click', () => resendOne(button.dataset.resendUrl));
+    button.addEventListener('click', (event) => {
+        event.preventDefault();
+
+        AppUI.confirm({
+            title: 'تأكيد إعادة الإرسال',
+            body: button.dataset.confirm || I18N.confirmBulkResend,
+            icon: 'paper-plane',
+            danger: false,
+            confirmLabel: 'إعادة الإرسال',
+            cancelLabel: 'إلغاء',
+            onConfirm: function () {
+                resendOne(button.dataset.resendUrl);
+            },
+        });
+    });
 });
 
 document.querySelectorAll('.js-copy-link').forEach((button) => {

@@ -313,6 +313,8 @@ class EventInvitationController extends Controller
             'last_sent_at' => now(),
         ]);
 
+        $invitation->accessPasses()->delete();
+
         $event = $this->resolveEventForInvitation($invitation);
 
         // Resolve the correct company for this invitation so PublicUrlService
@@ -372,6 +374,8 @@ class EventInvitationController extends Controller
                 'last_sent_at' => now(),
             ]);
 
+            $invitation->accessPasses()->delete();
+
             InvitationQr::where('event_invitation_id', $invitation->id)->delete();
 
             $event = $invitation->event;
@@ -423,6 +427,8 @@ class EventInvitationController extends Controller
                 'source'           => 'resend',
                 'last_sent_at'     => now(),
             ]);
+
+            $invitation->accessPasses()->delete();
 
             InvitationQr::where('event_invitation_id', $invitation->id)->delete();
 

@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Mail\InvitationSent;
 use App\Models\EventInvitation;
 use App\Services\PublicUrlService;
+use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Mail;
@@ -12,6 +13,7 @@ use Illuminate\Support\Str;
 
 class SendInvitationEmail implements ShouldQueue
 {
+    use Dispatchable;
     use Queueable;
 
     public function __construct(
