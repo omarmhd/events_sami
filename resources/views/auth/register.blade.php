@@ -35,15 +35,7 @@
         <div class="mb-3">
             <label class="form-label" for="phone">رقم الجوال</label>
             <div class="d-flex gap-2">
-                <select id="phone_code" class="form-select" style="max-width:110px;" aria-label="رمز الدولة">
-                    <option value="+966" selected>+966</option>
-                    <option value="+971">+971</option>
-                    <option value="+20">+20</option>
-                    <option value="+974">+974</option>
-                    <option value="+962">+962</option>
-                    <option value="+965">+965</option>
-                </select>
-                <input type="tel" id="phone" name="phone" class="form-control @error('phone') is-invalid @enderror" value="{{ old('phone') }}" placeholder="5X XXX XXXX" required>
+                    <input type="tel" id="phone_local" name="phone_local" class="form-control @error('phone') is-invalid @enderror" value="{{ old('phone') }}" placeholder="أدخل رقم الجوال" required>
             </div>
             @error('phone')<div class="invalid-feedback">{{ $message }}</div>@enderror
         </div>
@@ -93,6 +85,10 @@
             @error('timezone')<div class="invalid-feedback">{{ $message }}</div>@enderror
         </div>
 
+        <input type="hidden" name="phone" id="phone" value="">
+        <input type="hidden" name="annual_events_estimate" value="1">
+        <input type="hidden" name="terms" value="1">
+
         <button type="submit" class="auth-btn w-100" id="submit-btn">
             إنشاء الحساب
         </button>
@@ -105,6 +101,11 @@
 @endsection
 
 @push('scripts')
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@17/build/css/intlTelInput.min.css" />
+
+<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@17/build/js/intlTelInput.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@17/build/js/utils.js"></script>
+
 <script>
     // Password toggle
     document.querySelectorAll('.toggle-pw').forEach(btn => {
@@ -161,13 +162,25 @@
         else { pwMatchEl.textContent = 'كلمتا المرور غير متطابقتان'; pwMatchEl.style.color = '#ef4444'; }
     }
 
-    // Prefix phone with selected code if not present
-    document.getElementById('register-form').addEventListener('submit', function (e) {
-        const code = document.getElementById('phone_code').value || '';
-        const phoneEl = document.getElementById('phone');
-        if (phoneEl && phoneEl.value && !phoneEl.value.trim().startsWith('+')) {
-            phoneEl.value = code + phoneEl.value.trim();
-        }
-    });
+    // Initialize intl-tel-input for phone input and set hidden phone value on submit
+    (function () {
+        var phoneInput = document.querySelector('#phone_local');
+        if (!phoneInput) return;
+
+        var iti = window.intlTelInput(phoneInput, {
+            separateDialCode: false,
+            initialCountry: 'sa',
+            utilsScript: 'https://cdn.jsdelivr.net/npm/intl-tel-input@17/build/js/utils.js'
+        });
+
+        document.getElementById('register-form').addEventListener('submit', function () {
+            try {
+                var number = iti.getNumber(); // E.164
+                document.getElementById('phone').value = number || phoneInput.value.replace(/\s+/g, '');
+            } catch (e) {
+                document.getElementById('phone').value = phoneInput.value.replace(/\s+/g, '');
+            }
+        });
+    })();
 </script>
 @endpush
