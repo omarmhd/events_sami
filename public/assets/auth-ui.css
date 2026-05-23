@@ -367,6 +367,57 @@ body.auth-body {
     border-width: 1px;
 }
 
+.auth-footer {
+    width: min(1240px, 95vw);
+    margin: 0 auto 1.4rem;
+    padding: 0 0.15rem;
+}
+
+.auth-footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.85rem 1.1rem;
+    text-align: center;
+    padding: 1rem 1.15rem;
+    border-top: 1px solid rgba(16, 42, 42, 0.08);
+    color: #5f7a76;
+}
+
+.auth-footer-copy {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #112d2e;
+}
+
+.auth-footer-email {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: var(--auth-primary);
+    background: rgba(15, 143, 131, 0.08);
+    border: 1px solid rgba(15, 143, 131, 0.16);
+    border-radius: 999px;
+    padding: 0.55rem 0.95rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+.auth-footer-email:hover {
+    transform: translateY(-1px);
+    color: var(--auth-primary);
+    background: rgba(15, 143, 131, 0.12);
+    box-shadow: 0 8px 18px rgba(15, 143, 131, 0.08);
+}
+
+.auth-footer-email i {
+    color: var(--auth-accent);
+}
+
 body.auth-rtl {
     font-family: 'Cairo', 'Outfit', sans-serif;
 }
@@ -417,6 +468,19 @@ body.auth-rtl .auth-note-list {
 
     .auth-kicker {
         font-size: 0.72rem;
+    }
+
+    .auth-footer {
+        margin-bottom: 0.9rem;
+    }
+
+    .auth-footer-inner {
+        padding: 0.95rem 0.75rem;
+    }
+
+    .auth-footer-email {
+        width: 100%;
+        justify-content: center;
     }
 }
 

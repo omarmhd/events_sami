@@ -18,6 +18,7 @@
 <body class="auth-body {{ app()->getLocale() === 'ar' ? 'auth-rtl' : '' }}">
 @php
     $platformName = \App\Models\SystemSetting::get('platform_name', config('app.name', 'Platform'));
+    $supportEmail = \App\Models\SystemSetting::get('support_email', '');
 @endphp
 
 <div class="auth-shell">
@@ -125,6 +126,21 @@
 
     </div>
 </div>
+
+<footer class="auth-footer">
+    <div class="auth-footer-inner">
+        <x-platform-logo size="sm" theme="light" />
+
+        <p class="auth-footer-copy">مع تحيات منصة {{ $platformName }}</p>
+
+        @if(!empty($supportEmail))
+            <a class="auth-footer-email" href="mailto:{{ $supportEmail }}">
+                <i class="fas fa-envelope"></i>
+                <span>{{ $supportEmail }}</span>
+            </a>
+        @endif
+    </div>
+</footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 @stack('scripts')
