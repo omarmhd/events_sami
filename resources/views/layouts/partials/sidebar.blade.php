@@ -224,11 +224,11 @@
          These are scoped to the sidebar so they don't pollute global CSS.
          Living next to the markup makes future visual tweaks easier. --}}
     <style>
-        /* Sidebar logo tweaks: remove borders/shadows and keep tidy spacing */
-        .sidebar-brand-area { display: flex; align-items: center; gap: .5rem; padding: 10px 6px; }
-        .sidebar-platform-logo .platform-logo-img { border: none !important; box-shadow: none !important; max-height: 42px; }
+        /* Sidebar logo tweaks: show logo plainly with no border or shadow */
+        .sidebar-brand-area { display: flex; align-items: center; gap: .5rem; padding: 10px 6px; background: transparent; border: none; box-shadow: none; }
+        .sidebar-brand-link { background: transparent; border: none; box-shadow: none; }
+        .sidebar-platform-logo .platform-logo-img, .sidebar-logo-img { border: none !important; box-shadow: none !important; background: transparent !important; }
         .sidebar-platform-logo .platform-logo-text { line-height: 1; }
-        .sidebar-logo-img { border: none; box-shadow: none; }
 
         .sidebar-user-link {
             display: block;
