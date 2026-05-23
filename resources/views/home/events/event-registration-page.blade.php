@@ -29,7 +29,6 @@
 @endphp
 
 @push('styles')
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/css/intlTelInput.min.css" />
 @endpush
 
 <div class="container hero">
@@ -216,11 +215,6 @@
                     </div>
 
                     <!-- Mobile with international prefixes (flags) -->
-                    <div class="col-12">
-                        <label class="form-label">{{ __('public-registration.mobile_number') }} <span class="text-danger">*</span></label>
-                        <input type="tel" id="guest_phone_input" name="guest_phone" class="form-control @error('guest_phone') is-invalid @enderror" value="{{ old('guest_phone') }}" placeholder="+971 50 000 0000" required style="border:0;border-bottom:1px solid #e5e7eb;border-radius:0;padding:.75rem .5rem;">
-                        @error('guest_phone')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
-                    </div>
 
                     <!-- Business Email (Fixed) -->
                     <div class="col-12">
@@ -396,37 +390,12 @@
 </div>
 
 @push('scripts')
-    <!-- intl-tel-input CSS -->
-    @push('styles')
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/css/intlTelInput.min.css" integrity="" crossorigin="anonymous" />
-    @endpush
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/intlTelInput.min.js" integrity="" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js" integrity="" crossorigin="anonymous"></script>
-
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.querySelector('form');
 
-        // Initialize intl-tel-input on phone field
-        const phoneInput = document.getElementById('guest_phone_input');
-        let iti = null;
-        if (phoneInput) {
-            iti = window.intlTelInput(phoneInput, {
-                initialCountry: "auto",
-                separateDialCode: true,
-                utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js"
-            });
-        }
-
         if (form) {
             form.addEventListener('submit', function(e) {
-                // Set phone value to full international number before submit
-                if (iti && phoneInput) {
-                    const full = iti.getNumber();
-                    phoneInput.value = full;
-                }
-
                 // Ensure terms checkbox is checked (HTML 'required' covers most browsers)
                 const agree = document.getElementById('agreeTerms');
                 if (agree && !agree.checked) {

@@ -139,24 +139,32 @@
     </div>
 </div>
 
-<footer class="auth-footer">
-    <div class="auth-footer-inner">
-        <div class="auth-footer-branding">
-            <x-platform-logo size="sm" theme="light" />
-            <div class="auth-footer-brand-copy">
-                <p class="auth-footer-brand-title">مع تحيات منصة {{ $platformName }}</p>
-                <p class="auth-footer-brand-subtitle">نقدّم تجربة واضحة ومترابطة في صفحات الزوار كلها.</p>
+<footer class="event-footer">
+    <div class="event-footer-inner">
+        <div class="event-footer-branding">
+            <div class="event-footer-brand">
+                <x-platform-logo size="sm" theme="light" />
+            </div>
+
+            <div class="event-footer-brand-copy">
+                <p class="event-footer-brand-title">مع تحيات منصة {{ $platformName }}</p>
+                <p class="event-footer-brand-subtitle">منصة موحدة لإدارة الدعوات، التذاكر، والحضور بطريقة أوضح وأبسط.</p>
             </div>
         </div>
 
-        @if(!empty($supportEmail))
-            <div class="auth-footer-stack">
-                <a class="auth-footer-email" href="mailto:{{ $supportEmail }}">
-                    <i class="fas fa-envelope"></i>
-                    <span>{{ $supportEmail }}</span>
+        <div class="event-footer-stack">
+                <a class="event-footer-link event-footer-link--soft" href="{{ route('platform.about') }}">
+                    <i class="fas fa-circle-info"></i>
+                    <span>تعرف على منصة معا</span>
                 </a>
-            </div>
+
+        @if(!empty($supportEmail))
+            <a class="event-footer-email" href="mailto:{{ $supportEmail }}">
+                <i class="fas fa-envelope"></i>
+                <span>{{ $supportEmail }}</span>
+            </a>
         @endif
+        </div>
     </div>
 </footer>
 
