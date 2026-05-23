@@ -133,17 +133,8 @@
     <div class="mobile-header d-lg-none">
         {{-- Mobile header logo — always uses platform admin settings (SystemSetting).
              Tenant branding (CompanyBranding) is only for email templates. --}}
-        @php
-            $mobileLogoUrl   = \App\Models\SystemSetting::get('platform_logo_url', '');
-            $mobileBrandName = \App\Models\SystemSetting::get('platform_name', config('app.name', 'Platform'));
-        @endphp
         <div class="d-flex align-items-center gap-2">
-            @if(!empty($mobileLogoUrl))
-                <img src="{{ $mobileLogoUrl }}" alt="{{ $mobileBrandName }}"
-                     style="height:24px;max-width:110px;object-fit:contain;">
-            @else
-                <div class="brand-text">{{ $mobileBrandName }}</div>
-            @endif
+            <x-platform-logo size="sm" theme="light" class="mobile-platform-logo" />
         </div>
         <button type="button" onclick="toggleSidebar()" aria-label="{{ __('ui.mobile.toggle_navigation') }}">
             <i class="fas fa-bars"></i>

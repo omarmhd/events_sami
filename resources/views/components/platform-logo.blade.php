@@ -33,6 +33,7 @@
 <div class="platform-logo-wrap {{ $extraCls }}" aria-label="{{ $logoName }}">
     @if(!empty($logoUrl))
         {{-- ── Image logo ── --}}
+        <span class="platform-logo-accent" aria-hidden="true"></span>
         <img
             src="{{ $logoUrl }}"
             alt="{{ $logoName }}"
@@ -48,6 +49,10 @@
             $part1 = implode(' ', array_slice($words, 0, $half));
             $part2 = implode(' ', array_slice($words, $half));
         @endphp
+        @php
+            $initials = collect(explode(' ', trim($logoName)))->map(fn($w) => strtoupper(substr($w,0,1)))->take(2)->join('');
+        @endphp
+        <span class="platform-logo-initial" aria-hidden="true">{{ $initials }}</span>
         <span class="platform-logo-text {{ $sizes['text'] }} logo-theme--{{ $themeVal }}">
             {{ $part1 }}<span class="logo-accent">{{ $part2 ? ' ' . $part2 : '' }}</span>
         </span>
@@ -61,13 +66,18 @@
     display: inline-flex;
     align-items: center;
     line-height: 1;
+    gap: .5rem;
 }
 
 /* Image variant */
-.platform-logo-img { object-fit: contain; display: block; }
+.platform-logo-accent { display: none; }
+.platform-logo-img { object-fit: contain; display: block; border-radius: 6px; background: transparent; }
 .platform-logo-img.logo-img--sm { height: 28px; max-width: 110px; }
 .platform-logo-img.logo-img--md { height: 36px; max-width: 150px; }
 .platform-logo-img.logo-img--lg { height: 48px; max-width: 200px; }
+
+.platform-logo-initial { display: none; }
+
 
 /* Text variant */
 .platform-logo-text {
@@ -100,4 +110,32 @@
     color: #ffd089;
     -webkit-text-fill-color: #ffd089;
 }
+
+/* Sidebar / compact variants — these are enabled when the component is
+   used with an extra class like `sidebar-platform-logo` or `mobile-platform-logo` */
+.sidebar-platform-logo .platform-logo-accent,
+.mobile-platform-logo .platform-logo-accent {
+    display: block;
+    width: 6px;
+    height: 36px;
+    border-radius: 6px;
+    background: var(--primary-color, #0f8f83);
+}
+.sidebar-platform-logo .platform-logo-accent { height: 42px; }
+.sidebar-platform-logo .platform-logo-img,
+.mobile-platform-logo .platform-logo-img { box-shadow: none; border: none; }
+.sidebar-platform-logo .platform-logo-img { max-height: 42px; }
+.sidebar-platform-logo .platform-logo-initial,
+.mobile-platform-logo .platform-logo-initial {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(15,143,131,.12), rgba(15,143,131,.06));
+    color: var(--primary-color, #0f8f83);
+    font-weight: 800;
+}
+.sidebar-platform-logo .platform-logo-text { font-size: 1rem; }
 </style>
