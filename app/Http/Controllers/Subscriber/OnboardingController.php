@@ -23,11 +23,11 @@ class OnboardingController extends Controller
             $company = $user->company;
 
             if (!$user->organization_id && !$user->company_id) {
-                return redirect()->route('onboarding.profile');
+                return redirect()->route('register');
             }
 
             if (!$company || !$company->onboarding_completed_at) {
-                return redirect()->route('onboarding.profile');
+                return redirect()->route('register');
             }
 
             $settings = $company->settings ?? [];
@@ -76,11 +76,11 @@ class OnboardingController extends Controller
             $user = $request->user();
 
             if (!$user->organization_id && !$user->company_id) {
-                return redirect()->route('onboarding.profile');
+                return redirect()->route('register');
             }
 
             if (!$user->company || !$user->company->onboarding_completed_at) {
-                return redirect()->route('onboarding.profile');
+                return redirect()->route('register');
             }
         }
 
@@ -121,13 +121,13 @@ class OnboardingController extends Controller
 
         // ── Case 1: No company linked yet → new user, go complete profile ──
         if (!$user->organization_id && !$user->company_id) {
-            return redirect()->route('onboarding.profile')
+            return redirect()->route('register')
                 ->with('warning', 'يرجى استكمال تسجيل بيانات المنظمة أولاً.');
         }
 
         // ── Case 2: Company exists but onboarding not finished ──
         if (!$company || !$company->onboarding_completed_at) {
-            return redirect()->route('onboarding.profile')
+            return redirect()->route('register')
                 ->with('warning', 'يرجى استكمال بيانات المنظمة للمتابعة.');
         }
 
@@ -223,7 +223,7 @@ class OnboardingController extends Controller
         $company = $user->company;
 
         if (!$company || !$company->onboarding_completed_at) {
-            return redirect()->route('onboarding.profile');
+            return redirect()->route('register');
         }
 
         // Persist the flag in company.settings so subsequent logins go straight

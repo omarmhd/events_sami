@@ -31,7 +31,7 @@ class EnsureCompanyContext
         }
 
         if (!$user->company_id && !$user->organization_id) {
-            return redirect()->route('onboarding.profile');
+            return redirect()->route('register');
         }
 
         $userOrganizationId = $user->organization_id ?: $user->company_id;
@@ -41,7 +41,7 @@ class EnsureCompanyContext
         }
 
         if ($user->company && !$user->company->onboarding_completed_at) {
-            return redirect()->route('onboarding.profile');
+            return redirect()->route('register');
         }
 
         return $next($request);

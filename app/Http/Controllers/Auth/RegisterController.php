@@ -41,12 +41,11 @@ class RegisterController extends Controller
             'email'    => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'phone'    => ['required', 'string', 'max:30'],
             'password' => ['required', 'confirmed', Password::min(8)],
-            'terms'    => ['accepted'],
 
             // بيانات مساحة العمل
             'company_name'            => ['required', 'string', 'max:160'],
             'subdomain'               => ['nullable', 'alpha_dash', 'min:3', 'max:40', 'unique:companies,subdomain'],
-            'annual_events_estimate'  => ['required', 'integer', 'min:1', 'max:10000'],
+            'annual_events_estimate'  => ['nullable', 'integer', 'min:1', 'max:10000'],
             'timezone'                => ['nullable', 'string', 'max:64'],
             'preferred_plan_code'     => ['nullable', 'exists:subscription_plans,code'],
         ], [
@@ -86,7 +85,7 @@ class RegisterController extends Controller
             'phone'                  => $request->phone,
             'company_name'           => $request->company_name,
             'subdomain'              => $request->subdomain,
-            'annual_events_estimate' => $request->annual_events_estimate,
+            'annual_events_estimate' => $request->input('annual_events_estimate', 5),
             'timezone'               => $request->timezone ?: 'Asia/Riyadh',
             'preferred_plan_code'    => $request->preferred_plan_code,
         ]);
