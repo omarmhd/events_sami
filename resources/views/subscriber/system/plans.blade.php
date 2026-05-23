@@ -193,10 +193,10 @@
                                             data-bs-target="#editPlanModal{{ $plan->id }}">
                                         <i class="fas fa-pen-to-square"></i> تعديل
                                     </button>
-                                    <form action="{{ route('system.plans.destroy', $plan) }}" method="POST"
-                                          onsubmit="return confirm('هل أنت متأكد من حذف هذه الخطة؟')">
+                                                                        <form action="{{ route('system.plans.destroy', $plan) }}" method="POST"
+                                                                                    data-confirm="هل أنت متأكد من حذف هذه الخطة؟">
                                         @csrf @method('DELETE')
-                                        <button type="submit" class="btn-action btn-action-danger">
+                                                                                <button type="submit" class="btn-action btn-action-danger js-confirm-action" data-confirm="هل أنت متأكد من حذف هذه الخطة؟">
                                             <i class="fas fa-trash"></i> حذف
                                         </button>
                                     </form>

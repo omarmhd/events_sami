@@ -773,44 +773,49 @@ function bulkResendSelected() {
     }
 
     const confirmMessage = I18N.confirmBulkResend.replace(':count', checked.length);
-    if (!confirm(confirmMessage)) return;
+    AppUI.confirm({
+        body: confirmMessage,
+        danger: false,
+        confirmLabel: 'تأكيد',
+        onConfirm: function () {
+            // Show loading state on button
+            const btn = document.querySelector('[onclick="bulkResendSelected()"]');
+            const originalHTML = btn ? btn.innerHTML : null;
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> جاري الإرسال...';
+            }
 
-    // Show loading state on button
-    const btn = document.querySelector('[onclick="bulkResendSelected()"]');
-    const originalHTML = btn ? btn.innerHTML : null;
-    if (btn) {
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> جاري الإرسال...';
-    }
-
-    fetch('{{ route("invitations.bulk_resend_selected") }}', {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': CSRF,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
+            fetch('{{ route("invitations.bulk_resend_selected") }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': CSRF,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({selected_ids: checked}),
+            })
+            .then(r => r.json())
+            .then(d => {
+                if (d.success) {
+                    Toastify({text: d.message ?? I18N.resendSuccess, duration: 3500, style: {background: 'var(--success-color)'}}).showToast();
+                    // Uncheck all
+                    document.getElementById('select-all').checked = false;
+                    document.querySelectorAll('.inv-check').forEach(c => c.checked = false);
+                } else {
+                    Toastify({text: d.message ?? I18N.resendFailed, duration: 3500, style: {background: 'var(--danger-color)'}}).showToast();
+                }
+            })
+            .catch(() => {
+                Toastify({text: I18N.resendFailed, duration: 3000, style: {background: 'var(--danger-color)'}}).showToast();
+            })
+            .finally(() => {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalHTML;
+                }
+            });
         },
-        body: JSON.stringify({selected_ids: checked}),
-    })
-    .then(r => r.json())
-    .then(d => {
-        if (d.success) {
-            Toastify({text: d.message ?? I18N.resendSuccess, duration: 3500, style: {background: 'var(--success-color)'}}).showToast();
-            // Uncheck all
-            document.getElementById('select-all').checked = false;
-            document.querySelectorAll('.inv-check').forEach(c => c.checked = false);
-        } else {
-            Toastify({text: d.message ?? I18N.resendFailed, duration: 3500, style: {background: 'var(--danger-color)'}}).showToast();
-        }
-    })
-    .catch(() => {
-        Toastify({text: I18N.resendFailed, duration: 3000, style: {background: 'var(--danger-color)'}}).showToast();
-    })
-    .finally(() => {
-        if (btn) {
-            btn.disabled = false;
-            btn.innerHTML = originalHTML;
-        }
     });
 }
 
@@ -838,10 +843,7 @@ document.querySelectorAll('.js-copy-btn').forEach((button) => {
 
 document.querySelectorAll('.js-confirm-action').forEach((button) => {
     button.addEventListener('click', function (event) {
-        const message = button.getAttribute('data-confirm') || '';
-        if (message && !confirm(message)) {
-            event.preventDefault();
-        }
+        event.preventDefault();
     });
 });
 </script>

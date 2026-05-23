@@ -129,20 +129,18 @@
                                 </form>
                                 <form action="{{ route('system.renewal-requests.dismiss', $req) }}" method="POST" style="display:inline;">
                                     @csrf @method('PATCH')
-                                    <button type="submit" class="btn-action btn-action-danger"
+                                    <button type="submit" class="btn-action btn-action-danger js-confirm-action"
                                             title="أرشفة الطلب"
-                                            data-confirm="أرشفة هذا الطلب؟"
-                                            class="btn-action btn-action-danger js-confirm-action">
+                                            data-confirm="أرشفة هذا الطلب؟">
                                         <i class="fas fa-archive"></i>
                                     </button>
                                 </form>
                                 @elseif($req->status === 'contacted')
                                 <form action="{{ route('system.renewal-requests.dismiss', $req) }}" method="POST" style="display:inline;">
                                     @csrf @method('PATCH')
-                                    <button type="submit" class="btn-action btn-action-danger"
+                                    <button type="submit" class="btn-action btn-action-danger js-confirm-action"
                                             title="أرشفة الطلب"
-                                            data-confirm="أرشفة هذا الطلب؟"
-                                            class="btn-action btn-action-danger js-confirm-action">
+                                            data-confirm="أرشفة هذا الطلب؟">
                                         <i class="fas fa-archive"></i>
                                     </button>
                                 </form>

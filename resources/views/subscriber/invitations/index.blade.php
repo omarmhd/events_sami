@@ -491,11 +491,7 @@
 
             const confirmButton = event.target.closest('.js-confirm-action');
             if (confirmButton) {
-                const message = confirmButton.getAttribute('data-confirm') || '';
-                if (message && !confirm(message)) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
+                return;
             }
         });
 
