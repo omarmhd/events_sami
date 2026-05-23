@@ -61,18 +61,22 @@ body.auth-body {
 
 .auth-grid--compact {
     grid-template-columns: 1fr;
-    max-width: 760px;
+    max-width: none;
     margin: 0 auto;
 }
 
 .auth-grid--compact .auth-panel-form {
     min-height: calc(100dvh - 4rem);
-    padding: 2rem;
+    padding: 1.65rem 1.8rem;
+    width: 100%;
+    justify-content: flex-start;
+    align-items: stretch;
 }
 
 .auth-grid--compact .auth-card {
-    width: min(620px, 100%);
-    padding: 2rem 1.9rem;
+    width: 100%;
+    max-width: none;
+    padding: 2rem 2rem;
 }
 
 .auth-grid--compact .auth-mobile-brand {
