@@ -63,17 +63,12 @@ class EmailTemplateService
         $platformEmail = SystemSetting::get('platform_sender_email',
             config('mail.from.address', 'noreply@' . config('app.domain', 'platform.com')));
 
-        $displaySenderName = $branding->sender_name ?: ($company->name ?: config('app.name'));
-        if (!empty($branding->sender_email)) {
-            $displaySenderName .= ' <' . $branding->sender_email . '>';
-        }
-
         return [
             'subject'       => $subject,
             'html'          => $wrappedHtml,
-            'from_name'     => $displaySenderName,
+            'from_name'     => $branding->brand_name ?: ($company->name ?: config('app.name')),
             'from_email'    => $platformEmail,
-            'reply_to'      => $branding->reply_to_email ?: ($branding->sender_email ?: $platformEmail),
+            'reply_to'      => $branding->reply_to_email ?: $platformEmail,
             'variables'     => $baseVariables,
             'template_used' => $template,
         ];
@@ -382,6 +377,10 @@ HTML,
             'tickets_count' => 0,
             'qr_code_image' => '',
             'support_phone' => $company->phone ?: '',
+            'reply_to_email' => $branding->reply_to_email ?: '',
+            'reply_to_email_label' => $branding->reply_to_email
+                ? ('لأي مشاكل في التواصل، راسلنا على: ' . $branding->reply_to_email)
+                : '',
             'current_year' => date('Y'),
         ];
 
@@ -398,12 +397,20 @@ HTML,
         // Only render the logo <img> when a URL is actually available.
         $logoHtml = $logoUrl !== ''
             ? '<img src="' . e($logoUrl) . '" alt="Logo" style="height:34px;max-width:160px;object-fit:contain;">'
-            : '<span style="font-size:15px;font-weight:700;color:#0f8f83;">' . $brand . '</span>';
+            : '<span style="font-size:15px;font-weight:700;color:' . $primary . ';">' . $brand . '</span>';
 
-        // Only render the header section when header HTML has meaningful content.
-        $headerRow = trim(strip_tags($headerHtml)) !== '' || str_contains($headerHtml, '<img')
-            ? '<tr><td style="padding:0;">' . $headerHtml . '</td></tr>'
-            : '';
+        // Render provided header HTML when present; otherwise render a flexible
+        // decorative banner that looks good whether or not a header image was uploaded.
+        if (trim(strip_tags($headerHtml)) !== '' || str_contains($headerHtml, '<img')) {
+            $headerRow = '<tr><td style="padding:0;">' . $headerHtml . '</td></tr>';
+        } else {
+            $bannerText = e(trim((string) ($variables['event_title'] ?? '')) ?: $brand);
+            $bannerHtml = '<div style="text-align:center;padding:26px 18px;background:linear-gradient(135deg,' . $primary . ',' . $secondary . ');color:#fff;">'
+                . '<div style="font-size:20px;font-weight:700;line-height:1.1;">' . $bannerText . '</div>'
+                . '</div>';
+
+            $headerRow = '<tr><td style="padding:0;">' . $bannerHtml . '</td></tr>';
+        }
 
         return '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head>'
             . '<body style="margin:0;padding:26px 12px;background:#f3f8f6;font-family:Segoe UI,Tahoma,Arial,sans-serif;">'
@@ -439,6 +446,7 @@ HTML;
     <div style="margin-bottom:6px;color:#2d4b48;font-weight:600;">{{brand_name}}</div>
     <div style="color:#6e8783;">
         Support: {{support_phone}}<br>
+        {{reply_to_email_label}}<br>
         &copy; {{current_year}} {{app_name}}. All rights reserved.
     </div>
 </div>

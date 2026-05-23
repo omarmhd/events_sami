@@ -268,7 +268,7 @@
                         <h5 class="fw-bold mb-0" style="color: var(--text-main);">الهوية البصرية</h5>
                         <p class="mb-0 small" style="color: var(--text-soft);">
                             @if($visualIdentityEnabled ?? true)
-                                هوية المُرسل والألوان التي تظهر في رسائل البريد الإلكتروني
+                                الهوية والألوان التي تظهر في رسائل البريد الإلكتروني
                             @else
                                 معاينة للإعدادات الافتراضية — التعديل يتطلب ترقية الخطة
                             @endif
@@ -294,7 +294,7 @@
                 {{-- ── Sender Info ── --}}
                 <div class="section-label">
                     <i class="fas fa-envelope" style="color:var(--primary-color);"></i>
-                    معلومات المُرسل
+                    معلومات البريد
                 </div>
 
                 <div class="row g-3 mb-4">
@@ -304,13 +304,6 @@
                                class="form-control"
                                placeholder="مثال: شركة المستقبل"
                                value="{{ old('brand_name', $branding->brand_name) }}">
-                    </div>
-                    <div class="col-md-4">
-                        <label class="field-label">اسم المُرسل</label>
-                        <input name="sender_name"
-                               class="form-control"
-                               placeholder="الاسم الذي يظهر للمستلم"
-                               value="{{ old('sender_name', $branding->sender_name) }}">
                     </div>
                     <div class="col-md-4">
                         <label class="field-label">بريد المُرسل</label>
@@ -327,7 +320,7 @@
                                class="form-control"
                                placeholder="support@example.com"
                                value="{{ old('reply_to_email', $branding->reply_to_email) }}">
-                        <span class="field-hint">البريد الذي يصل إليه الرد من العملاء</span>
+                        <span class="field-hint">يظهر في الفوتر كوسيلة تواصل عند وجود مشكلة، ويُستخدم أيضًا كعنوان ردّ للبريد الصادر.</span>
                     </div>
                 </div>
 
@@ -347,7 +340,7 @@
                         <label class="field-label">شعار العلامة التجارية</label>
 
                         {{-- Preview + X (shown only if logo exists) --}}
-                        <div id="logoPreviewWrapEmail" style="{{ $branding->logo_url ? '' : 'display:none;' }} margin-bottom:8px;">
+                        <div id="logoPreviewWrapEmail" class="{{ $branding->logo_url ? '' : 'd-none' }}" style="margin-bottom:8px;">
                             <div style="position:relative;display:inline-block;">
                                 <img id="preview-logo"
                                      src="{{ $branding->logo_url }}"
@@ -372,7 +365,7 @@
                         <label class="field-label">صورة الرأس</label>
 
                         {{-- Preview + X --}}
-                        <div id="headerPreviewWrapEmail" style="{{ $branding->header_image_url ? '' : 'display:none;' }} margin-bottom:8px;">
+                        <div id="headerPreviewWrapEmail" class="{{ $branding->header_image_url ? '' : 'd-none' }}" style="margin-bottom:8px;">
                             <div style="position:relative;display:inline-block;">
                                 <img id="headerImgPreview"
                                      src="{{ $branding->header_image_url }}"

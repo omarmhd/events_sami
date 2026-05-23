@@ -153,12 +153,13 @@ class EmailSettingsController extends Controller
             ],
             'primary_color'     => ['required', 'regex:/^#[A-Fa-f0-9]{6}$/'],
             'secondary_color'   => ['required', 'regex:/^#[A-Fa-f0-9]{6}$/'],
-            'sender_name'       => ['nullable', 'string', 'max:120'],
             'sender_email'      => ['nullable', 'email', 'max:190'],
             'reply_to_email'    => ['nullable', 'email', 'max:190'],
             'header_html'       => ['nullable', 'string'],
             'footer_html'       => ['nullable', 'string'],
         ]);
+
+        $data['sender_name'] = null;
 
         $existingBranding = CompanyBranding::where('company_id', $company->id)->first();
 
