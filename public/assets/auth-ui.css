@@ -434,6 +434,53 @@ body.auth-body {
     width: 100%;
 }
 
+.auth-password-field {
+    position: relative;
+}
+
+.auth-password-field .form-control {
+    padding-inline-end: 3rem;
+}
+
+.auth-rtl .auth-password-field .form-control {
+    padding-inline-end: 0.95rem;
+    padding-inline-start: 3rem;
+}
+
+.auth-password-field .auth-toggle-pw {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    inset-inline-end: 0.35rem;
+    width: 2.2rem;
+    height: 2.2rem;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    color: #5f7a76;
+}
+
+.auth-rtl .auth-password-field .auth-toggle-pw {
+    inset-inline-end: auto;
+    inset-inline-start: 0.35rem;
+}
+
+.auth-password-field .auth-toggle-pw:hover,
+.auth-password-field .auth-toggle-pw:focus-visible {
+    background: rgba(15, 143, 131, 0.08);
+    outline: none;
+}
+
+.auth-password-field .auth-toggle-pw-icon {
+    font-size: 0.85rem;
+    color: #5f7a76;
+}
+
 .auth-form .input-group > .form-control,
 .auth-form .input-group > .form-select {
     position: relative;

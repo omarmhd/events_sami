@@ -61,21 +61,21 @@
 
             <div class="col-md-6">
                 <label class="form-label" for="password">كلمة المرور</label>
-                <div class="input-group">
+                <div class="auth-password-field">
                     <input type="password" id="password" name="password" class="form-control @error('password') is-invalid @enderror" placeholder="8 أحرف على الأقل" required>
-                    <button type="button" class="input-group-text auth-toggle-pw toggle-pw" data-target="password">
+                    <button type="button" class="auth-toggle-pw toggle-pw" data-target="password">
                         <i class="fas fa-eye-slash auth-toggle-pw-icon"></i>
                     </button>
-                    @error('password')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 </div>
+                @error('password')<div class="invalid-feedback">{{ $message }}</div>@enderror
                 <div id="pw-strength" class="mt-1" style="font-size:0.75rem; color:#a0b8b4;"></div>
             </div>
 
             <div class="col-md-6">
                 <label class="form-label" for="password_confirmation">تأكيد كلمة المرور</label>
-                <div class="input-group">
+                <div class="auth-password-field">
                     <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" placeholder="أعد كتابة كلمة المرور" required>
-                    <button type="button" class="input-group-text auth-toggle-pw toggle-pw" data-target="password_confirmation">
+                    <button type="button" class="auth-toggle-pw toggle-pw" data-target="password_confirmation">
                         <i class="fas fa-eye-slash auth-toggle-pw-icon"></i>
                     </button>
                 </div>
