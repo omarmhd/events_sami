@@ -28,6 +28,10 @@
     $hasImage = $eventImage !== '';
 @endphp
 
+@push('styles')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/css/intlTelInput.min.css" />
+@endpush
+
 <div class="container hero">
     <div class="hero-shell">
         @if($hasImage)
@@ -206,8 +210,16 @@
                             class="form-control @error('guest_name') is-invalid @enderror" 
                             value="{{ old('guest_name') }}" 
                             placeholder="{{ app()->getLocale() === 'ar' ? 'محمد علي' : 'John Doe' }}"
-                            required>
+                            required
+                            style="border:0;border-bottom:1px solid #e5e7eb;border-radius:0;padding:.75rem .5rem;">
                         @error('guest_name')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
+                    </div>
+
+                    <!-- Mobile with international prefixes (flags) -->
+                    <div class="col-12">
+                        <label class="form-label">{{ __('public-registration.mobile_number') }} <span class="text-danger">*</span></label>
+                        <input type="tel" id="guest_phone_input" name="guest_phone" class="form-control @error('guest_phone') is-invalid @enderror" value="{{ old('guest_phone') }}" placeholder="+971 50 000 0000" required style="border:0;border-bottom:1px solid #e5e7eb;border-radius:0;padding:.75rem .5rem;">
+                        @error('guest_phone')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
                     </div>
 
                     <!-- Business Email (Fixed) -->
@@ -222,16 +234,24 @@
                             class="form-control @error('guest_email') is-invalid @enderror" 
                             value="{{ old('guest_email') }}" 
                             placeholder="email@company.com"
-                            required>
+                            required
+                            style="border:0;border-bottom:1px solid #e5e7eb;border-radius:0;padding:.75rem .5rem;">
                         @error('guest_email')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
+                    </div>
+
+                    <!-- Company / Organization -->
+                    <div class="col-12">
+                        <label class="form-label">{{ __('public-registration.organization') }}</label>
+                        <input type="text" name="form_payload[company_name]" class="form-control" value="{{ old('form_payload.company_name') }}" placeholder="{{ app()->getLocale()==='ar' ? 'اسم الجهة / الشركة' : 'Organization or Company' }}" style="border:0;border-bottom:1px solid #e5e7eb;border-radius:0;padding:.75rem .5rem;">
                     </div>
 
                     <!-- Dynamic Fields Only (exclude built-in name/email fields) -->
                     @php
                         $builtinKeys = ['full_name','email','guest_name','guest_email','name'];
+                        $excludeLabels = ['الاسم الكامل','full name','email','البريد الإلكتروني','البريد الإلكتروني للعمل','work email','business email','الفعاليات المتوقعة','expected events','expected_event','expected_events'];
                         $filteredFields = collect($dynamicFields ?? [])->filter(
                             fn($f) => !in_array($f['key'] ?? $f['name'] ?? '', $builtinKeys, true)
-                                   && !in_array(strtolower($f['label'] ?? ''), ['الاسم الكامل','full name','email','البريد الإلكتروني','البريد الإلكتروني للعمل','work email','business email'], true)
+                                   && !in_array(strtolower($f['label'] ?? ''), array_map('strtolower', $excludeLabels), true)
                         )->values()->all();
                     @endphp
                     @if(!empty($filteredFields))
@@ -327,6 +347,17 @@
                         </div>
                     </div>
 
+                    <!-- Terms Checkbox -->
+                    <div class="col-12">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="1" id="agreeTerms" required>
+                            <label class="form-check-label" for="agreeTerms">
+                                {{ __('public-registration.agree_terms') }}
+                                <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">{{ __('public-registration.view_terms') }}</a>
+                            </label>
+                        </div>
+                    </div>
+
                     <!-- Submit Button -->
                     <div class="col-12">
                         <button 
@@ -345,12 +376,65 @@
     </div>
 </div>
 
+<!-- Terms Modal -->
+<div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="termsModalLabel">{{ __('public-registration.terms_title') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="max-height:60vh;overflow:auto;">
+                {{-- Put the commonly used terms text here; can be replaced by dynamic content later --}}
+                <p>شروط الاستخدام: يرجى قراءة الشروط والأحكام بعناية قبل التسجيل. بموافقتك على هذه الشروط، توافق على أن بياناتك قد تُستخدم وفقًا لسياسة الخصوصية.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('public-registration.close') }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @push('scripts')
-<script>
+    <!-- intl-tel-input CSS -->
+    @push('styles')
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/css/intlTelInput.min.css" integrity="" crossorigin="anonymous" />
+    @endpush
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/intlTelInput.min.js" integrity="" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js" integrity="" crossorigin="anonymous"></script>
+
+    <script>
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.querySelector('form');
+
+        // Initialize intl-tel-input on phone field
+        const phoneInput = document.getElementById('guest_phone_input');
+        let iti = null;
+        if (phoneInput) {
+            iti = window.intlTelInput(phoneInput, {
+                initialCountry: "auto",
+                separateDialCode: true,
+                utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js"
+            });
+        }
+
         if (form) {
             form.addEventListener('submit', function(e) {
+                // Set phone value to full international number before submit
+                if (iti && phoneInput) {
+                    const full = iti.getNumber();
+                    phoneInput.value = full;
+                }
+
+                // Ensure terms checkbox is checked (HTML 'required' covers most browsers)
+                const agree = document.getElementById('agreeTerms');
+                if (agree && !agree.checked) {
+                    e.preventDefault();
+                    agree.focus();
+                    return false;
+                }
+
                 // Show loading state
                 const btnText = document.getElementById('btn-text');
                 const btnSpinner = document.getElementById('btn-spinner');
@@ -361,7 +445,7 @@
             });
         }
     });
-</script>
+    </script>
 @endpush
 
 @endsection
