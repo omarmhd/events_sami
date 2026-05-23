@@ -4,63 +4,40 @@
 
 @push('styles')
     <style>
-        .registrations-shell {
-            background: linear-gradient(180deg, rgba(15,143,131,.06), rgba(15,143,131,0));
-            border-radius: 28px;
-            padding: 1.25rem;
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
         }
 
-        .registrations-card {
-            background: #fff;
-            border: 1px solid #eef2f7;
+        .btn-action {
+            background: var(--grad-primary);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(15, 143, 131, 0.3);
+            transition: 0.3s;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(15, 143, 131, 0.4);
+            color: white;
+        }
+
+        .custom-card {
+            background: white;
             border-radius: 24px;
-            box-shadow: 0 18px 45px rgba(15, 23, 42, .06);
+            border: 1px solid #f1f5f9;
+            box-shadow: var(--shadow-card);
             overflow: hidden;
+            min-height: 400px;
         }
 
-        .registrations-toolbar {
-            border-bottom: 1px solid #eef2f7;
-            background: #fff;
-        }
-
-        .registrations-toolbar .form-select,
-        .registrations-toolbar .form-control {
-            background: #f8fafc;
-            border-color: #e2e8f0;
-            border-radius: 12px;
-        }
-
-        .registrations-toolbar .form-select:focus,
-        .registrations-toolbar .form-control:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(15,143,131,.12);
-            background: #fff;
-        }
-
-        .registrations-stat {
-            background: #fff;
-            border: 1px solid #eef2f7;
-            border-radius: 18px;
-            padding: 1rem 1.1rem;
-            box-shadow: 0 10px 25px rgba(15, 23, 42, .04);
-        }
-
-        .registrations-stat .label {
-            font-size: .78rem;
-            color: var(--text-soft);
-            text-transform: uppercase;
-            letter-spacing: .06em;
-            font-weight: 700;
-        }
-
-        .registrations-stat .value {
-            font-size: 1.3rem;
-            font-weight: 800;
-            color: var(--text-main);
-            line-height: 1.1;
-        }
-
-        .registrations-table thead th {
+        .table-custom thead th {
             background: #f8fafc;
             color: var(--text-soft);
             font-size: .72rem;
@@ -72,16 +49,28 @@
             white-space: nowrap;
         }
 
-        .registrations-table tbody td {
+        .table-custom tbody td {
             padding: .95rem .9rem;
             vertical-align: middle;
             border-bottom: 1px solid #f1f5f9;
             font-size: .9rem;
         }
 
-        .registrations-table tbody tr:hover td {
+        .table-custom tbody tr:hover td {
             background: #fafcfb;
         }
+
+        .badge-soft {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-success { background: #dcfce7; color: #166534; }
+        .badge-danger { background: #fee2e2; color: #991b1b; }
+        .badge-warning { background: #fef3c7; color: #92400e; }
+        .badge-neutral { background: #f1f5f9; color: #64748b; }
 
         .registration-pill {
             display: inline-flex;
@@ -129,25 +118,88 @@
             font-size: .78rem;
         }
 
+        .registrations-summary {
+            display: flex;
+            gap: .75rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .summary-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            padding: .45rem .8rem;
+            border-radius: 999px;
+            border: 1px solid #e2e8f0;
+            background: #fff;
+            color: var(--text-main);
+            font-size: .82rem;
+            font-weight: 700;
+        }
+
+        .search-container {
+            position: relative;
+            max-width: 480px;
+            width: 100%;
+        }
+
+        .search-input {
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 12px 15px 12px 45px;
+            width: 100%;
+            font-size: 0.95rem;
+            transition: 0.3s;
+        }
+
+        .search-input:focus {
+            background: white;
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(15,143,131,.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+
         @media (max-width: 768px) {
-            .registrations-shell { padding: .75rem; }
-            .registrations-toolbar .input-group { flex-direction: column; }
-            .registrations-toolbar .input-group > * { width: 100%; border-radius: 12px !important; }
+            .page-header { flex-direction: column; align-items: flex-start; gap: 15px; }
             .registration-actions { justify-content: flex-start; }
+            .registrations-summary { width: 100%; }
         }
     </style>
 @endpush
 
 @section('content')
-<div class="container-fluid px-0 registrations-shell">
-    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+<div class="container-fluid px-0">
+    <div class="page-header">
         <div>
             <h1 class="h4 fw-bold mb-1">التسجيلات العامة</h1>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0 small">
+                    <li class="breadcrumb-item"><a href="{{ route('dashboard.index') }}" class="text-decoration-none text-muted">الرئيسية</a></li>
+                    <li class="breadcrumb-item"><a href="{{ route('events.index') }}" class="text-decoration-none text-muted">الفعاليات</a></li>
+                    <li class="breadcrumb-item active text-primary">التسجيلات العامة</li>
+                </ol>
+            </nav>
             <p class="text-muted mb-0">{{ $event->title ?: $event->name }}</p>
         </div>
-        <div class="d-flex flex-wrap gap-2 align-items-center">
-            <span class="badge rounded-pill text-bg-light border text-dark px-3 py-2">
-                <i class="fas fa-list-ul me-1"></i>{{ $totalRegistrations ?? 0 }} تسجيل
+        <div class="registrations-summary">
+            <span class="summary-pill">
+                <i class="fas fa-list-ul text-primary"></i>{{ $totalRegistrations ?? 0 }} تسجيل
+            </span>
+            <span class="summary-pill">
+                <i class="fas fa-hourglass-half text-warning"></i>{{ (int) ($statusStats['pending'] ?? 0) }} قيد المراجعة
+            </span>
+            <span class="summary-pill">
+                <i class="fas fa-circle-check text-success"></i>{{ (int) ($statusStats['accepted'] ?? 0) }} مقبول
             </span>
             <a href="{{ route('events.index') }}" class="btn btn-outline-secondary rounded-pill px-4">
                 <i class="fas fa-arrow-left ms-1"></i> العودة للفعاليات
@@ -155,63 +207,45 @@
         </div>
     </div>
 
-    <div class="row g-3 mb-4">
-        <div class="col-12 col-md-4">
-            <div class="registrations-stat">
-                <div class="label">الإجمالي</div>
-                <div class="value">{{ $totalRegistrations ?? 0 }}</div>
-            </div>
-        </div>
-        <div class="col-12 col-md-4">
-            <div class="registrations-stat">
-                <div class="label">قيد المراجعة</div>
-                <div class="value">{{ (int) ($statusStats['pending'] ?? 0) }}</div>
-            </div>
-        </div>
-        <div class="col-12 col-md-4">
-            <div class="registrations-stat">
-                <div class="label">مقبول / مرفوض</div>
-                <div class="value">{{ (int) ($statusStats['accepted'] ?? 0) + (int) ($statusStats['rejected'] ?? 0) }}</div>
-            </div>
-        </div>
-    </div>
+    <div class="custom-card">
+        <div class="card-body p-0">
+            <div class="p-4 border-bottom bg-white d-flex flex-column flex-xl-row justify-content-between align-items-stretch align-items-xl-center gap-3">
+                <form action="{{ route('events.registrations.index', $event) }}" method="get" class="w-100" style="max-width: 720px;">
+                    <div class="input-group invitation-filter-group">
+                        <select name="status" class="form-select" style="max-width: 210px;">
+                            <option value="all" {{ $statusFilter === 'all' ? 'selected' : '' }}>كل الحالات</option>
+                            <option value="pending" {{ $statusFilter === 'pending' ? 'selected' : '' }}>قيد المراجعة</option>
+                            <option value="accepted" {{ $statusFilter === 'accepted' ? 'selected' : '' }}>مقبول</option>
+                            <option value="rejected" {{ $statusFilter === 'rejected' ? 'selected' : '' }}>مرفوض</option>
+                        </select>
+                        <span class="input-group-text bg-white border-end-0 border-start-0">
+                            <i class="fas fa-search text-muted"></i>
+                        </span>
+                        <input type="search"
+                               name="searchInput"
+                               class="form-control border-start-0 ps-0"
+                               placeholder="بحث بالاسم، البريد، الهاتف، المسمى الوظيفي..."
+                               value="{{ $search ?? '' }}">
+                        <button class="btn btn-primary px-4" type="submit">
+                            بحث
+                        </button>
+                        @if(($search ?? '') !== '' || ($statusFilter ?? 'all') !== 'all')
+                            <a href="{{ route('events.registrations.index', $event) }}" class="btn btn-outline-secondary px-3">
+                                مسح
+                            </a>
+                        @endif
+                    </div>
+                </form>
 
-    <div class="registrations-card">
-        <div class="registrations-toolbar p-3 p-lg-4">
-            <form action="{{ route('events.registrations.index', $event) }}" method="get">
-                <div class="input-group flex-wrap gap-2 align-items-stretch">
-                    <select name="status" class="form-select" style="max-width: 200px;">
-                        <option value="all" {{ $statusFilter === 'all' ? 'selected' : '' }}>كل الحالات</option>
-                        <option value="pending" {{ $statusFilter === 'pending' ? 'selected' : '' }}>قيد المراجعة</option>
-                        <option value="accepted" {{ $statusFilter === 'accepted' ? 'selected' : '' }}>مقبول</option>
-                        <option value="rejected" {{ $statusFilter === 'rejected' ? 'selected' : '' }}>مرفوض</option>
-                    </select>
-
-                    <span class="input-group-text bg-white border-end-0 border-start-0">
-                        <i class="fas fa-search text-muted"></i>
+                <div class="d-flex flex-wrap gap-2 justify-content-end">
+                    <span class="badge btn-light border text-muted btn-sm rounded-3 px-3 fw-bold">
+                        <i class="fas fa-clock me-1"></i>{{ (int) ($statusStats['rejected'] ?? 0) }} مرفوض
                     </span>
-
-                    <input type="search"
-                           name="searchInput"
-                           class="form-control border-start-0 ps-0"
-                           placeholder="بحث بالاسم، البريد، الهاتف، المسمى الوظيفي..."
-                           value="{{ $search ?? '' }}">
-
-                    <button class="btn btn-primary px-4" type="submit">
-                        <i class="fas fa-search me-1"></i> بحث
-                    </button>
-
-                    @if(($search ?? '') !== '' || ($statusFilter ?? 'all') !== 'all')
-                        <a href="{{ route('events.registrations.index', $event) }}" class="btn btn-outline-secondary px-3">
-                            مسح
-                        </a>
-                    @endif
                 </div>
-            </form>
-        </div>
+            </div>
 
         <div class="table-responsive">
-            <table class="table registrations-table mb-0 align-middle">
+            <table class="table table-custom mb-0 align-middle">
                 <thead>
                 <tr>
                     <th>الاسم</th>
@@ -290,7 +324,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="{{ 5 + count($dynamicFields) }}" class="text-center py-5 text-muted">
+                        <td colspan="{{ 6 + count($dynamicFields) }}" class="text-center py-5 text-muted">
                             لا توجد تسجيلات مطابقة للبحث أو الفلترة الحالية.
                         </td>
                     </tr>
@@ -298,10 +332,9 @@
                 </tbody>
             </table>
         </div>
+        </div>
     </div>
 
-    <div class="mt-3">
-        {{ $rows->links() }}
-    </div>
+    <div class="mt-3">{{ $rows->links() }}</div>
 </div>
 @endsection
