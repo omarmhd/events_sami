@@ -180,6 +180,61 @@ body.auth-body {
     max-width: 38ch;
 }
 
+.register-visual-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1.2rem;
+}
+
+.register-visual-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.55rem 0.8rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    color: #f6fbfa;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.register-visual-badge i {
+    color: #ffd089;
+}
+
+.register-visual-card {
+    margin-top: 1.35rem;
+    padding: 1rem 1.05rem;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    backdrop-filter: blur(4px);
+}
+
+.register-visual-card-kicker {
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #bfe7e2;
+    margin-bottom: 0.35rem;
+}
+
+.register-visual-card-title {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 0.35rem;
+}
+
+.register-visual-card-text {
+    font-size: 0.84rem;
+    line-height: 1.65;
+    color: #d7ece9;
+}
+
 .auth-stats-grid {
     margin-top: 2rem;
     display: grid;
@@ -487,6 +542,14 @@ body.auth-rtl .auth-note-list {
 
     .auth-kicker {
         font-size: 0.72rem;
+    }
+
+    .register-visual-badges {
+        display: none;
+    }
+
+    .register-visual-card {
+        display: none;
     }
 
     .auth-footer {

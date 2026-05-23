@@ -50,6 +50,10 @@
                     @yield('visual_subtitle', __('ui.auth.visual_subtitle_default'))
                 </p>
 
+                @hasSection('visual_badges')
+                    @yield('visual_badges')
+                @endif
+
                 {{-- ── Illustrated feature cards ── --}}
                 <div class="auth-feature-cards" aria-label="Platform features">
                     <div class="auth-feat-card">
@@ -101,6 +105,10 @@
                     <span class="auth-stat-label">{{ __('ui.auth.stat_realtime') }}</span>
                 </div>
             </div>
+
+            @hasSection('visual_footer')
+                @yield('visual_footer')
+            @endif
         </section>
            @endif
 
