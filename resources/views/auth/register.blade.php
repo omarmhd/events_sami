@@ -37,17 +37,7 @@
                 <div class="col-12 col-md-5">
                     <label class="form-label">رقم الجوال</label>
                     <div class="d-flex gap-2">
-                        <div style="flex:0 0 40%;">
-                            <select id="country_code" class="form-select">
-                                <option value="+966">+966</option>
-                                <option value="+971">+971</option>
-                                <option value="+973">+973</option>
-                                <option value="+965">+965</option>
-                                <option value="+20">+20</option>
-                                <option value="+44">+44</option>
-                                <option value="+1">+1</option>
-                            </select>
-                        </div>
+
                         <div style="flex:1;">
                             <input type="tel" id="phone_local" class="form-control @error('phone') is-invalid @enderror" value="{{ old('phone') }}" placeholder="5XXXXXXXX" required>
                             @error('phone')<div class="invalid-feedback">{{ $message }}</div>@enderror
