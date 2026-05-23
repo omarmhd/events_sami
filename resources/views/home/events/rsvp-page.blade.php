@@ -149,29 +149,19 @@
 @endphp
 
 <div class="container hero">
-    {{--
-        hero-shell--with-image : side-by-side layout (image | text) on md+
-        hero-shell--no-image   : full-width centred text, decorative gradient only
-    --}}
-    <div class="hero-shell {{ $heroImage ? 'hero-shell--with-image' : 'hero-shell--no-image' }}">
-
+    <div class="hero-shell">
         @if($heroImage)
-        {{-- Event header image panel — only rendered when an image actually exists --}}
-        <div class="hero-media" style="background-image: url('{{ e($heroImage) }}');"></div>
+            <div class="hero-banner">
+                <img src="{{ e($heroImage) }}" alt="{{ $title }}">
+            </div>
+        @else
+            <div class="hero-banner hero-banner--fallback">
+                <h3 class="hero-banner-fallback-title">{{ $title }}</h3>
+            </div>
         @endif
 
-        <div class="hero-copy {{ $heroImage ? '' : 'hero-copy--full' }}">
-            <div class="hero-chip">
-                <i class="fas fa-envelope-open-text"></i>
-                {{ __('rsvp.hero_chip') }}
-            </div>
+        <div class="hero-body">
             <h1>{{ $title }}</h1>
-            @if($primaryDescription)
-                <p>{{ $primaryDescription }}</p>
-            @else
-                <p>{{ __('rsvp.hero_fallback') }}</p>
-            @endif
-
             <div class="meta-pills">
                 @if($event->date)
                     <div class="meta-pill">
@@ -192,6 +182,11 @@
                     </div>
                 @endif
             </div>
+            @if($primaryDescription)
+                <p>{{ $primaryDescription }}</p>
+            @else
+                <p>{{ __('rsvp.hero_fallback') }}</p>
+            @endif
         </div>
     </div>
 </div>

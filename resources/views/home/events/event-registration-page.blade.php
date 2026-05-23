@@ -29,25 +29,19 @@
 @endphp
 
 <div class="container hero">
-    <div class="hero-shell {{ $hasImage ? 'hero-shell--with-image' : 'hero-shell--no-image' }}">
+    <div class="hero-shell">
         @if($hasImage)
-            <div class="hero-media" style="background-image: url('{{ e($eventImage) }}')"></div>
-        @endif
-        <div class="hero-copy {{ $hasImage ? '' : 'hero-copy--full' }}">
-            <div class="hero-chip">
-                <i class="fas fa-sparkles"></i>
-                {{ __('public-registration.public_registration') }}
+            <div class="hero-banner">
+                <img src="{{ e($eventImage) }}" alt="{{ $eventTitle }}">
             </div>
+        @else
+            <div class="hero-banner hero-banner--fallback">
+                <h3 class="hero-banner-fallback-title">{{ $eventTitle }}</h3>
+            </div>
+        @endif
+
+        <div class="hero-body">
             <h1>{{ $eventTitle }}</h1>
-            <p>
-                @if(app()->getLocale() === 'ar' && $event->description)
-                    {{ $event->description }}
-                @elseif($selectedForm?->headline)
-                    {{ $selectedForm->headline }}
-                @else
-                    {{ __('public-registration.complete_details') }}
-                @endif
-            </p>
             <div class="meta-pills">
                 @if($event->date)
                     <div class="meta-pill">
@@ -68,6 +62,15 @@
                     </div>
                 @endif
             </div>
+            <p>
+                @if(app()->getLocale() === 'ar' && $event->description)
+                    {{ $event->description }}
+                @elseif($selectedForm?->headline)
+                    {{ $selectedForm->headline }}
+                @else
+                    {{ __('public-registration.complete_details') }}
+                @endif
+            </p>
         </div>
     </div>
 </div>

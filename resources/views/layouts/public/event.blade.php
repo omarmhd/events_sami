@@ -43,69 +43,61 @@
         .hero-shell {
             border-radius: 28px;
             overflow: hidden;
-            background: linear-gradient(135deg, #0d3b37 0%, #0f6b62 50%, var(--primary-accent) 100%);
-            color: #fff;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-            display: grid;
-            grid-template-columns: 1fr;
+            background: #ffffff;
+            color: var(--primary-dark);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+            border: 1px solid rgba(34, 34, 34, 0.08);
         }
 
-        /* With image: side-by-side layout on md+ */
-        @media (min-width: 768px) {
-            .hero-shell--with-image {
-                grid-template-columns: 45% 55%;
-            }
-        }
-
-        /* No image: single full-width column, richer gradient background */
-        .hero-shell--no-image {
-            background: linear-gradient(135deg, #0d3b37 0%, #0f6b62 45%, #11857a 100%);
+        .hero-banner {
             position: relative;
+            min-height: 240px;
+            background: linear-gradient(135deg, #0d3b37 0%, #0f6b62 50%, var(--primary-accent) 100%);
         }
 
-        /* Subtle decorative pattern overlay when no image */
-        .hero-shell--no-image::before {
+        .hero-banner img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .hero-banner--fallback {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #ffffff;
+            padding: 3rem 1.5rem;
+        }
+
+        .hero-banner--fallback::before {
             content: '';
             position: absolute;
             inset: 0;
-            background-image: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.04) 0%, transparent 60%),
-                              radial-gradient(circle at 80% 20%, rgba(255,255,255,0.06) 0%, transparent 50%);
+            background-image: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.08) 0%, transparent 60%),
+                              radial-gradient(circle at 80% 20%, rgba(255,255,255,0.08) 0%, transparent 50%);
             pointer-events: none;
         }
 
-        .hero-media {
-            min-height: 280px;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
+        .hero-banner-fallback-title {
+            position: relative;
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin: 0;
         }
 
-        .hero-copy {
-            padding: 2.5rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        /* Full-width copy when no image: centre content, more generous padding */
-        .hero-copy--full {
-            padding: 3rem 2.5rem;
-            max-width: 720px;
-            margin: 0 auto;
-            text-align: center;
-            align-items: center;
-        }
-
-        .hero-copy--full .meta-pills {
-            justify-content: center;
+        .hero-body {
+            padding: 2.4rem 2.6rem 2.2rem;
+            text-align: right;
         }
 
         @media (max-width: 767px) {
-            .hero-copy {
-                padding: 2rem 1.5rem;
+            .hero-banner img {
+                height: 220px;
             }
-            .hero-copy--full {
-                padding: 2.5rem 1.5rem;
+            .hero-body {
+                padding: 2rem 1.5rem;
             }
         }
 
@@ -124,42 +116,47 @@
             margin-bottom: 1.2rem;
         }
 
-        .hero-copy h1 {
-            font-size: 2.2rem;
+        .hero-body h1 {
+            font-size: 2.1rem;
             font-weight: 700;
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
             line-height: 1.2;
         }
 
         @media (max-width: 767px) {
-            .hero-copy h1 {
-                font-size: 1.8rem;
+            .hero-body h1 {
+                font-size: 1.7rem;
             }
         }
 
-        .hero-copy p {
+        .hero-body p {
             font-size: 1rem;
-            line-height: 1.6;
-            opacity: 0.95;
-            margin-bottom: 1.5rem;
+            line-height: 1.7;
+            color: #4b5563;
+            margin-bottom: 1.3rem;
         }
 
         .meta-pills {
             display: flex;
             flex-wrap: wrap;
             gap: 0.8rem;
+            margin-bottom: 1.4rem;
         }
 
         .meta-pill {
             display: inline-flex;
             align-items: center;
             gap: 0.6rem;
-            padding: 0.7rem 1rem;
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.65rem 1rem;
+            background: #f8fafc;
+            border-radius: 16px;
+            border: 1px solid rgba(34, 34, 34, 0.08);
             font-size: 0.9rem;
-            color: #fff;
+            color: #1f2937;
+        }
+
+        .meta-pill i {
+            color: var(--primary-accent);
         }
 
         .glass-card {
