@@ -63,11 +63,16 @@ class EmailTemplateService
         $platformEmail = SystemSetting::get('platform_sender_email',
             config('mail.from.address', 'noreply@' . config('app.domain', 'platform.com')));
 
+        $displaySenderName = $branding->sender_name ?: ($company->name ?: config('app.name'));
+        if (!empty($branding->sender_email)) {
+            $displaySenderName .= ' <' . $branding->sender_email . '>';
+        }
+
         return [
             'subject'       => $subject,
             'html'          => $wrappedHtml,
-            'from_name'     => $branding->sender_name ?: ($company->name ?: config('app.name')),
-            'from_email'    => $branding->sender_email ?: ($company->billing_email ?: $company->contact_email ?: $platformEmail),
+            'from_name'     => $displaySenderName,
+            'from_email'    => $platformEmail,
             'reply_to'      => $branding->reply_to_email ?: ($branding->sender_email ?: $platformEmail),
             'variables'     => $baseVariables,
             'template_used' => $template,
