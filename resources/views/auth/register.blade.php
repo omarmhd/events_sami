@@ -137,8 +137,6 @@
             </div>
         </div>
 
-        <input type="hidden" name="preferred_plan_code" value="starter">
-
         <div class="register-consent mb-3 mt-3">
             <div class="form-check">
                 <input class="form-check-input @error('terms') is-invalid @enderror" type="checkbox" name="terms" id="terms" required>

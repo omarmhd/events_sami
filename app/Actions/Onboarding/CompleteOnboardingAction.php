@@ -6,6 +6,7 @@ use App\Models\Company;
 use App\Models\User;
 use App\Services\SubscriptionService;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class CompleteOnboardingAction
 {
@@ -17,6 +18,12 @@ class CompleteOnboardingAction
     {
         $company = $user->company;
         $preferredPlanCode = $data['preferred_plan_code'] ?? null;
+        $subdomain = $this->resolveSubdomain(
+            $data['subdomain'] ?? null,
+            $data['company_name'] ?? $user->name,
+            $user->email,
+            $company?->id
+        );
         $trialDays = (int) config('subscription.trial.days', SubscriptionService::TRIAL_DAYS);
         $companySettings = array_merge($company?->settings ?? [], [
             'preferred_plan_code' => $preferredPlanCode,
@@ -28,7 +35,7 @@ class CompleteOnboardingAction
                 'name' => $data['company_name'],
                 'contact_email' => $user->email,
                 'phone' => $data['phone'],
-                'subdomain' => strtolower($data['subdomain']),
+                'subdomain' => $subdomain,
                 'status' => 'trial',
                 'annual_events_estimate' => $data['annual_events_estimate'],
                 'trial_started_at' => Carbon::now(),
@@ -43,7 +50,7 @@ class CompleteOnboardingAction
                 'name' => $data['company_name'],
                 'contact_email' => $user->email,
                 'phone' => $data['phone'],
-                'subdomain' => strtolower($data['subdomain']),
+                'subdomain' => $subdomain,
                 'annual_events_estimate' => $data['annual_events_estimate'],
                 'onboarding_completed_at' => Carbon::now(),
                 'timezone' => $data['timezone'] ?: $company->timezone,
@@ -67,6 +74,36 @@ class CompleteOnboardingAction
         $this->subscriptionService->ensureCompanySubscription($company);
 
         return $company;
+    }
+
+    private function resolveSubdomain(?string $subdomain, string $companyName, string $email, ?int $companyId = null): string
+    {
+        $candidate = Str::lower(trim((string) $subdomain));
+
+        if ($candidate === '') {
+            $baseSource = $companyName !== '' ? $companyName : Str::before($email, '@');
+            $candidate = Str::slug($baseSource, '-');
+        }
+
+        $candidate = preg_replace('/[^a-z0-9-]/', '', $candidate) ?: 'company';
+        $candidate = trim($candidate, '-');
+        $candidate = substr($candidate, 0, 40);
+        $candidate = $candidate !== '' ? $candidate : 'company';
+
+        $base = $candidate;
+        $index = 1;
+
+        while (
+            Company::query()
+                ->when($companyId, fn ($query) => $query->whereKeyNot($companyId))
+                ->where('subdomain', $candidate)
+                ->exists()
+        ) {
+            $suffix = '-' . $index++;
+            $candidate = substr($base, 0, max(1, 40 - strlen($suffix))) . $suffix;
+        }
+
+        return $candidate;
     }
 }
 
