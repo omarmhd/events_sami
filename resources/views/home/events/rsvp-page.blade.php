@@ -182,11 +182,7 @@
                     </div>
                 @endif
             </div>
-            @if($primaryDescription)
-                <p>{{ $primaryDescription }}</p>
-            @else
-                <p>{{ __('rsvp.hero_fallback') }}</p>
-            @endif
+            <p></p>
         </div>
     </div>
 </div>

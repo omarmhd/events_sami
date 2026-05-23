@@ -62,15 +62,7 @@
                     </div>
                 @endif
             </div>
-            <p>
-                @if(app()->getLocale() === 'ar' && $event->description)
-                    {{ $event->description }}
-                @elseif($selectedForm?->headline)
-                    {{ $selectedForm->headline }}
-                @else
-                    {{ __('public-registration.complete_details') }}
-                @endif
-            </p>
+            <p></p>
         </div>
     </div>
 </div>
