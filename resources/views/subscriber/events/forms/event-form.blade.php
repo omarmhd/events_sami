@@ -282,19 +282,13 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-5">
+                        <div class="col-md-6">
                             <label class="form-label fw-semibold">حالة النشر</label>
                             <select name="status" class="form-select @error('status') is-invalid @enderror" required>
                                 <option value="draft" {{ old('status', $event->status ?: 'draft') === 'draft' ? 'selected' : '' }}>مسودة</option>
                                 <option value="published" {{ old('status', $event->status) === 'published' ? 'selected' : '' }}>منشورة</option>
                             </select>
                             @error('status')<div class="invalid-feedback">{{ $message }}</div>@enderror
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-check form-switch mt-2">
-                                <input class="form-check-input" type="checkbox" role="switch" name="allow_reentry" value="1" {{ old('allow_reentry', $event->allow_reentry) ? 'checked' : '' }}>
-                                <label class="form-check-label fw-semibold">السماح بإعادة الدخول</label>
-                            </div>
                         </div>
                     </div>
 
@@ -417,7 +411,7 @@
                                 {{-- Hidden flag — always present so controller can read it on save --}}
                                 <input type="hidden" name="clear_header_image" id="clearHeaderImageFlag" value="0">
 
-                                <div id="headerImagePreview" class="mt-2" style="position:relative;display:{{ empty($event->header_image_path) ? 'none' : 'inline-block' }};max-width:100%;">
+                                <div id="headerImagePreview" class="mt-2 {{ empty($event->header_image_path) ? 'd-none' : '' }}" style="position:relative;max-width:100%;"> 
                                     <img id="headerImagePreviewImg"
                                          src="{{ $event->header_image_path ?? '' }}"
                                          alt="معاينة صورة الترويسة"
