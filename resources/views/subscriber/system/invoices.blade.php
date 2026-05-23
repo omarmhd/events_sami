@@ -160,10 +160,10 @@
                                             {{ $invoice->paid_at ? $invoice->paid_at->format('Y-m-d') : '—' }}
                                         </span>
                                     @endif
-                                    <form action="{{ route('system.invoices.destroy', $invoice) }}" method="POST"
-                                          onsubmit="return confirm('حذف هذه الفاتورة؟')">
+                                                                        <form action="{{ route('system.invoices.destroy', $invoice) }}" method="POST"
+                                                                                    data-confirm="حذف هذه الفاتورة؟">
                                         @csrf @method('DELETE')
-                                        <button type="submit" class="btn-action btn-action-danger">
+                                                                                <button type="submit" class="btn-action btn-action-danger js-confirm-action" data-confirm="حذف هذه الفاتورة؟">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </form>

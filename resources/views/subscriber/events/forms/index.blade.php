@@ -630,11 +630,11 @@
                                 <i class="fas fa-pen-to-square"></i>
                                 تعديل
                             </a>
-                            <form action="{{ route('registration-forms.destroy', $form) }}" method="POST"
-                                  onsubmit="return confirm('هل أنت متأكد من حذف هذا النموذج؟');">
+                                                        <form action="{{ route('registration-forms.destroy', $form) }}" method="POST"
+                                                                    data-confirm="هل أنت متأكد من حذف هذا النموذج؟">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="rfc-action danger w-100">
+                                                                <button type="submit" class="rfc-action danger w-100 js-confirm-action" data-confirm="هل أنت متأكد من حذف هذا النموذج؟">
                                     <i class="fas fa-trash"></i>
                                     حذف
                                 </button>

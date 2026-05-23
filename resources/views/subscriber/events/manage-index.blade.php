@@ -742,11 +742,11 @@
                             تعديل
                         </a>
 
-                        <form action="{{ route('events.destroy', $event) }}" method="POST"
-                              onsubmit="return confirm('هل أنت متأكد من حذف الفعالية؟ لا يمكن التراجع عن هذا الإجراء.');">
+                                                <form action="{{ route('events.destroy', $event) }}" method="POST"
+                                                            data-confirm="هل أنت متأكد من حذف الفعالية؟ لا يمكن التراجع عن هذا الإجراء.">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="ec-action danger w-100">
+                                                        <button type="submit" class="ec-action danger w-100 js-confirm-action" data-confirm="هل أنت متأكد من حذف الفعالية؟ لا يمكن التراجع عن هذا الإجراء.">
                                 <i class="fas fa-trash"></i>
                                 حذف
                             </button>

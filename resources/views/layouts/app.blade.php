@@ -15,6 +15,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
 
     <link href="{{ asset('assets/saas-ui.css') }}" rel="stylesheet">
 
@@ -172,9 +173,9 @@
     ──────────────────────────────────────────────────────────────────── --}}
     @stack('modals')
 
-    {{-- ─── Global Confirm / Delete Modal ─────────────────────────────────
-         Controlled entirely via AppUI.confirm({ ... }) — no per-page HTML needed.
-    ──────────────────────────────────────────────────────────────────── --}}
+        {{-- ─── Global Confirm / Delete Modal ─────────────────────────────────
+            Kept as a fallback when SweetAlert2 is unavailable.
+        ──────────────────────────────────────────────────────────────────── --}}
     <div class="modal fade app-modal" id="appConfirmModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-sm">
             <div class="modal-content app-modal-content">
@@ -217,6 +218,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         function toggleSidebar() {
@@ -248,6 +250,165 @@
                 closeSidebar();
             }
         });
+
+        function appConfirmSubmit(form, method) {
+            const submitForm = document.createElement('form');
+            submitForm.method = 'POST';
+            submitForm.action = form.action;
+            submitForm.style.display = 'none';
+
+            const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            if (csrf) {
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = '_token';
+                csrfInput.value = csrf;
+                submitForm.appendChild(csrfInput);
+            }
+
+            if (method && method !== 'POST') {
+                const methodInput = document.createElement('input');
+                methodInput.type = 'hidden';
+                methodInput.name = '_method';
+                methodInput.value = method;
+                submitForm.appendChild(methodInput);
+            }
+
+            document.body.appendChild(submitForm);
+            submitForm.submit();
+        }
+
+        function appOpenConfirm({
+            title = 'تأكيد',
+            body = '',
+            icon = 'circle-question',
+            danger = false,
+            confirmLabel = 'تأكيد',
+            cancelLabel = 'إلغاء',
+            onConfirm = null,
+            formAction = null,
+            formMethod = 'DELETE',
+        } = {}) {
+            const confirmColor = danger ? '#dc2626' : '#0f8f83';
+
+            if (window.Swal && typeof Swal.fire === 'function') {
+                return Swal.fire({
+                    title,
+                    html: body,
+                    icon: danger ? 'warning' : icon,
+                    showCancelButton: true,
+                    confirmButtonText: confirmLabel,
+                    cancelButtonText: cancelLabel,
+                    reverseButtons: true,
+                    focusCancel: true,
+                    buttonsStyling: false,
+                    customClass: {
+                        popup: 'rounded-4',
+                        confirmButton: 'btn rounded-pill px-4',
+                        cancelButton: 'btn btn-outline-secondary rounded-pill px-4',
+                    },
+                    didOpen: () => {
+                        const confirmButton = Swal.getConfirmButton();
+                        if (confirmButton) {
+                            confirmButton.style.backgroundColor = confirmColor;
+                            confirmButton.style.borderColor = confirmColor;
+                            confirmButton.style.boxShadow = '0 8px 22px rgba(15,143,131,.18)';
+                        }
+                    },
+                }).then((result) => {
+                    if (!result.isConfirmed) {
+                        return;
+                    }
+
+                    if (typeof onConfirm === 'function') {
+                        onConfirm();
+                        return;
+                    }
+
+                    if (formAction) {
+                        const tempForm = document.createElement('form');
+                        tempForm.method = 'POST';
+                        tempForm.action = formAction;
+                        tempForm.style.display = 'none';
+
+                        const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                        if (csrf) {
+                            const csrfInput = document.createElement('input');
+                            csrfInput.type = 'hidden';
+                            csrfInput.name = '_token';
+                            csrfInput.value = csrf;
+                            tempForm.appendChild(csrfInput);
+                        }
+
+                        if (formMethod && formMethod !== 'POST') {
+                            const methodInput = document.createElement('input');
+                            methodInput.type = 'hidden';
+                            methodInput.name = '_method';
+                            methodInput.value = formMethod;
+                            tempForm.appendChild(methodInput);
+                        }
+
+                        document.body.appendChild(tempForm);
+                        tempForm.submit();
+                    }
+                });
+            }
+
+            const modal = document.getElementById('appConfirmModal');
+            const iconWrap = document.getElementById('appConfirmIconWrap');
+            const iconEl = document.getElementById('appConfirmIcon');
+            const titleEl = document.getElementById('appConfirmTitle');
+            const bodyEl = document.getElementById('appConfirmBody');
+            const cancelBtn = document.getElementById('appConfirmCancelBtn');
+            const okBtn = document.getElementById('appConfirmOkBtn');
+            const form = document.getElementById('appConfirmForm');
+            const methodInput = document.getElementById('appConfirmMethod');
+            const submitBtn = document.getElementById('appConfirmSubmitBtn');
+
+            if (!modal || !iconWrap || !iconEl || !titleEl || !bodyEl || !cancelBtn || !okBtn || !form || !methodInput || !submitBtn) {
+                return;
+            }
+
+            titleEl.textContent = title;
+            bodyEl.innerHTML = body;
+            cancelBtn.textContent = cancelLabel;
+
+            const color = danger ? 'var(--danger-color)' : 'var(--primary-color)';
+            const bgWrap = danger ? 'rgba(179,38,30,.1)' : 'rgba(15,143,131,.1)';
+            iconWrap.style.background = bgWrap;
+            iconEl.className = `fas fa-${icon}`;
+            iconEl.style.color = color;
+
+            const btnCls = danger ? 'btn-danger' : 'btn-primary';
+
+            if (formAction) {
+                okBtn.classList.add('d-none');
+                form.classList.remove('d-none');
+                form.classList.add('d-inline');
+                form.action = formAction;
+                methodInput.value = formMethod;
+                submitBtn.textContent = confirmLabel;
+                submitBtn.className = `btn ${btnCls} rounded-pill px-4`;
+                submitBtn.style.fontSize = '.875rem';
+            } else {
+                form.classList.add('d-none');
+                form.classList.remove('d-inline');
+                okBtn.classList.remove('d-none');
+                okBtn.textContent = confirmLabel;
+                okBtn.className = `btn ${btnCls} rounded-pill px-4`;
+                okBtn.style.fontSize = '.875rem';
+                const fresh = okBtn.cloneNode(true);
+                okBtn.parentNode.replaceChild(fresh, okBtn);
+                if (onConfirm) {
+                    fresh.addEventListener('click', function () {
+                        bootstrap.Modal.getInstance(modal)?.hide();
+                        onConfirm();
+                    });
+                }
+            }
+
+            new bootstrap.Modal(modal).show();
+        }
 
         // ════════════════════════════════════════════════════════
         //  AppUI — Global UI helpers (toast + confirm modal)
@@ -301,64 +462,71 @@
                 formAction   = null,
                 formMethod   = 'DELETE',
             } = {}) {
-                const modal       = document.getElementById('appConfirmModal');
-                const iconWrap    = document.getElementById('appConfirmIconWrap');
-                const iconEl      = document.getElementById('appConfirmIcon');
-                const titleEl     = document.getElementById('appConfirmTitle');
-                const bodyEl      = document.getElementById('appConfirmBody');
-                const cancelBtn   = document.getElementById('appConfirmCancelBtn');
-                const okBtn       = document.getElementById('appConfirmOkBtn');
-                const form        = document.getElementById('appConfirmForm');
-                const methodInput = document.getElementById('appConfirmMethod');
-                const submitBtn   = document.getElementById('appConfirmSubmitBtn');
-
-                // Content
-                titleEl.textContent   = title;
-                bodyEl.innerHTML      = body;
-                cancelBtn.textContent = cancelLabel;
-
-                // Icon + color
-                const color  = danger ? 'var(--danger-color)' : 'var(--primary-color)';
-                const bgWrap = danger ? 'rgba(179,38,30,.1)'  : 'rgba(15,143,131,.1)';
-                iconWrap.style.background = bgWrap;
-                iconEl.className  = `fas fa-${icon}`;
-                iconEl.style.color = color;
-
-                const btnCls = danger ? 'btn-danger' : 'btn-primary';
-
-                if (formAction) {
-                    // Form mode
-                    okBtn.classList.add('d-none');
-                    form.classList.remove('d-none');
-                    form.classList.add('d-inline');
-                    form.action       = formAction;
-                    methodInput.value = formMethod;
-                    submitBtn.textContent = confirmLabel;
-                    submitBtn.className   = `btn ${btnCls} rounded-pill px-4`;
-                    submitBtn.style.fontSize = '.875rem';
-                } else {
-                    // Callback mode — clone to clear old listeners
-                    form.classList.add('d-none');
-                    form.classList.remove('d-inline');
-                    okBtn.classList.remove('d-none');
-                    okBtn.textContent = confirmLabel;
-                    okBtn.className   = `btn ${btnCls} rounded-pill px-4`;
-                    okBtn.style.fontSize = '.875rem';
-                    const fresh = okBtn.cloneNode(true);
-                    okBtn.parentNode.replaceChild(fresh, okBtn);
-                    if (onConfirm) {
-                        fresh.addEventListener('click', function () {
-                            bootstrap.Modal.getInstance(modal)?.hide();
-                            onConfirm();
-                        });
-                    }
-                }
-
-                new bootstrap.Modal(modal).show();
+                return appOpenConfirm({ title, body, icon, danger, confirmLabel, cancelLabel, onConfirm, formAction, formMethod });
             }
 
             return { toast, confirm };
         })();
+
+        document.addEventListener('submit', function (event) {
+            const form = event.target.closest('form[data-confirm]');
+            if (!form) {
+                return;
+            }
+
+            event.preventDefault();
+
+            AppUI.confirm({
+                title: form.getAttribute('data-confirm-title') || 'تأكيد',
+                body: form.getAttribute('data-confirm') || '',
+                icon: form.getAttribute('data-confirm-icon') || 'circle-question',
+                danger: form.getAttribute('data-confirm-danger') !== 'false',
+                confirmLabel: form.getAttribute('data-confirm-ok') || 'تأكيد',
+                cancelLabel: form.getAttribute('data-confirm-cancel') || 'إلغاء',
+                formAction: form.action,
+                formMethod: (form.querySelector('input[name="_method"]')?.value || 'POST').toUpperCase(),
+            });
+        }, true);
+
+        document.addEventListener('click', function (event) {
+            const trigger = event.target.closest('[data-confirm], .js-confirm-action');
+            if (!trigger || trigger.closest('form[data-confirm]')) {
+                return;
+            }
+
+            const message = trigger.getAttribute('data-confirm') || '';
+            if (!message) {
+                return;
+            }
+
+            const title = trigger.getAttribute('data-confirm-title') || 'تأكيد';
+            const icon = trigger.getAttribute('data-confirm-icon') || 'circle-question';
+            const danger = trigger.getAttribute('data-confirm-danger') !== 'false';
+            const confirmLabel = trigger.getAttribute('data-confirm-ok') || 'تأكيد';
+            const cancelLabel = trigger.getAttribute('data-confirm-cancel') || 'إلغاء';
+
+            const form = trigger.closest('form');
+            const isSubmitControl = trigger.matches('button[type="submit"], input[type="submit"], button:not([type])');
+
+            if (trigger.tagName === 'A' || form || isSubmitControl) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+
+            AppUI.confirm({
+                title,
+                body: message,
+                icon,
+                danger,
+                confirmLabel,
+                cancelLabel,
+                formAction: form ? form.action : null,
+                formMethod: form ? (form.querySelector('input[name="_method"]')?.value || 'POST').toUpperCase() : 'POST',
+                onConfirm: !form && trigger.tagName === 'A' ? function () {
+                    window.location.href = trigger.href;
+                } : null,
+            });
+        }, true);
 
         // ─── Flash messages via AppUI.toast ─────────────────────
         @if(session('success'))

@@ -131,7 +131,8 @@
                                     @csrf @method('PATCH')
                                     <button type="submit" class="btn-action btn-action-danger"
                                             title="أرشفة الطلب"
-                                            onclick="return confirm('أرشفة هذا الطلب؟')">
+                                            data-confirm="أرشفة هذا الطلب؟"
+                                            class="btn-action btn-action-danger js-confirm-action">
                                         <i class="fas fa-archive"></i>
                                     </button>
                                 </form>
@@ -140,7 +141,8 @@
                                     @csrf @method('PATCH')
                                     <button type="submit" class="btn-action btn-action-danger"
                                             title="أرشفة الطلب"
-                                            onclick="return confirm('أرشفة هذا الطلب؟')">
+                                            data-confirm="أرشفة هذا الطلب؟"
+                                            class="btn-action btn-action-danger js-confirm-action">
                                         <i class="fas fa-archive"></i>
                                     </button>
                                 </form>

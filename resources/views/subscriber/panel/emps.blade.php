@@ -100,10 +100,10 @@
                                 </td>
 
                                 <td class="text-end pe-3">
-                                    <form action="{{ route('resendTickets') }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to regenerate tickets for {{ $emp->name }}?');">
+                                    <form action="{{ route('resendTickets') }}" method="POST" class="d-inline" data-confirm="Are you sure you want to regenerate tickets for {{ $emp->name }}?">
                                         @csrf
                                         <input type="hidden" name="employee_id" value="{{ $emp->id }}">
-                                        <button type="submit" class="btn btn-sm btn-outline-primary-theme action-btn" title="Regenerate Tickets">
+                                        <button type="submit" class="btn btn-sm btn-outline-primary-theme action-btn js-confirm-action" title="Regenerate Tickets" data-confirm="Are you sure you want to regenerate tickets for {{ $emp->name }}?">
                                             <i class="fas fa-sync-alt me-1"></i> Resend Tickets
                                         </button>
                                     </form>

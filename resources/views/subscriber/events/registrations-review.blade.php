@@ -345,13 +345,13 @@
                                 @endif
 
                                 @can('delete', $row)
-                                    <form action="{{ route('events.registrations.destroy', [$event, $row]) }}"
-                                          method="POST"
-                                          class="d-inline"
-                                          onsubmit="return confirm('هل تريد حذف هذا التسجيل نهائياً؟');">
+                                                                <form action="{{ route('events.registrations.destroy', [$event, $row]) }}"
+                                                                            method="POST"
+                                                                            class="d-inline"
+                                                                            data-confirm="هل تريد حذف هذا التسجيل نهائياً؟">
                                         @csrf
                                         @method('DELETE')
-                                        <button class="btn-icon" type="submit" title="حذف">
+                                                                                <button class="btn-icon js-confirm-action" type="submit" title="حذف" data-confirm="هل تريد حذف هذا التسجيل نهائياً؟">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </form>
