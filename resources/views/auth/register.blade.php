@@ -9,6 +9,14 @@
 @section('auth_subtitle', 'أدخل بياناتك لبدء التجربة المجانية وتفعيل مساحة العمل.')
 
 @section('auth-content')
+    <div class="register-intro">
+        <div class="register-intro-badge">
+            <i class="fas fa-sparkles"></i>
+            <span>إنشاء حساب · تفعيل مساحة · بدء التجربة</span>
+        </div>
+        <p class="register-intro-text">نظم التسجيل في خطوة واحدة مع واجهة أوضح، وابدأ بإعداد مساحة عمل تحمل هوية المنصة نفسها.</p>
+    </div>
+
     @if($errors->any())
         <div class="alert alert-danger auth-alert mt-3">
             @foreach($errors->all() as $error)
@@ -17,13 +25,22 @@
         </div>
     @endif
 
-    <p class="auth-kicker mb-3">تسجيل مجاني · لا يلزم بطاقة ائتمان</p>
+    <div class="register-highlights mb-3">
+        <span class="register-highlight-pill">تسجيل مجاني</span>
+        <span class="register-highlight-pill">لا يلزم بطاقة ائتمان</span>
+        <span class="register-highlight-pill">تفعيل فوري</span>
+    </div>
 
     <form method="POST" action="{{ route('register') }}" class="auth-form" id="register-form">
         @csrf
 
-        <h3 class="auth-form-section-title">بيانات الحساب</h3>
-        <div class="row g-3 mb-3">
+        <div class="register-section-card">
+            <div class="register-section-head">
+                <h3 class="auth-form-section-title mb-0">بيانات الحساب</h3>
+                <span class="register-section-note">معلوماتك الأساسية للدخول الآمن</span>
+            </div>
+
+            <div class="row g-3">
             <div class="col-md-6">
                 <label class="form-label" for="name">الاسم الكامل</label>
                 <input type="text" id="name" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" placeholder="أحمد محمد" required autofocus>
@@ -64,10 +81,16 @@
                 </div>
                 <div id="pw-match" class="mt-1" style="font-size:0.75rem;"></div>
             </div>
+            </div>
         </div>
 
-        <h3 class="auth-form-section-title mt-2">بيانات مساحة العمل</h3>
-        <div class="row g-3 mb-3">
+        <div class="register-section-card mt-3">
+            <div class="register-section-head">
+                <h3 class="auth-form-section-title mb-0">بيانات مساحة العمل</h3>
+                <span class="register-section-note">تظهر هذه البيانات داخل لوحة التحكم وفي هوية الحساب</span>
+            </div>
+
+            <div class="row g-3">
             <div class="col-md-7">
                 <label class="form-label" for="company_name">اسم الجهة أو الشركة</label>
                 <input type="text" id="company_name" name="company_name" class="form-control @error('company_name') is-invalid @enderror" value="{{ old('company_name') }}" placeholder="شركة ABC للفعاليات" required>
@@ -105,11 +128,17 @@
                 </select>
                 @error('timezone')<div class="invalid-feedback">{{ $message }}</div>@enderror
             </div>
+            </div>
         </div>
 
         @if(isset($plans) && $plans->count())
-            <h3 class="auth-form-section-title mt-2">الخطة المفضلة بعد التجربة المجانية</h3>
-            <div class="row g-2 mb-3">
+            <div class="register-section-card mt-3">
+                <div class="register-section-head">
+                    <h3 class="auth-form-section-title mb-0">الخطة المفضلة بعد التجربة المجانية</h3>
+                    <span class="register-section-note">اختر الخطة التي تناسبك من البداية</span>
+                </div>
+
+                <div class="row g-2">
                 @foreach($plans as $plan)
                     <div class="col-md-6">
                         <label class="auth-plan-option p-3 d-block h-100">
@@ -124,12 +153,13 @@
                         </label>
                     </div>
                 @endforeach
+                </div>
             </div>
         @else
             <input type="hidden" name="preferred_plan_code" value="starter">
         @endif
 
-        <div class="mb-3">
+        <div class="register-consent mb-3 mt-3">
             <div class="form-check">
                 <input class="form-check-input @error('terms') is-invalid @enderror" type="checkbox" name="terms" id="terms" required>
                 <label class="form-check-label" for="terms" style="font-size:0.83rem; color:#5f7a76;">
@@ -139,7 +169,7 @@
             </div>
         </div>
 
-        <div class="alert alert-info auth-alert mb-3" style="font-size:0.82rem;">
+        <div class="alert alert-info auth-alert mb-3 register-trial-card">
             <i class="fas fa-circle-info me-1"></i>
             بعد التسجيل تبدأ تجربة مجانية لمدة <strong>{{ config('subscription.trial.days', 15) }} يومًا</strong> بحد أقصى <strong>{{ config('subscription.trial.invites_limit', 10) }} مدعوين</strong> لكل فعالية.
         </div>
@@ -149,7 +179,7 @@
             إنشاء الحساب وتفعيل مساحة العمل
         </button>
 
-        <div class="auth-divider my-3 text-center" style="position:relative;">
+        <div class="auth-divider my-3 text-center register-divider" style="position:relative;">
             <hr style="border-color:#dce8e4;">
             <span style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:#fff; padding:0 0.6rem; font-size:0.78rem; color:#a0b8b4;">أو</span>
         </div>
@@ -224,4 +254,109 @@
         document.getElementById('subdomain-preview').textContent = val || 'mycompany';
     });
 </script>
+@endpush
+
+@push('styles')
+<style>
+    .register-intro {
+        margin-bottom: 1rem;
+        padding: 1rem 1rem 0.15rem;
+        border-radius: 18px;
+        background: linear-gradient(180deg, rgba(15,143,131,0.08) 0%, rgba(15,143,131,0.03) 100%);
+        border: 1px solid rgba(15,143,131,0.12);
+    }
+
+    .register-intro-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.42rem 0.8rem;
+        border-radius: 999px;
+        background: #fff;
+        border: 1px solid rgba(15,143,131,0.12);
+        color: #0f766e;
+        font-size: 0.76rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+    }
+
+    .register-intro-text {
+        margin: 0 0 0.9rem;
+        color: #4f6b69;
+        line-height: 1.7;
+        font-size: 0.92rem;
+    }
+
+    .register-highlights {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .register-highlight-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.44rem 0.8rem;
+        border-radius: 999px;
+        background: #f5faf8;
+        border: 1px solid #d8e7e3;
+        color: #456866;
+        font-size: 0.78rem;
+        font-weight: 700;
+    }
+
+    .register-section-card {
+        padding: 1rem;
+        border: 1px solid #dce8e4;
+        border-radius: 18px;
+        background: linear-gradient(180deg, #fff 0%, #f9fcfb 100%);
+    }
+
+    .register-section-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.75rem;
+        align-items: baseline;
+        margin-bottom: 0.9rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid rgba(220,232,228,0.9);
+    }
+
+    .register-section-note {
+        font-size: 0.78rem;
+        color: #7b9490;
+    }
+
+    .register-consent {
+        padding: 0.9rem 1rem;
+        border: 1px solid #dce8e4;
+        border-radius: 14px;
+        background: #f8fbfa;
+    }
+
+    .register-trial-card {
+        font-size: 0.84rem;
+        border-radius: 14px;
+    }
+
+    .register-divider hr {
+        opacity: 1;
+    }
+
+    @media (max-width: 576px) {
+        .register-section-head {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .register-intro {
+            padding: 0.9rem;
+        }
+
+        .register-section-card,
+        .register-consent {
+            padding: 0.85rem;
+        }
+    }
+</style>
 @endpush
