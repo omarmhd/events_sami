@@ -1053,68 +1053,6 @@
                 </div>
             </section>
 
-            <section class="billing-card">
-                <div class="billing-card-head">
-                    <div class="billing-section-kicker"><i class="fas fa-table-list me-1"></i> مقارنة سريعة</div>
-                    <h2 class="billing-section-title">أهم الفروقات الأساسية</h2>
-                    <p class="billing-section-subtitle">نظرة سريعة تساعدك على اتخاذ القرار بدون الرجوع للتفاصيل الكاملة في كل بطاقة.</p>
-                </div>
-                <div class="p-3 p-lg-4 compare-table-wrap">
-                    <table class="billing-compare-table">
-                        <thead>
-                            <tr>
-                                <th>الميزة</th>
-                                @foreach($plans as $plan)
-                                    <th>{{ $plan->name }}</th>
-                                @endforeach
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>الفعاليات السنوية</td>
-                                @foreach($plans as $plan)
-                                    <td>
-                                        {{ $plan->annual_event_limit ? $plan->annual_event_limit : 'غير محدود' }}
-                                    </td>
-                                @endforeach
-                            </tr>
-                            <tr>
-                                <td>الدعوات لكل فعالية</td>
-                                @foreach($plans as $plan)
-                                    <td>
-                                        {{ $plan->per_event_invitee_limit ? $plan->per_event_invitee_limit : 'غير محدود' }}
-                                    </td>
-                                @endforeach
-                            </tr>
-                            <tr>
-                                <td>استيراد CSV</td>
-                                @foreach($plans as $plan)
-                                    <td class="{{ $plan->includes_csv_import ? 'compare-yes' : 'compare-no' }}">
-                                        {{ $plan->includes_csv_import ? 'متاح' : 'غير متاح' }}
-                                    </td>
-                                @endforeach
-                            </tr>
-                            <tr>
-                                <td>إعادة الإرسال الجماعي</td>
-                                @foreach($plans as $plan)
-                                    <td class="{{ $plan->includes_bulk_resend ? 'compare-yes' : 'compare-no' }}">
-                                        {{ $plan->includes_bulk_resend ? 'متاح' : 'غير متاح' }}
-                                    </td>
-                                @endforeach
-                            </tr>
-                            <tr>
-                                <td>التخصيص المتقدم</td>
-                                @foreach($plans as $plan)
-                                    <td class="{{ $plan->includes_customization ? 'compare-yes' : 'compare-no' }}">
-                                        {{ $plan->includes_customization ? 'متاح' : 'غير متاح' }}
-                                    </td>
-                                @endforeach
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-
             <section class="billing-card" id="billing-assessment">
                 <div class="billing-card-head">
                     <div class="billing-section-kicker"><i class="fas fa-compass me-1"></i> مساعد الاختيار</div>
