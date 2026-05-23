@@ -65,6 +65,7 @@ body.auth-body {
 }
 
 .auth-grid--compact {
+    display: block;
     width: 100%;
     grid-template-columns: 1fr;
     max-width: none;
@@ -76,6 +77,7 @@ body.auth-body {
 }
 
 .auth-grid--compact .auth-panel-form {
+    display: block;
     min-height: 100dvh;
     padding: 1.1rem 0 1.25rem;
     width: 100%;
@@ -85,7 +87,7 @@ body.auth-body {
 
 .auth-grid--compact .auth-card {
     width: 100%;
-    max-width: none;
+    max-width: 100%;
     margin: 0;
     padding: 1.5rem clamp(0.85rem, 2vw, 1.5rem);
 }
