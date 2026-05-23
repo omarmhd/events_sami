@@ -430,6 +430,60 @@ body.auth-body {
     min-height: 46px;
 }
 
+.auth-form .input-group {
+    width: 100%;
+}
+
+.auth-form .input-group > .form-control,
+.auth-form .input-group > .form-select {
+    position: relative;
+    flex: 1 1 auto;
+    width: 1%;
+    min-width: 0;
+}
+
+.auth-form .auth-toggle-pw {
+    cursor: pointer;
+    background: #f5faf8;
+    border-color: #d8e7e3;
+    color: #5f7a76;
+    padding-inline: 0.85rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-toggle-pw-icon {
+    color: #5f7a76;
+    font-size: 0.85rem;
+}
+
+.auth-rtl .auth-form .input-group {
+    flex-direction: row-reverse;
+}
+
+.auth-rtl .auth-form .input-group > .form-control {
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.auth-rtl .auth-form .input-group > .auth-toggle-pw {
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.auth-rtl .auth-form .input-group > .input-group-text:last-child {
+    margin-right: -1px;
+}
+
+.auth-rtl .auth-form .input-group > .input-group-text:first-child {
+    margin-left: 0;
+}
+
 .auth-form .form-control:focus,
 .auth-form .form-select:focus {
     border-color: var(--auth-primary);
