@@ -116,7 +116,7 @@ class EmailSettingsController extends Controller
         ]);
     }
 
-    public function saveBranding(Request $request)
+    public function saveBranding(Request $request, EmailTemplateService $templateService)
     {
         $company = $request->user()->company;
         if (!$company) {
@@ -237,6 +237,18 @@ class EmailSettingsController extends Controller
             ['company_id' => $company->id],
             $data
         );
+
+        // Clear compiled template cache so branding changes reflect immediately
+        // in any rendered email previews or outgoing template compilation.
+        $types = [
+            EmailTemplate::TYPE_INVITATION,
+            EmailTemplate::TYPE_TICKET,
+            EmailTemplate::TYPE_PUBLIC_ACCEPTED,
+            EmailTemplate::TYPE_PUBLIC_REJECTED,
+        ];
+        foreach ($types as $type) {
+            $templateService->clearTemplateCache($company, null, $type);
+        }
 
         return back()->with('success', 'Email branding updated successfully.');
     }

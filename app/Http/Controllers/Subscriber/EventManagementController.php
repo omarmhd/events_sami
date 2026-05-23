@@ -8,6 +8,14 @@ use App\Models\Event;
 use App\Models\RegistrationForm;
 use App\Services\RegistrationFormService;
 use App\Services\SubscriptionService;
+use App\Models\PublicEventRegistration;
+use App\Models\EventAccessPass;
+use App\Mail\TicketMail;
+use App\Services\QrCodeService;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -125,7 +133,7 @@ class EventManagementController extends Controller
             try {
                 $headerImageUrl = $this->saveHeaderImage($request->file('header_image'));
             } catch (\Throwable $e) {
-                \Log::error('Header image upload failed (store)', [
+                Log::error('Header image upload failed (store)', [
                     'error'   => $e->getMessage(),
                     'user_id' => $request->user()->id ?? null,
                 ]);
@@ -236,7 +244,7 @@ class EventManagementController extends Controller
                 $this->deletePublicImage((string) $event->header_image_path);
                 $headerImageUrl = $this->saveHeaderImage($request->file('header_image'));
             } catch (\Throwable $e) {
-                \Log::error('Header image upload failed (update)', [
+                Log::error('Header image upload failed (update)', [
                     'error'   => $e->getMessage(),
                     'event'   => $event->id,
                     'user_id' => $request->user()->id ?? null,
@@ -245,6 +253,8 @@ class EventManagementController extends Controller
                     ->with('error', 'فشل رفع الصورة: ' . $e->getMessage());
             }
         }
+
+        $wasRequiresManual = $event->requires_manual_approval;
 
         $event->update([
             'event_slug' => $data['event_slug'],
@@ -274,6 +284,60 @@ class EventManagementController extends Controller
             'status' => $data['status'],
             'published_at' => $data['status'] === 'published' ? ($event->published_at ?: now()) : null,
         ]);
+
+        // If the organizer turned OFF manual approval for a public event,
+        // accept all pending public registrations and send tickets immediately.
+        if ($wasRequiresManual && !$event->requires_manual_approval && $event->event_type === 'public') {
+            try {
+                $pending = PublicEventRegistration::where('event_id', $event->id)
+                    ->where('status', 'pending')
+                    ->get();
+
+                $qrService = app(QrCodeService::class);
+
+                foreach ($pending as $registration) {
+                    DB::transaction(function () use ($event, $registration, $qrService) {
+                        $registration->update([
+                            'status' => 'accepted',
+                            'reviewed_by' => null,
+                            'reviewed_at' => now(),
+                        ]);
+
+                        $pass = EventAccessPass::firstOrNew([
+                            'event_id' => $event->id,
+                            'passable_type' => PublicEventRegistration::class,
+                            'passable_id' => $registration->id,
+                            'type' => 'main',
+                        ]);
+
+                        if (!$pass->exists) {
+                            $pass->token = (string) Str::uuid();
+                        }
+
+                        $pass->company_id = $event->company_id;
+                        $pass->holder_name = $registration->guest_name;
+                        $pass->holder_email = $registration->guest_email;
+                        $pass->sent_at = now();
+                        $pass->save();
+
+                        $qr = $qrService->generateBase64($pass->token);
+                        $tickets = [[ 'label' => 'Main', 'qr' => $qr ]];
+
+                        $invitationProxy = (object) [
+                            'invitee_name' => $registration->guest_name,
+                            'invitee_email' => $registration->guest_email,
+                            'invitee_position' => '',
+                            'allowed_guests' => 0,
+                            'selected_guests' => 0,
+                        ];
+
+                        Mail::to($registration->guest_email)->send(new TicketMail($invitationProxy, $tickets, $event));
+                    });
+                }
+            } catch (\Throwable $e) {
+                Log::error('Auto-accept pending registrations failed', ['event_id' => $event->id, 'error' => $e->getMessage()]);
+            }
+        }
 
         return redirect()->route('events.index')
             ->with('success', 'Event updated successfully.');
