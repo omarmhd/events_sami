@@ -111,31 +111,9 @@
     -webkit-text-fill-color: #ffd089;
 }
 
-/* Sidebar / compact variants — these are enabled when the component is
-   used with an extra class like `sidebar-platform-logo` or `mobile-platform-logo` */
-.sidebar-platform-logo .platform-logo-accent,
-.mobile-platform-logo .platform-logo-accent {
-    display: block;
-    width: 6px;
-    height: 36px;
-    border-radius: 6px;
-    background: var(--primary-color, #0f8f83);
-}
-.sidebar-platform-logo .platform-logo-accent { height: 42px; }
-.sidebar-platform-logo .platform-logo-img,
-.mobile-platform-logo .platform-logo-img { box-shadow: none; border: none; }
-.sidebar-platform-logo .platform-logo-img { max-height: 42px; }
-.sidebar-platform-logo .platform-logo-initial,
-.mobile-platform-logo .platform-logo-initial {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    background: linear-gradient(135deg, rgba(15,143,131,.12), rgba(15,143,131,.06));
-    color: var(--primary-color, #0f8f83);
-    font-weight: 800;
-}
-.sidebar-platform-logo .platform-logo-text { font-size: 1rem; }
+/* Compact / simple variants: keep visuals minimal (no borders/shadows) */
+.platform-logo-accent { display: none !important; }
+.platform-logo-img { box-shadow: none !important; border: none !important; border-radius: 0 !important; background: transparent !important; }
+.platform-logo-initial { display: inline-block; font-weight: 800; color: var(--text-main, #0b3f3a); }
+.platform-logo-text { margin-left: .25rem; }
 </style>
