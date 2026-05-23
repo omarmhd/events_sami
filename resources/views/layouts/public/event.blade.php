@@ -314,15 +314,39 @@
         .event-footer-inner {
             max-width: 980px;
             margin: 0 auto;
-            padding: 1.1rem 1.25rem;
-            display: flex;
+            padding: 1.15rem 1.25rem;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 1rem 1.25rem;
             align-items: center;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 0.85rem 1.1rem;
-            text-align: center;
             color: #4b5563;
             border-top: 1px solid rgba(34, 34, 34, 0.08);
+        }
+
+        .event-footer-branding {
+            display: flex;
+            align-items: center;
+            gap: 0.95rem;
+            flex-wrap: wrap;
+        }
+
+        .event-footer-brand-copy {
+            display: grid;
+            gap: 0.2rem;
+        }
+
+        .event-footer-brand-title {
+            margin: 0;
+            font-size: 0.98rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+
+        .event-footer-brand-subtitle {
+            margin: 0;
+            font-size: 0.88rem;
+            line-height: 1.6;
+            color: #6b7280;
         }
 
         .event-footer-stack {
@@ -331,6 +355,7 @@
             justify-content: center;
             flex-wrap: wrap;
             gap: 0.75rem 1rem;
+            justify-self: end;
         }
 
         .event-footer-brand {
@@ -415,11 +440,19 @@
 
             .event-footer-inner {
                 padding: 1rem 0.75rem;
+                grid-template-columns: 1fr;
+                text-align: center;
             }
 
             .event-footer-email {
                 width: 100%;
                 justify-content: center;
+            }
+
+            .event-footer-branding,
+            .event-footer-stack {
+                justify-content: center;
+                justify-self: center;
             }
         }
     </style>
@@ -435,23 +468,22 @@
 
 <footer class="event-footer">
     <div class="event-footer-inner">
-            <div class="event-footer-stack">
-                <div class="event-footer-brand">
-                    <x-platform-logo size="sm" theme="light" />
-                </div>
+        <div class="event-footer-branding">
+            <div class="event-footer-brand">
+                <x-platform-logo size="sm" theme="light" />
+            </div>
 
+            <div class="event-footer-brand-copy">
+                <p class="event-footer-brand-title">مع تحيات منصة {{ $platformName }}</p>
+                <p class="event-footer-brand-subtitle">منصة موحدة لإدارة الدعوات، التذاكر، والحضور بطريقة أوضح وأبسط.</p>
+            </div>
+        </div>
+
+        <div class="event-footer-stack">
                 <a class="event-footer-link event-footer-link--soft" href="{{ route('platform.about') }}">
                     <i class="fas fa-circle-info"></i>
                     <span>تعرف على منصة معا</span>
                 </a>
-
-                <a class="event-footer-link event-footer-link--primary" href="{{ route('onboarding.otp.form') }}">
-                    <i class="fas fa-user-plus"></i>
-                    <span>ابدأ الاشتراك</span>
-                </a>
-        </div>
-
-        <p class="event-footer-copy">مع تحيات منصة {{ $platformName }}</p>
 
         @if(!empty($contactEmail))
             <a class="event-footer-email" href="mailto:{{ $contactEmail }}">
@@ -459,6 +491,7 @@
                 <span>{{ $contactEmail }}</span>
             </a>
         @endif
+        </div>
     </div>
 </footer>
 

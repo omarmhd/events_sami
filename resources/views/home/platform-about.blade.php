@@ -4,16 +4,23 @@
 
 @push('styles')
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap');
+
     :root {
         --about-dark: #173c39;
         --about-accent: #dabc9a;
         --about-soft: #f4f6f8;
     }
 
+    html[dir="rtl"] body,
+    body {
+        font-family: 'Cairo', 'Manrope', sans-serif;
+    }
+
     body {
         background:
-            radial-gradient(circle at top left, rgba(218, 188, 154, 0.18), transparent 34%),
-            radial-gradient(circle at top right, rgba(15, 143, 131, 0.16), transparent 28%),
+            radial-gradient(circle at top left, rgba(218, 188, 154, 0.22), transparent 30%),
+            radial-gradient(circle at top right, rgba(15, 143, 131, 0.18), transparent 26%),
             linear-gradient(180deg, #ffffff 0%, #f7fafb 100%);
     }
 
@@ -27,9 +34,13 @@
         overflow: hidden;
         border-radius: 32px;
         padding: 3rem;
-        background: linear-gradient(135deg, #0d3b37 0%, #0f6b62 48%, #dabc9a 100%);
+        background:
+            linear-gradient(135deg, rgba(13,59,55,.94) 0%, rgba(15,107,98,.92) 52%, rgba(218,188,154,.95) 100%),
+            radial-gradient(circle at 20% 20%, rgba(255,255,255,.16), transparent 22%),
+            radial-gradient(circle at 80% 30%, rgba(255,255,255,.1), transparent 18%);
         color: #fff;
         box-shadow: 0 24px 60px rgba(15, 59, 55, 0.18);
+        border: 1px solid rgba(255,255,255,.08);
     }
 
     .about-hero::before {
@@ -50,6 +61,22 @@
         align-items: center;
     }
 
+    .about-visual-wrap {
+        position: relative;
+        isolation: isolate;
+    }
+
+    .about-glow {
+        position: absolute;
+        inset: auto -1rem -1rem auto;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255,255,255,.18) 0%, rgba(255,255,255,.04) 54%, transparent 72%);
+        filter: blur(2px);
+        z-index: -1;
+    }
+
     .about-kicker {
         display: inline-flex;
         align-items: center;
@@ -60,6 +87,7 @@
         font-size: .8rem;
         font-weight: 700;
         letter-spacing: .04em;
+        backdrop-filter: blur(10px);
     }
 
     .about-hero h1 {
@@ -67,6 +95,7 @@
         font-weight: 800;
         line-height: 1.1;
         margin: 1rem 0 .9rem;
+        text-wrap: balance;
     }
 
     .about-lead {
@@ -75,6 +104,26 @@
         line-height: 1.9;
         color: rgba(255,255,255,.92);
         margin-bottom: 1.5rem;
+    }
+
+    .about-badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .55rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .about-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: .45rem;
+        padding: .45rem .7rem;
+        border-radius: 999px;
+        background: rgba(255,255,255,.1);
+        border: 1px solid rgba(255,255,255,.12);
+        color: rgba(255,255,255,.95);
+        font-size: .82rem;
+        font-weight: 600;
     }
 
     .about-actions {
@@ -110,12 +159,25 @@
         border: 1px solid rgba(255,255,255,.2);
     }
 
+    .about-btn--outline {
+        background: transparent;
+        color: #fff;
+        border: 1px solid rgba(255,255,255,.34);
+    }
+
+    .about-btn--outline:hover {
+        color: #fff;
+        border-color: rgba(255,255,255,.52);
+        background: rgba(255,255,255,.08);
+    }
+
     .about-card {
-        background: #fff;
+        background: rgba(255,255,255,.94);
         border: 1px solid rgba(15, 143, 131, 0.08);
-        border-radius: 24px;
-        padding: 1.4rem;
-        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+        border-radius: 28px;
+        padding: 1.55rem;
+        box-shadow: 0 18px 38px rgba(15, 23, 42, 0.08);
+        backdrop-filter: blur(16px);
     }
 
     .about-stat {
@@ -131,7 +193,7 @@
     }
 
     .about-stat strong {
-        font-size: 1.1rem;
+        font-size: 1.08rem;
         color: var(--about-dark);
     }
 
@@ -142,7 +204,39 @@
     }
 
     .about-section {
-        padding: 1.5rem 0 0;
+        padding: 1.75rem 0 0;
+    }
+
+    .section-head {
+        margin-top: 1.2rem;
+        text-align: center;
+    }
+
+    .section-head .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: .5rem;
+        padding: .48rem .85rem;
+        border-radius: 999px;
+        background: rgba(15, 143, 131, 0.08);
+        color: var(--about-dark);
+        font-size: .8rem;
+        font-weight: 700;
+        margin-bottom: .8rem;
+    }
+
+    .section-head h2 {
+        margin: 0;
+        font-size: clamp(1.45rem, 2vw, 2rem);
+        font-weight: 800;
+        color: var(--about-dark);
+    }
+
+    .section-head p {
+        margin: .65rem auto 0;
+        max-width: 60ch;
+        color: #5b6472;
+        line-height: 1.8;
     }
 
     .about-grid {
@@ -153,11 +247,18 @@
     }
 
     .feature-card {
-        background: #fff;
+        background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(255,255,255,.92));
         border: 1px solid rgba(34,34,34,.08);
-        border-radius: 22px;
-        padding: 1.3rem;
-        box-shadow: 0 8px 24px rgba(0,0,0,.05);
+        border-radius: 24px;
+        padding: 1.35rem;
+        box-shadow: 0 14px 30px rgba(0,0,0,.06);
+        transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 18px 38px rgba(0,0,0,.08);
+        border-color: rgba(15, 143, 131, 0.14);
     }
 
     .feature-icon {
@@ -187,7 +288,7 @@
 
     .about-contact {
         margin: 1.8rem 0 0;
-        background: linear-gradient(135deg, rgba(15,143,131,.08), rgba(218,188,154,.1));
+        background: linear-gradient(135deg, rgba(15,143,131,.08), rgba(218,188,154,.12));
         border: 1px solid rgba(15,143,131,.12);
         border-radius: 24px;
         padding: 1.4rem;
@@ -207,10 +308,6 @@
     .about-contact p {
         margin: 0;
         color: #5b6472;
-    }
-
-    .about-contact a {
-        text-decoration: none;
     }
 
     @media (max-width: 992px) {
@@ -233,7 +330,7 @@
         }
 
         .about-btn,
-        .about-contact a {
+        .about-contact .about-btn {
             width: 100%;
             justify-content: center;
         }
@@ -259,24 +356,31 @@
 
                 <h1>حل عملي لإدارة الدعوات، التذاكر، والحضور من مكان واحد</h1>
                 <p class="about-lead">
-                    معا تساعدك على إنشاء الفعاليات، إرسال الدعوات، متابعة الردود، توليد رموز QR، وتقديم تجربة منظمة وواضحة للمستخدمين من أول دعوة إلى آخر تسجيل.
+                    انضم لنا وابدأ التجربة المجانية في تنظيم الفعاليات مع معا: إنشاء الدعوات، متابعة الردود، توليد رموز QR، وتنظيم الحضور من مكان واحد.
                 </p>
+
+                <div class="about-badges">
+                    <span class="about-badge"><i class="fas fa-calendar-check"></i> إدارة الفعاليات</span>
+                    <span class="about-badge"><i class="fas fa-envelope-open-text"></i> دعوات احترافية</span>
+                    <span class="about-badge"><i class="fas fa-qrcode"></i> حضور عبر QR</span>
+                </div>
 
                 <div class="about-actions">
                     <a href="{{ route('onboarding.otp.form') }}" class="about-btn about-btn--light">
-                        <i class="fas fa-user-plus"></i>
-                        <span>ابدأ الاشتراك</span>
+                        <i class="fas fa-bolt"></i>
+                        <span>ابدأ التجربة المجانية</span>
                     </a>
-                    @if(!empty($supportEmail))
-                        <a href="mailto:{{ $supportEmail }}" class="about-btn about-btn--soft">
-                            <i class="fas fa-envelope"></i>
-                            <span>تواصل معنا</span>
-                        </a>
-                    @endif
+                    <a href="{{ route('onboarding.otp.form') }}" class="about-btn about-btn--outline">
+                        <i class="fas fa-user-plus"></i>
+                        <span>انضم الآن</span>
+                    </a>
                 </div>
             </div>
 
-            <div class="about-card">
+            <div class="about-visual-wrap">
+                <div class="about-glow"></div>
+
+                <div class="about-card">
                 @if(!empty($platformLogo))
                     <div class="mb-3">
                         <x-platform-logo size="lg" theme="dark" />
@@ -295,11 +399,18 @@
                     <strong>QR وحضور مباشر</strong>
                     <span>رموز QR وتسجيل دخول يساعدان فريقك على تنظيم التجربة عند الباب.</span>
                 </div>
+                </div>
             </div>
         </div>
     </section>
 
     <section class="about-section">
+        <div class="section-head">
+            <span class="eyebrow"><i class="fas fa-layer-group"></i> لماذا معا؟</span>
+            <h2>صورة أوضح للمنصة وتجربة أكثر فخامة للمستخدم</h2>
+            <p>هذه الصفحة تعرّف الزائر بسرعة على قيمة المنصة وتدفعه بخطوة واحدة للبدء، بدون تشتيت أو ازدحام بصري.</p>
+        </div>
+
         <div class="about-grid">
             <div class="feature-card">
                 <div class="feature-icon"><i class="fas fa-envelope-open-text"></i></div>
@@ -320,21 +431,19 @@
 
         <div class="about-contact">
             <div>
-                <h2>هل تريد التعرف أكثر على معا؟</h2>
-                <p>ابدأ من هنا أو تواصل معنا لنوضح لك كيف تناسب المنصة احتياجك.</p>
+                <h2>انضم الآن وابدأ التجربة المجانية</h2>
+                <p>جرب معا في تنظيم فعالياتك، وشاهد كيف تصبح الإدارة أبسط، أسرع، وأكثر أناقة.</p>
             </div>
 
             <div class="about-actions" style="margin:0;">
                 <a href="{{ route('onboarding.otp.form') }}" class="about-btn about-btn--light">
-                    <i class="fas fa-arrow-right"></i>
-                    <span>الانضمام الآن</span>
+                    <i class="fas fa-bolt"></i>
+                    <span>ابدأ التجربة المجانية</span>
                 </a>
-                @if(!empty($supportEmail))
-                    <a href="mailto:{{ $supportEmail }}" class="about-btn about-btn--soft" style="color:var(--about-dark);border-color:rgba(34,34,34,.08);background:#fff;">
-                        <i class="fas fa-paper-plane"></i>
-                        <span>{{ $supportEmail }}</span>
-                    </a>
-                @endif
+                <a href="{{ route('onboarding.otp.form') }}" class="about-btn about-btn--outline">
+                    <i class="fas fa-arrow-right"></i>
+                    <span>انضم الآن</span>
+                </a>
             </div>
         </div>
     </section>
