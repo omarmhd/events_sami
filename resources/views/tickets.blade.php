@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Tickets PDF</title>
+    <title>تذاكر الحضور</title>
     <style>
         @font-face {
             font-family: 'DejaVu Sans';
@@ -10,130 +10,244 @@
             font-weight: normal;
         }
 
+        @font-face {
+            font-family: 'DejaVu Sans';
+            font-style: normal;
+            font-weight: bold;
+        }
+
+        @page {
+            margin: 0;
+        }
+
         body {
             font-family: 'DejaVu Sans', sans-serif;
-            background-color: #FDFBF7;
+            background: #f7f3ec;
             margin: 0;
             padding: 0;
-            text-align: right;
-            color: #2D3748;
+            direction: rtl;
+            color: #1f2937;
         }
 
-        @page { margin: 0px; padding: 0px; }
-
-        .container { padding: 40px; max-width: 700px; margin: 0 auto; }
-
-        /* تنسيق الأيقونات البديلة */
-        .icon-img {
-            width: 16px;
-            height: 16px;
-            vertical-align: middle;
-            margin-left: 5px;
+        .page {
+            padding: 28px 32px 36px;
         }
 
-        /* --- باقي التنسيقات --- */
-        .header-banner { width: 100%; height: 200px; background-color: #eee; margin-bottom: 30px; }
-        .header-banner img { width: 100%; height: 100%; object-fit: cover; }
+        .banner {
+            border-radius: 18px;
+            overflow: hidden;
+            margin-bottom: 22px;
+            background: linear-gradient(135deg, #c7a06b 0%, #6b4f2d 100%);
+        }
+
+        .banner img {
+            display: block;
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .intro {
+            text-align: center;
+            margin-bottom: 18px;
+        }
+
+        .intro h1 {
+            margin: 0;
+            font-size: 24px;
+            color: #111827;
+        }
+
+        .intro p {
+            margin: 8px 0 0;
+            font-size: 13px;
+            color: #6b7280;
+            line-height: 1.8;
+        }
 
         .ticket-card {
-            background-color: #ffffff;
-            border: 1px solid #F0EAE0;
-            border-radius: 15px;
-            margin-bottom: 30px;
+            background: #ffffff;
+            border: 1px solid #eadfce;
+            border-radius: 18px;
             overflow: hidden;
+            margin-bottom: 20px;
             page-break-inside: avoid;
         }
-        .card-top-strip { height: 8px; width: 100%; }
-        .card-body { padding: 30px; text-align: center; }
 
-        .info-table { width: 100%; margin-bottom: 20px; border-collapse: collapse; }
-        .info-box {
-            background-color: #FAFAFA;
-            border: 1px dashed #DCC8A8;
-            border-radius: 8px;
-            padding: 10px;
-            text-align: center;
+        .ticket-strip {
+            height: 10px;
+            width: 100%;
         }
 
-        .qr-container {
+        .ticket-body {
+            padding: 24px;
+        }
+
+        .label {
             display: inline-block;
-            padding: 15px;
-            background-color: #FAFAFA;
-            border: 1px dashed #DCC8A8;
-            border-radius: 10px;
-            margin-top: 10px;
+            padding: 7px 16px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 14px;
+            background: #f9f5ef;
+            color: #8f6a3d;
+            border: 1px solid #e8dccb;
         }
-        .qr-img { width: 150px; height: 150px; }
 
-        h1, h2, h3 { margin: 0; color: #2D3748; }
-        p { margin: 5px 0; color: #718096; font-size: 14px; }
-
-        .badge {
-            background-color: #FEF9EF; color: #C5A065; padding: 5px 15px;
-            border-radius: 20px; border: 1px solid #F0EAE0; font-size: 12px;
-            text-transform: uppercase; display: inline-block; margin-bottom: 10px;
+        .label.secondary {
+            background: #f3f4f6;
+            color: #6b7280;
+            border-color: #e5e7eb;
         }
-        .footer { text-align: center; font-size: 10px; color: #aaa; margin-top: 50px; border-top: 1px solid #eee; padding-top: 20px; }
+
+        .name {
+            margin: 0;
+            font-size: 23px;
+            color: #111827;
+        }
+
+        .position {
+            margin: 6px 0 0;
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 18px;
+        }
+
+        .info-cell {
+            width: 50%;
+            vertical-align: top;
+            padding: 0 4px;
+        }
+
+        .info-box {
+            background: #fbfaf7;
+            border: 1px dashed #dbc3a1;
+            border-radius: 12px;
+            padding: 12px 10px;
+            text-align: center;
+            min-height: 72px;
+        }
+
+        .info-title {
+            font-size: 12px;
+            color: #8b6a42;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .info-value {
+            font-size: 13px;
+            color: #1f2937;
+            line-height: 1.7;
+        }
+
+        .qr-wrap {
+            display: inline-block;
+            margin-top: 18px;
+            padding: 14px;
+            border-radius: 16px;
+            border: 1px dashed #dbc3a1;
+            background: #fbfaf7;
+        }
+
+        .qr-box {
+            width: 170px;
+            height: 170px;
+        }
+
+        .scan-text {
+            margin: 12px 0 0;
+            font-size: 11px;
+            color: #9ca3af;
+            letter-spacing: .04em;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 24px;
+            padding-top: 14px;
+            border-top: 1px solid #e8dccb;
+            color: #8b909a;
+            font-size: 10px;
+            line-height: 1.8;
+        }
     </style>
 </head>
 <body>
+<div class="page">
+    <div class="banner">
+        <img src="{{ public_path('top-banner.png') }}" alt="شعار الفعالية">
+    </div>
 
-<div class="header-banner">
-    <img src="{{ public_path('top-banner.png') }}" alt="Banner">
-</div>
-
-<div class="container">
-
-    <div style="text-align: center; margin-bottom: 40px;">
-        <h2>Thank you for accepting.</h2>
-           <h3> Your tickets are below.</h3>
+    <div class="intro">
+        <h1>تذاكر الدخول الخاصة بك جاهزة</h1>
+        <p>يرجى إظهار رمز الاستجابة السريعة عند بوابة الدخول، وسيتم اعتماد التذكرة إلكترونيًا.</p>
     </div>
 
     @foreach ($tickets as $ticket)
+        @php
+            $isMainTicket = ($ticket['label'] ?? 'Main') === 'Main';
+            $ticketLabel = $isMainTicket ? 'التذكرة الرئيسية' : 'تذكرة المرافق ' . $loop->iteration;
+            $ticketStripColor = $isMainTicket ? '#c7a06b' : '#cbd5e1';
+        @endphp
+
         <div class="ticket-card">
-            <div class="card-top-strip" style="background-color: {{ $ticket['label'] === 'Main' ? '#C5A065' : '#E2E8F0' }};"></div>
+            <div class="ticket-strip" style="background-color: {{ $ticketStripColor }};"></div>
 
-            <div class="card-body">
-                <span class="badge" style="{{ $ticket['label'] !== 'Main' ? 'color: #718096; background: #F7FAFC;' : '' }}">
-                    {{ $ticket['label'] === 'Main' ? 'Main Ticket' : 'Guest Ticket' }}
-                </span>
+            <div class="ticket-body">
+                <span class="label {{ $isMainTicket ? '' : 'secondary' }}">{{ $ticketLabel }}</span>
 
-                @if($ticket['label'] === 'Main')
-                    <h2 style="font-size: 24px; margin: 10px 0;">{{ $invitation->invitee_name }}</h2>
-                    <p>{{ $invitation->invitee_position }}</p>
+                @if($isMainTicket)
+                    <h2 class="name">{{ $invitation->invitee_name }}</h2>
 
-                    <table class="info-table" style="margin-top: 20px;">
+                    @if(!empty($invitation->invitee_position))
+                        <p class="position">{{ $invitation->invitee_position }}</p>
+                    @endif
+
+                    <table class="info-table">
                         <tr>
-                            <td width="50%" style="padding: 5px;">
+                            <td class="info-cell">
                                 <div class="info-box">
-
-                                    <div style="font-weight: bold; color: #333; margin-top: 5px;">{{ $event->date }}</div>
-                                    <div style="font-size: 12px;">{{ $event->from_time }}</div>
+                                    <div class="info-title">التاريخ والوقت</div>
+                                    <div class="info-value">
+                                        {{ $event->date ?? '—' }}<br>
+                                        {{ $event->from_time ?? '' }}
+                                    </div>
                                 </div>
                             </td>
-                            <td width="50%" style="padding: 5px;">
+                            <td class="info-cell">
                                 <div class="info-box">
-                                    <div style="font-weight: bold; color: #333; margin-top: 5px;">Location</div>
-                                    <div style="font-size: 12px;">{{ Str::limit($event->address, 20) }}</div>
+                                    <div class="info-title">الموقع</div>
+                                    <div class="info-value">
+                                        {{ \Illuminate\Support\Str::limit((string) ($event->address ?? ''), 42) ?: '—' }}
+                                    </div>
                                 </div>
                             </td>
                         </tr>
                     </table>
                 @else
-                    <h3 style="margin: 15px 0; color: #718096;">Guest Ticket #{{ $loop->iteration }}</h3>
+                    <h3 class="name" style="font-size: 18px; color: #6b7280; margin-top: 2px;">{{ $ticketLabel }}</h3>
+                    <p class="position">بطاقة إضافية مرتبطة بنفس الدعوة</p>
                 @endif
 
-                <div class="qr-container" style="{{ $ticket['label'] !== 'Main' ? 'border-color: #E2E8F0;' : '' }}">
-                    <img src="{{ $ticket['qr'] }}" class="qr-img" alt="QR Code">
+                <div style="text-align: center;">
+                    <div class="qr-wrap" style="{{ $isMainTicket ? '' : 'border-color: #cbd5e1;' }}">
+                        <img src="{{ $ticket['qr'] }}" class="qr-box" alt="رمز الاستجابة السريعة">
+                    </div>
+                    <p class="scan-text">يرجى مسح الرمز عند المدخل</p>
                 </div>
-
-                <p style="font-size: 10px; margin-top: 10px; letter-spacing: 1px;">PLEASE SCAN AT ENTRANCE</p>
             </div>
         </div>
     @endforeach
 
     <div class="footer">
-        &copy; {{ date('Y') }} SAMI-AEC. All rights reserved.
+        &copy; {{ date('Y') }} SAMI-AEC. جميع الحقوق محفوظة.
     </div>
 </div>
 </body>

@@ -12,6 +12,7 @@ use App\Services\EmailTemplateService;
 use App\Services\SubscriptionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
 
 class EmailSettingsController extends Controller
@@ -375,6 +376,56 @@ class EmailSettingsController extends Controller
             'subject' => $compiled['subject'],
             'html' => $compiled['html'],
         ]);
+    }
+
+    public function sendTest(Request $request, EmailTemplateService $templateService)
+    {
+        $company = $request->user()->company;
+        if (!$company) {
+            return response()->json(['message' => 'Company context required'], 422);
+        }
+
+        if (!$this->subscriptionService->featureEnabled($company, 'visual_identity')) {
+            return response()->json(['message' => 'Feature not available'], 403);
+        }
+
+        $data = $request->validate([
+            'target_email' => ['nullable', 'email'],
+            'template_type' => ['nullable', 'string'],
+            'event_id' => ['nullable', 'integer', 'exists:events,id'],
+        ]);
+
+        $target = $data['target_email'] ?? $request->user()->email;
+        $type = $data['template_type'] ?? EmailTemplate::TYPE_INVITATION;
+
+        $event = null;
+        if (!empty($data['event_id'])) {
+            $event = Event::query()->where('company_id', $company->id)->findOrFail($data['event_id']);
+        }
+
+        $compiled = $templateService->compile($company, $event, $type, [
+            'guest_name' => $request->user()->name ?? 'Guest',
+            'guest_email' => $request->user()->email ?? '',
+            'invitation_link' => url('/rsvp/sample'),
+            'tickets_html' => $this->buildSampleTicketsHtml($templateService, $event),
+            'tickets_count' => 1,
+        ]);
+
+        $html = $compiled['html'] ?? '';
+        $subject = $compiled['subject'] ?? 'Test Email';
+
+        Mail::send([], [], function ($message) use ($target, $subject, $html, $compiled) {
+            $message->to($target)->subject($subject);
+            if (!empty($compiled['from_email'])) {
+                $message->from($compiled['from_email'], $compiled['from_name'] ?? null);
+            }
+            if (!empty($compiled['reply_to'])) {
+                $message->replyTo($compiled['reply_to']);
+            }
+            $message->setBody($html, 'text/html');
+        });
+
+        return response()->json(['message' => 'Test email sent to ' . $target]);
     }
 
     protected function buildSampleTicketsHtml(EmailTemplateService $templateService, ?Event $event): string

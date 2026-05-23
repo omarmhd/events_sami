@@ -183,6 +183,7 @@ Route::middleware(['auth', 'company', 'organizer.only', 'subscription.status'])-
     Route::get('email-settings', [EmailSettingsController::class, 'index'])->name('email-settings.index');
     Route::middleware('feature:visual_identity')->group(function () {
         Route::post('email-settings/branding', [EmailSettingsController::class, 'saveBranding'])->name('email-settings.branding');
+        Route::post('email-settings/send-test', [EmailSettingsController::class, 'sendTest'])->name('email-settings.send_test');
     });
     // Clear-image routes are always registered — the controller guards access internally.
     Route::post('email-settings/branding/clear-logo', [EmailSettingsController::class, 'clearLogo'])->name('email-settings.clearLogo');

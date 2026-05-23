@@ -423,9 +423,14 @@
                                             label="ترقية لتفعيل الهوية البصرية"
                                             icon="fas fa-palette" />
                     @else
-                        <button type="submit" class="btn-save">
-                            <i class="fas fa-floppy-disk me-2"></i> حفظ الهوية البصرية
-                        </button>
+                        <div class="d-flex gap-2">
+                            <button type="button" id="sendTestEmailBtn" class="btn btn-outline-secondary" title="إرسال إيميل اختبار">
+                                <i class="fas fa-paper-plane me-2"></i> إرسال اختبار
+                            </button>
+                            <button type="submit" class="btn-save">
+                                <i class="fas fa-floppy-disk me-2"></i> حفظ الهوية البصرية
+                            </button>
+                        </div>
                     @endif
                 </div>
 
@@ -543,5 +548,34 @@
     // Initialise both drop zones
     initImageDropZoneWithFlag('logoFileInput',   'logoDropZone',   'preview-logo',     'logoFileSelected',   'logoPreviewWrapEmail',   'clearLogoFlagEmail');
     initImageDropZoneWithFlag('headerImageFile', 'headerDropZone', 'headerImgPreview', 'headerFileSelected', 'headerPreviewWrapEmail', 'clearHeaderFlagEmail');
+
+    // ── Send test email handler ───────────────────────────────────
+    document.getElementById('sendTestEmailBtn')?.addEventListener('click', function () {
+        const btn = this;
+        btn.disabled = true;
+        const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+        fetch("{{ route('email-settings.send_test') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': token,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                template_type: "{{ \App\Models\EmailTemplate::TYPE_INVITATION }}"
+            })
+        }).then(resp => resp.json())
+        .then(data => {
+            if (data?.message) {
+                AppUI.toast(data.message, 'success');
+            } else {
+                AppUI.toast('تم إرسال إيميل الاختبار.', 'success');
+            }
+        }).catch(err => {
+            console.error(err);
+            AppUI.toast('فشل إرسال إيميل الاختبار.', 'error');
+        }).finally(() => btn.disabled = false);
+    });
 </script>
 @endpush
