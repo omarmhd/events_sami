@@ -1,17 +1,74 @@
 @extends('layouts.auth')
 
 @section('title', 'إكمال التسجيل' . ' - ' . \App\Models\SystemSetting::get('platform_name', config('app.name', 'Platform')))
-@section('visual_title', 'حوّل بياناتك إلى مساحة عمل جاهزة')
-@section('visual_subtitle', 'وحّد هوية فريقك من البداية: اسم الجهة، النطاق الفرعي، والخطة المناسبة بعد الفترة التجريبية.')
+@section('visual_title', 'ابدأ إعداد مساحتك في خطوات واضحة')
+@section('visual_subtitle', 'أدخل بيانات الجهة، النطاق الفرعي، والخطة المفضلة لتجهيز مساحة فعّالة ومتناسقة مع المنصة.')
 
-@section('auth_title', 'إكمال التسجيل وإعداد المساحة')
-@section('auth_subtitle', 'هذه خطوة التسجيل النهائية قبل فتح لوحة التحكم.')
+@section('auth_title', 'إكمال التسجيل')
+@section('auth_subtitle', 'خطوة أخيرة قبل فتح لوحة التحكم وإنشاء مساحتك.')
+
+@push('styles')
+<style>
+    .auth-panel-visual {
+        background:
+            linear-gradient(165deg, rgba(15, 143, 131, 0.98) 0%, rgba(10, 92, 99, 0.98) 64%, rgba(13, 72, 78, 0.97) 100%);
+    }
+
+    .auth-visual-top {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 26px;
+        padding: 1.4rem;
+        backdrop-filter: blur(12px);
+        box-shadow: 0 18px 38px rgba(0, 0, 0, 0.08);
+    }
+
+    .auth-heading {
+        font-size: clamp(1.45rem, 1.9vw, 2rem);
+        line-height: 1.35;
+        margin-bottom: 0.7rem;
+    }
+
+    .auth-subheading {
+        max-width: 100%;
+        font-size: 0.95rem;
+        line-height: 1.85;
+    }
+
+    .auth-feature-cards {
+        margin-top: 1.3rem;
+    }
+
+    .auth-feat-card {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(8px);
+    }
+
+    .auth-stat-card {
+        display: grid;
+        gap: 0.2rem;
+        padding: 0.85rem;
+        text-align: center;
+    }
+
+    .auth-stat-number {
+        font-size: 1.02rem;
+    }
+
+    @media (max-width: 991px) {
+        .auth-visual-top {
+            padding: 1.2rem;
+        }
+    }
+</style>
+@endpush
 
 @section('auth-content')
     <form action="{{ route('onboarding.profile.save') }}" method="POST" class="auth-form">
         @csrf
 
-        <h3 class="auth-form-section-title">البيانات الأساسية</h3>
+        <h3 class="auth-form-section-title">بيانات المساحة</h3>
 
         <div class="row g-3">
             <div class="col-md-6">

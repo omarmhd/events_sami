@@ -61,8 +61,11 @@ Route::post('/onboarding/verify', [OnboardingController::class, 'verifyOtp'])
     ->name('onboarding.verify.submit');
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/onboarding/profile', [OnboardingController::class, 'showProfileForm'])->name('onboarding.profile');
-    Route::post('/onboarding/profile', [OnboardingController::class, 'saveProfile'])->name('onboarding.profile.save');
+    Route::get('/onboarding/complete-registration', [OnboardingController::class, 'showProfileForm'])->name('onboarding.profile');
+    Route::post('/onboarding/complete-registration', [OnboardingController::class, 'saveProfile'])->name('onboarding.profile.save');
+
+    Route::redirect('/onboarding/profile', '/onboarding/complete-registration');
+    Route::post('/onboarding/profile', [OnboardingController::class, 'saveProfile']);
 
     // Plans step — shown after profile setup, before dashboard.
     // Accessible while on trial (subscription.status middleware exempts 'onboarding.' prefix).

@@ -1,45 +1,42 @@
-<!-- resources/views/onboarding/register.blade.php -->
 @extends('layouts.auth')
 
-@section('content')
-<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-600 to-blue-600 px-4">
-    <div class="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
-        <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-gray-900">مرحباً بك</h1>
-            <p class="text-gray-600 mt-2">منصة Maan Invite - إرسل دعوات احترافية</p>
+@section('title', 'إنشاء حساب سريع' . ' - ' . \App\Models\SystemSetting::get('platform_name', config('app.name', 'Platform')))
+@section('visual_title', 'ابدأ الدخول بدون تعقيد')
+@section('visual_subtitle', 'أدخل بريدك الإلكتروني، واستقبل رمز تحقق يفتح لك طريق الإعداد الكامل لمساحة العمل.')
+
+@section('auth_title', 'إنشاء حساب سريع')
+@section('auth_subtitle', 'أرسل رمز التحقق إلى بريدك ثم أكمل الإعداد.')
+
+@section('auth-content')
+<div id="otp-step">
+    <form id="registerForm" class="auth-form">
+        @csrf
+
+        <div class="mb-3">
+            <label for="email" class="form-label">البريد الإلكتروني</label>
+            <input type="email" id="email" name="email" required class="form-control" placeholder="your@email.com">
+            <span class="text-danger mt-1 d-block" id="emailError"></span>
         </div>
 
-        <form id="registerForm" class="space-y-4">
-            @csrf
+        <button type="submit" class="auth-btn" id="submitBtn">إرسال رمز التحقق</button>
 
-            <div>
-                <label for="email" class="block text-sm font-medium text-gray-700">
-                    البريد الإلكتروني
-                </label>
-                <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    required
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                    placeholder="your@email.com">
-                <span class="text-sm text-red-600 mt-1" id="emailError"></span>
-            </div>
+        <div class="auth-note mt-3">
+            <p class="auth-note-title">كيف تتم العملية؟</p>
+            <ul class="auth-note-list">
+                <li>نرسل رمزًا مكونًا من 6 أرقام إلى بريدك.</li>
+                <li>بعد التأكيد تنتقل مباشرة إلى إعداد مساحة العمل.</li>
+                <li>لا تحتاج إلى كلمة مرور في أول دخول.</li>
+            </ul>
+        </div>
 
-            <button
-                type="submit"
-                class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md font-medium hover:bg-indigo-700 transition"
-                id="submitBtn">
-                إرسال رمز التحقق
-            </button>
-        </form>
-
-        <p class="text-center text-gray-600 text-sm mt-6">
-            لديك حساب؟ <a href="{{ route('login') }}" class="text-indigo-600 hover:underline">تسجيل الدخول</a>
-        </p>
-    </div>
+        <div class="text-center mt-3 small">
+            <a href="{{ route('login') }}" class="auth-link">الدخول بكلمة المرور</a>
+        </div>
+    </form>
 </div>
+@endsection
 
+@push('scripts')
 <script>
     document.getElementById('registerForm').addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -56,15 +53,12 @@
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('[name="_token"]').value,
                 },
-                body: JSON.stringify({
-                    email
-                }),
+                body: JSON.stringify({ email }),
             });
 
             const data = await response.json();
 
             if (data.success) {
-                // Show OTP verification form
                 showOtpForm(email);
             } else {
                 document.getElementById('emailError').textContent = data.message || 'حدث خطأ';
@@ -79,27 +73,14 @@
 
     function showOtpForm(email) {
         document.getElementById('registerForm').innerHTML = `
-        <div>
-            <p class="text-center text-gray-600 mb-4">تحقق من بريدك الإلكتروني</p>
-            <p dir="ltr" class="text-center text-sm text-gray-500 mb-4">${email}</p>
-            <label for="otp" class="block text-sm font-medium text-gray-700">رمز التحقق (6 أرقام)</label>
-            <input 
-                type="text" 
-                id="otp" 
-                maxlength="6" 
-                pattern="[0-9]{6}"
-                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md text-center text-2xl tracking-widest"
-                placeholder="000000"
-            >
-            <button 
-                type="button" 
-                onclick="verifyOtp('${email}')"
-                class="w-full mt-4 bg-indigo-600 text-white py-2 px-4 rounded-md font-medium hover:bg-indigo-700"
-            >
-                تحقق
-            </button>
-        </div>
-    `;
+            <div>
+                <p class="text-center text-muted mb-3">تحقق من بريدك الإلكتروني</p>
+                <p dir="ltr" class="text-center small text-muted mb-4">${email}</p>
+                <label for="otp" class="form-label">رمز التحقق (6 أرقام)</label>
+                <input type="text" id="otp" maxlength="6" pattern="[0-9]{6}" class="form-control text-center fs-4 tracking-widest" placeholder="000000">
+                <button type="button" onclick="verifyOtp('${email}')" class="auth-btn mt-3">تحقق</button>
+            </div>
+        `;
     }
 
     async function verifyOtp(email) {
@@ -117,10 +98,7 @@
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': document.querySelector('[name="_token"]').value,
                 },
-                body: JSON.stringify({
-                    email,
-                    otp
-                }),
+                body: JSON.stringify({ email, otp }),
             });
 
             const data = await response.json();
@@ -135,4 +113,4 @@
         }
     }
 </script>
-@endsection
+@endpush

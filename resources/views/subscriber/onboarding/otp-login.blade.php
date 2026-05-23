@@ -4,7 +4,7 @@
 @section('visual_title', 'دخول سريع وآمن لمساحة العمل')
 @section('visual_subtitle', 'ابدأ من بريدك الإلكتروني عبر رمز تحقق مؤقت، ثم أكمل بيانات مساحتك لتفعيل منصة معا بالكامل.')
 
-@section('auth_title', 'تسجيل الدخول / إنشاء حساب')
+@section('auth_title', 'الدخول برمز تحقق')
 @section('auth_subtitle', 'أدخل بريد العمل لإرسال رمز تحقق صالح لدقائق محدودة.')
 
 @section('auth-content')
@@ -16,7 +16,7 @@
         <div class="alert alert-danger auth-alert mt-3">{{ session('error') }}</div>
     @endif
 
-    <p class="auth-kicker">OTP Onboarding</p>
+    <p class="auth-kicker">تسجيل بدون كلمة مرور</p>
 
     <form action="{{ route('onboarding.otp.send') }}" method="POST" class="auth-form">
         @csrf

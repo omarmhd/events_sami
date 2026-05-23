@@ -1,7 +1,7 @@
 @extends('layouts.auth')
 
 @section('title', 'تعيين كلمة مرور جديدة' . ' - ' . \App\Models\SystemSetting::get('platform_name', config('app.name', 'Platform')))
-@section('visual_title', 'خطوة واحدة لاستعادة وصولك الكامل.')
+@section('visual_title', 'أعد ضبط كلمة مرورك بثقة.')
 @section('visual_subtitle', 'اختر كلمة مرور قوية لحماية مساحة عملك وبيانات فعالياتك.')
 
 @section('auth_title', 'تعيين كلمة مرور جديدة')

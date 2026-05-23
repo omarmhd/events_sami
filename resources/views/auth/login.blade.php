@@ -5,11 +5,11 @@
 @endphp
 
 @section('title', ($adminMode ? 'دخول المشرف العام' : 'تسجيل الدخول') . ' - ' . \App\Models\SystemSetting::get('platform_name', config('app.name', 'Platform')))
-@section('visual_title', $adminMode ? 'وصول إداري كامل لعمليات النظام.' : 'أدر كل فعالية من غرفة تحكم واحدة.')
-@section('visual_subtitle', $adminMode ? 'راقب المؤسسات والخطط والمستخدمين من المركز الإداري.' : 'تتبع الدعوات وعمليات الدخول والفوترة وجودة التواصل بمعايير SaaS عالمية.')
+@section('visual_title', $adminMode ? 'وصول إداري واضح وهادئ.' : 'أدر فعالياتك من مساحة عمل واحدة.')
+@section('visual_subtitle', $adminMode ? 'راقب المؤسسات والخطط والمستخدمين من لوحة الإدارة.' : 'تتبع الدعوات والحضور والفوترة بنفس هوية المنصة المتناسقة.')
 
-@section('auth_title', $adminMode ? 'دخول المشرف العام' : 'أهلاً بعودتك')
-@section('auth_subtitle', $adminMode ? 'استخدم بيانات اعتماد المشرف.' : 'سجّل الدخول إلى مساحة عملك.')
+@section('auth_title', $adminMode ? 'دخول المشرف العام' : 'تسجيل الدخول')
+@section('auth_subtitle', $adminMode ? 'استخدم بيانات اعتماد المشرف.' : 'سجّل الدخول إلى مساحة عملك بأمان وسلاسة.')
 
 @section('auth-content')
     @if(session('success'))

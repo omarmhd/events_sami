@@ -16,6 +16,9 @@
     @stack('styles')
 </head>
 <body class="auth-body {{ app()->getLocale() === 'ar' ? 'auth-rtl' : '' }}">
+@php
+    $platformName = \App\Models\SystemSetting::get('platform_name', config('app.name', 'Platform'));
+@endphp
 
 <div class="auth-shell">
     <div class="auth-grid">
@@ -34,6 +37,7 @@
             <div class="auth-visual-top">
                 <div class="auth-brand-row">
                     <x-platform-logo size="md" theme="dark" />
+                    <span class="auth-brand-pill">{{ $platformName }}</span>
                 </div>
 
                 <h1 class="auth-heading">

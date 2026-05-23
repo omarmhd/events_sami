@@ -1,7 +1,7 @@
 @extends('layouts.auth')
 
 @section('title', 'استعادة كلمة المرور' . ' - ' . \App\Models\SystemSetting::get('platform_name', config('app.name', 'Platform')))
-@section('visual_title', 'أمان حسابك يبدأ من هنا.')
+@section('visual_title', 'استعادة الوصول بنبرة هادئة وواضحة.')
 @section('visual_subtitle', 'سنرسل رابطاً آمناً إلى بريدك لإعادة تعيين كلمة المرور خلال دقائق.')
 
 @section('auth_title', 'نسيت كلمة المرور؟')
