@@ -112,25 +112,30 @@ class EmailTemplateService
     {
         if ($type === EmailTemplate::TYPE_INVITATION) {
             return [
-                'subject_template' => 'Invitation: {{event_title}} | {{brand_name}}',
+                'subject_template' => 'دعوة: {{event_title}} | {{brand_name}}',
                 'body_template' => <<<HTML
-<h2 style="margin:0 0 12px 0;color:#102a2a;">{{guest_name}}</h2>
-<p style="margin:0 0 12px 0;color:#395a56;line-height:1.7;">{{event_description_en}}</p>
-<p style="margin:0 0 16px 0;color:{{primary_color}};line-height:1.8;" dir="rtl">{{event_description_ar}}</p>
-<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:0 0 18px 0;background:#f6fbfa;border:1px solid #e2eeea;border-radius:10px;">
-    <tr>
-        <td style="padding:12px 14px;color:#3b5a56;font-size:14px;line-height:1.65;">
-            <strong>Date:</strong> {{event_date}}<br>
-            <strong>Time:</strong> {{event_time}}<br>
-            <strong>Location:</strong> {{event_location}}<br>
-            <strong>Invitation Time:</strong> {{invitation_sent_at}}
-        </td>
-    </tr>
-</table>
-<div style="margin:22px 0;text-align:center;">
-    <a href="{{invitation_link}}" style="background:{{primary_color}};color:#fff;padding:14px 26px;border-radius:10px;display:inline-block;font-weight:700;text-decoration:none;">Respond to Invitation</a>
+<div dir="rtl" style="text-align:right;font-family:Segoe UI, Tahoma, Arial,sans-serif;color:#244542;line-height:1.7;">
+    <h2 style="margin:0 0 10px 0;font-size:20px;font-weight:700;">مرحباً {{guest_name}}</h2>
+
+    <p style="margin:0 0 12px 0;font-size:15px;color:#395a56;">يسرّنا دعوتك لحضور الفعالية التالية:</p>
+
+    <div style="background:#f6fbfa;border:1px solid #e2eeea;border-radius:10px;padding:12px 14px;margin:12px 0;font-size:14px;color:#3b5a56;">
+        <div><strong>الفعالية:</strong> {{event_title}}</div>
+        <div><strong>التاريخ:</strong> {{event_date}}</div>
+        <div><strong>الوقت:</strong> {{event_time}}</div>
+        <div><strong>الموقع:</strong> {{event_location}}</div>
+        <div style="margin-top:6px;color:#6e8783;font-size:12px;"><strong>تاريخ إرسال الدعوة:</strong> {{invitation_sent_at}}</div>
+    </div>
+
+    <div style="text-align:center;margin:18px 0;">
+        <a href="{{invitation_link}}" style="background:{{primary_color}};color:#fff;padding:12px 22px;border-radius:10px;display:inline-block;font-weight:700;text-decoration:none;">الرد على الدعوة</a>
+    </div>
+
+    <p style="font-size:12px;color:#6e8783;word-break:break-all;text-align:center;margin-top:6px;">{{invitation_link}}</p>
+
+    <p style="margin-top:18px;color:#64748b;font-size:14px;">إذا كان لديك أي استفسار، يمكنك الرد على هذا البريد أو التواصل عبر {{reply_to_email}}</p>
+
 </div>
-<p style="font-size:12px;color:#6e8783;word-break:break-all;">{{invitation_link}}</p>
 HTML,
             ];
         }

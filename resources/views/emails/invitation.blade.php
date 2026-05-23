@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Invitation</title>
 </head>
-<body style="margin:0;padding:24px 12px;background:#f3f8f6;font-family:'Segoe UI',Tahoma,Arial,sans-serif;color:#183532;">
+<body style="margin:0;padding:24px 12px;background:#f3f8f6;font-family:'Segoe UI',Tahoma,Arial,sans-serif;color:#183532;direction:rtl;">
 @php
     use App\Models\SystemSetting;
 
@@ -18,14 +18,16 @@
     $footerImage = '';
 
     // Company branding first, then platform fallback
-    $platformName    = trim((string) ($branding->brand_name ?? ''))
+    $compiled = $email_vars ?? [];
+
+    $platformName    = trim((string) ($compiled['brand_name'] ?? $branding->brand_name ?? ''))
         ?: trim((string) ($company->name ?? ''))
         ?: SystemSetting::get('platform_name', config('app.name', 'Platform'));
-    $platformLogoUrl = trim((string) ($branding->logo_url ?? ''))
+    $platformLogoUrl = trim((string) ($compiled['logo_url'] ?? $branding->logo_url ?? ''))
         ?: SystemSetting::get('platform_logo_url', '');
-    $primaryColor    = trim((string) ($branding->primary_color ?? ''))
+    $primaryColor    = trim((string) ($compiled['primary_color'] ?? $branding->primary_color ?? ''))
         ?: SystemSetting::get('primary_color', '#0f8f83');
-    $secondaryColor  = trim((string) ($branding->secondary_color ?? ''))
+    $secondaryColor  = trim((string) ($compiled['secondary_color'] ?? $branding->secondary_color ?? ''))
         ?: SystemSetting::get('secondary_color', '#1F2937');
 
     if ($headerImage === '') {
@@ -99,15 +101,13 @@
         </td>
     </tr>
     @else
-    {{-- No header image: full-width gradient banner centred on event title --}}
+    {{-- No header image: full-width gradient banner centred on event title (Arabic) --}}
     <tr>
-        <td style="padding:48px 32px;background:linear-gradient(135deg,{{ $primaryColor }} 0%,#0d6e64 100%);text-align:center;">
-            <p style="margin:0 0 10px 0;font-size:11px;font-weight:700;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:.12em;">
-                Event Invitation
+        <td style="padding:40px 24px;background:linear-gradient(135deg,{{ $primaryColor }} 0%,{{ $secondaryColor }} 100%);text-align:center;">
+            <p style="margin:0 0 8px 0;font-size:12px;font-weight:700;color:rgba(255,255,255,0.85);letter-spacing:.06em;">
+                دعوة لحضور فعالية
             </p>
-            <p style="margin:0;font-size:26px;font-weight:700;color:#ffffff;line-height:1.3;letter-spacing:.01em;">
-                {{ $event->title ?: $event->name }}
-            </p>
+            <p style="margin:8px 0 0 0;font-size:26px;font-weight:800;color:#ffffff;line-height:1.2;">{{ $event->title ?: $event->name }}</p>
         </td>
     </tr>
     @endif
@@ -116,7 +116,7 @@
         <td style="padding:28px 24px 18px;border-top:4px solid {{ $primaryColor }};">
             <p style="margin:0 0 8px 0;font-size:13px;color:#5f7a76;text-transform:uppercase;letter-spacing:.06em;">Event Invitation</p>
             <h1 style="margin:0 0 8px 0;font-size:24px;line-height:1.35;color:#102a2a;">{{ $event->title ?: $event->name }}</h1>
-            <p style="margin:0;font-size:16px;color:#334f4b;">Dear {{ $invitation->invitee_name }},</p>
+            <p style="margin:0;font-size:16px;color:#334f4b;">مرحباً {{ $invitation->invitee_name }},</p>
         </td>
     </tr>
 
@@ -150,16 +150,16 @@
 
     <tr>
         <td align="center" style="padding:24px;">
-            <a href="{{ $invitationLink }}" style="display:inline-block;padding:14px 26px;border-radius:10px;background:{{ $primaryColor }};color:#ffffff;text-decoration:none;font-weight:700;">
-                Respond to Invitation
+            <a href="{{ $invitationLink }}" style="display:inline-block;padding:12px 22px;border-radius:10px;background:{{ $primaryColor }};color:#ffffff;text-decoration:none;font-weight:700;">
+                الرد على الدعوة
             </a>
         </td>
     </tr>
 
     <tr>
         <td style="padding:0 24px 24px;">
-            <p style="margin:0;font-size:12px;line-height:1.7;color:#6b8480;word-break:break-all;">
-                If the button does not work, use this link:<br>
+            <p style="margin:0;font-size:12px;line-height:1.7;color:#6b8480;word-break:break-all;text-align:center;">
+                إن لم يعمل الزر، استخدم الرابط التالي:<br>
                 <a href="{{ $invitationLink }}" style="color:{{ $primaryColor }};">{{ $invitationLink }}</a>
             </p>
         </td>
@@ -186,7 +186,7 @@
             </div>
 
             <p style="margin:0;font-size:11px;color:{{ $secondaryColor }};line-height:1.6;">
-                &copy; {{ date('Y') }} {{ $platformName }}. All rights reserved.
+                &copy; {{ date('Y') }} {{ $platformName }}. جميع الحقوق محفوظة.
             </p>
         </td>
     </tr>

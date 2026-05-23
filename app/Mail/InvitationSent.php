@@ -63,6 +63,8 @@ class InvitationSent extends Mailable
                     'invitation' => $this->invitation,
                     'invitationLink' => $this->invitationLink,
                     'event' => $this->event,
+                    'email_vars' => $compiled['variables'] ?? [],
+                    'compiled_email' => $compiled,
                 ]);
         }
 
