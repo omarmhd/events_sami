@@ -33,27 +33,8 @@
          Tenant branding (CompanyBranding) is ONLY used for email templates. --}}
     <a href="{{ route('dashboard.index') }}" class="sidebar-brand-link" aria-label="{{ \App\Models\SystemSetting::get('platform_name', config('app.name', 'Platform')) }}">
         <div class="sidebar-brand-area">
-            @php
-                $logoUrl   = \App\Models\SystemSetting::get('platform_logo_url', '');
-                $brandName = \App\Models\SystemSetting::get('platform_name', config('app.name', 'Platform'));
-            @endphp
-
-            @if(!empty($logoUrl))
-                {{-- Image logo from platform admin settings --}}
-                <div class="sidebar-logo-img-wrap">
-                    <img
-                        src="{{ $logoUrl }}"
-                        alt="{{ $brandName }}"
-                        class="sidebar-logo-img"
-                        loading="lazy"
-                    >
-                </div>
-            @else
-                {{-- Text fallback using platform name (no "workspace" badge) --}}
-                <div class="sidebar-brand-text-wrap">
-                    <div class="sidebar-brand-text">{{ $brandName }}</div>
-                </div>
-            @endif
+            {{-- Use the centralized platform logo component (handles image + text fallback) --}}
+            <x-platform-logo size="md" theme="light" class="sidebar-platform-logo" />
         </div>
     </a>
 
@@ -189,7 +170,7 @@
                     {{ __('ui.sidebar.ends') }} {{ $trialEndsAt }}
                 </div>
                 <div class="sidebar-trial-bar-wrap">
-                    <div class="sidebar-trial-bar-fill" style="width: {{ $pct }}%;"></div>
+                    <div class="sidebar-trial-bar-fill" style="{{ 'width:'.$pct.'%;' }}"></div>
                 </div>
             </div>
         @elseif($isActive && optional($activeSubscription)->renews_at)
@@ -243,6 +224,12 @@
          These are scoped to the sidebar so they don't pollute global CSS.
          Living next to the markup makes future visual tweaks easier. --}}
     <style>
+        /* Sidebar logo tweaks: remove borders/shadows and keep tidy spacing */
+        .sidebar-brand-area { display: flex; align-items: center; gap: .5rem; padding: 10px 6px; }
+        .sidebar-platform-logo .platform-logo-img { border: none !important; box-shadow: none !important; max-height: 42px; }
+        .sidebar-platform-logo .platform-logo-text { line-height: 1; }
+        .sidebar-logo-img { border: none; box-shadow: none; }
+
         .sidebar-user-link {
             display: block;
             text-decoration: none;
