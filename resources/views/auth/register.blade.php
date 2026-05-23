@@ -1,25 +1,7 @@
 @extends('layouts.auth')
 
 @section('title', 'إنشاء حساب ومساحة عمل' . ' - ' . \App\Models\SystemSetting::get('platform_name', config('app.name', 'Platform')))
-@section('visual_mode', 'register')
-@section('visual_title', 'اصنع مساحة عمل تبدو احترافية من أول لحظة')
-@section('visual_subtitle', 'واجهة التسجيل هنا تكمل الهوية البصرية للمنصة وتمنحك بداية واضحة، مرتبة، ومبهرة.')
-
-@section('visual_badges')
-    <div class="register-visual-badges">
-        <span class="register-visual-badge"><i class="fas fa-circle-check"></i> تفعيل فوري</span>
-        <span class="register-visual-badge"><i class="fas fa-shield-halved"></i> دخول آمن</span>
-        <span class="register-visual-badge"><i class="fas fa-layer-group"></i> مساحة عمل منظمة</span>
-    </div>
-@endsection
-
-@section('visual_footer')
-    <div class="register-visual-card">
-        <div class="register-visual-card-kicker">من أول خطوة</div>
-        <div class="register-visual-card-title">تجربة تسجيل لا تبدو كصفحة عادية</div>
-        <div class="register-visual-card-text">كل شيء هنا مصمم ليشعر المستخدم أن المنصة جاهزة للاستخدام الجاد، لا مجرد نموذج تسجيل.</div>
-    </div>
-@endsection
+@section('hide_visual_panel', '1')
 
 @section('auth_title', 'إنشاء حساب جديد')
 @section('auth_subtitle', 'أدخل بياناتك لبدء التجربة المجانية وتفعيل مساحة العمل.')
