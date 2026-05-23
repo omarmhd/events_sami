@@ -129,15 +129,21 @@
 
 <footer class="auth-footer">
     <div class="auth-footer-inner">
-        <x-platform-logo size="sm" theme="light" />
-
-        <p class="auth-footer-copy">مع تحيات منصة {{ $platformName }}</p>
+        <div class="auth-footer-branding">
+            <x-platform-logo size="sm" theme="light" />
+            <div class="auth-footer-brand-copy">
+                <p class="auth-footer-brand-title">مع تحيات منصة {{ $platformName }}</p>
+                <p class="auth-footer-brand-subtitle">نقدّم تجربة واضحة ومترابطة في صفحات الزوار كلها.</p>
+            </div>
+        </div>
 
         @if(!empty($supportEmail))
-            <a class="auth-footer-email" href="mailto:{{ $supportEmail }}">
-                <i class="fas fa-envelope"></i>
-                <span>{{ $supportEmail }}</span>
-            </a>
+            <div class="auth-footer-stack">
+                <a class="auth-footer-email" href="mailto:{{ $supportEmail }}">
+                    <i class="fas fa-envelope"></i>
+                    <span>{{ $supportEmail }}</span>
+                </a>
+            </div>
         @endif
     </div>
 </footer>

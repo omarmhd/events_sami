@@ -368,28 +368,54 @@ body.auth-body {
 }
 
 .auth-footer {
-    width: min(1240px, 95vw);
-    margin: 0 auto 1.4rem;
-    padding: 0 0.15rem;
+    padding: 0 1rem 2.25rem;
 }
 
 .auth-footer-inner {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 1.15rem 1.25rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem 1.25rem;
+    align-items: center;
+    border-top: 1px solid rgba(16, 42, 42, 0.08);
+    color: #4b5563;
+}
+
+.auth-footer-branding {
+    display: flex;
+    align-items: center;
+    gap: 0.95rem;
+    flex-wrap: wrap;
+}
+
+.auth-footer-brand-copy {
+    display: grid;
+    gap: 0.2rem;
+}
+
+.auth-footer-brand-title {
+    margin: 0;
+    font-size: 0.98rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.auth-footer-brand-subtitle {
+    margin: 0;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: #6b7280;
+}
+
+.auth-footer-stack {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
-    gap: 0.85rem 1.1rem;
-    text-align: center;
-    padding: 1rem 1.15rem;
-    border-top: 1px solid rgba(16, 42, 42, 0.08);
-    color: #5f7a76;
-}
-
-.auth-footer-copy {
-    margin: 0;
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: #112d2e;
+    gap: 0.75rem 1rem;
+    justify-self: end;
 }
 
 .auth-footer-email {
@@ -405,13 +431,6 @@ body.auth-body {
     font-size: 0.9rem;
     font-weight: 600;
     transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
-}
-
-.auth-footer-email:hover {
-    transform: translateY(-1px);
-    color: var(--auth-primary);
-    background: rgba(15, 143, 131, 0.12);
-    box-shadow: 0 8px 18px rgba(15, 143, 131, 0.08);
 }
 
 .auth-footer-email i {
@@ -471,16 +490,24 @@ body.auth-rtl .auth-note-list {
     }
 
     .auth-footer {
-        margin-bottom: 0.9rem;
+        padding-bottom: 1.25rem;
     }
 
     .auth-footer-inner {
-        padding: 0.95rem 0.75rem;
+        padding: 1rem 0.75rem;
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
     }
 
     .auth-footer-email {
         width: 100%;
         justify-content: center;
+    }
+
+    .auth-footer-stack {
+        width: 100%;
+        justify-self: stretch;
     }
 }
 
