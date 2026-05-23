@@ -79,33 +79,12 @@
         $introAr = $defaultIntroAr;
     }
 
-    $inlineImageSrc = function (string $src, string $name) {
+    $resolvePublicImageSrc = function (string $src): string {
         if ($src === '' || !isset($message)) {
             return $src;
         }
 
         if (str_starts_with($src, 'data:image/')) {
-            $parts = explode(',', $src, 2);
-            if (count($parts) === 2 && $parts[1] !== '') {
-                $mime = 'image/png';
-                $extension = 'png';
-
-                if (str_contains($parts[0], 'image/jpeg')) {
-                    $mime = 'image/jpeg';
-                    $extension = 'jpg';
-                } elseif (str_contains($parts[0], 'image/svg+xml')) {
-                    $mime = 'image/svg+xml';
-                    $extension = 'svg';
-                }
-
-                $binary = base64_decode($parts[1], true);
-                if ($binary !== false) {
-                    $name = preg_replace('/\.[a-z0-9]+$/i', '', $name) . '.' . $extension;
-
-                    return $message->embedData($binary, $name, $mime);
-                }
-            }
-
             return $src;
         }
 
@@ -113,15 +92,15 @@
         if ($path !== '') {
             $abs = public_path(ltrim($path, '/'));
             if (is_file($abs)) {
-                return $message->embed($abs);
+                return asset(ltrim($path, '/'));
             }
         }
 
         return $src;
     };
 
-    $headerDisplaySrc = $inlineImageSrc($headerImage, 'tickets-header.png');
-    $logoDisplaySrc = $inlineImageSrc($logoUrl, 'tickets-logo.png');
+    $headerDisplaySrc = $resolvePublicImageSrc($headerImage);
+    $logoDisplaySrc = $resolvePublicImageSrc($logoUrl);
 @endphp
 
 <center>

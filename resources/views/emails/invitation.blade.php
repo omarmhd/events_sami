@@ -62,11 +62,9 @@
         if ($urlPath !== '') {
             $absPath = public_path(ltrim($urlPath, '/'));
             if (is_file($absPath)) {
-                // Embed as base64 data URI — works in any mail client without
-                // requiring the server to be publicly reachable (fixes localhost).
-                $mime    = mime_content_type($absPath) ?: 'image/jpeg';
-                $encoded = base64_encode(file_get_contents($absPath));
-                return "data:{$mime};base64,{$encoded}";
+                // Use the public URL for event banners so the email matches the
+                // core template behavior and renders consistently in mail clients.
+                return asset(ltrim($urlPath, '/'));
             }
         }
 
