@@ -91,9 +91,9 @@
     }
 
     .about-hero h1 {
-        font-size: clamp(2rem, 4vw, 3.6rem);
+        font-size: clamp(1.7rem, 3vw, 2.9rem);
         font-weight: 800;
-        line-height: 1.1;
+        line-height: 1.18;
         margin: 1rem 0 .9rem;
         text-wrap: balance;
     }
@@ -321,6 +321,11 @@
         .about-hero {
             padding: 1.5rem;
             border-radius: 24px;
+        }
+
+        .about-hero h1 {
+            font-size: 1.6rem;
+            line-height: 1.3;
         }
 
         .about-actions,
