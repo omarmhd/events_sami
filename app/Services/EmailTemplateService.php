@@ -67,8 +67,8 @@ class EmailTemplateService
             'subject'       => $subject,
             'html'          => $wrappedHtml,
             'from_name'     => $branding->sender_name ?: ($company->name ?: config('app.name')),
-            'from_email'    => config('mail.from.address') ?: $platformEmail,
-            'reply_to'      => $branding->reply_to_email ?: config('mail.from.address') ?: $platformEmail,
+            'from_email'    => $branding->sender_email ?: ($company->billing_email ?: $company->contact_email ?: $platformEmail),
+            'reply_to'      => $branding->reply_to_email ?: ($branding->sender_email ?: $platformEmail),
             'variables'     => $baseVariables,
             'template_used' => $template,
         ];
