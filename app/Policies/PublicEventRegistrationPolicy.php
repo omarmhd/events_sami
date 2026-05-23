@@ -25,5 +25,11 @@ class PublicEventRegistrationPolicy
         return $this->sameOrganization($user, $registration)
             && ($user->isSystemAdmin() || $this->hasRole($user, ['organizer_owner', 'organizer_admin', 'staff']));
     }
+
+    public function delete(User $user, PublicEventRegistration $registration): bool
+    {
+        return $this->sameOrganization($user, $registration)
+            && ($user->isSystemAdmin() || $this->hasRole($user, ['organizer_owner', 'organizer_admin', 'staff']));
+    }
 }
 

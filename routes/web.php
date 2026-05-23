@@ -168,6 +168,7 @@ Route::middleware(['auth', 'company', 'organizer.only', 'subscription.status'])-
 
     Route::get('events/{event}/registrations', [PublicRegistrationController::class, 'reviewQueue'])->name('events.registrations.index');
     Route::post('events/{event}/registrations/{registration}/review', [PublicRegistrationController::class, 'reviewDecision'])->name('events.registrations.review');
+    Route::delete('events/{event}/registrations/{registration}', [PublicRegistrationController::class, 'destroy'])->name('events.registrations.destroy');
 
     Route::get('billing/upgrade', [BillingController::class, 'upgrade'])->name('billing.upgrade');
     Route::post('billing/assess-needs', [BillingController::class, 'assessNeeds'])->name('billing.assess');

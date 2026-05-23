@@ -4,14 +4,17 @@ namespace App\Http\Controllers\Subscriber;
 
 use App\Http\Controllers\Controller;
 use App\Mail\TicketMail;
+use App\Mail\DynamicTemplateMail;
 use App\Models\Event;
 use App\Models\EventAccessPass;
+use App\Models\EmailTemplate;
 use App\Models\PublicEventRegistration;
 use App\Services\EmailTemplateService;
 use App\Services\RegistrationFormService;
 use App\Services\QrCodeService;
 use App\Services\SubscriptionService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -117,15 +120,50 @@ class PublicRegistrationController extends Controller
 
         $event->load('registrationForm');
 
-        $rows = PublicEventRegistration::query()
-            ->where('event_id', $event->id)
-            ->latest('id')
-            ->paginate(20);
+        $search = trim((string) $request->input('searchInput', $request->input('search', '')));
+        $statusFilter = (string) $request->input('status', 'all');
+        $allowedStatuses = ['all', 'pending', 'accepted', 'rejected'];
+        if (!in_array($statusFilter, $allowedStatuses, true)) {
+            $statusFilter = 'all';
+        }
+
+        $baseQuery = PublicEventRegistration::query()
+            ->where('event_id', $event->id);
+
+        if ($search !== '') {
+            $baseQuery->where(function ($query) use ($search) {
+                $query->where('guest_name', 'like', "%{$search}%")
+                    ->orWhere('guest_email', 'like', "%{$search}%")
+                    ->orWhere('guest_phone', 'like', "%{$search}%")
+                    ->orWhere('guest_position', 'like', "%{$search}%")
+                    ->orWhere('guest_nationality', 'like', "%{$search}%")
+                    ->orWhere('status', 'like', "%{$search}%");
+            });
+        }
+
+        $rowsQuery = (clone $baseQuery)->latest('id');
+        if ($statusFilter !== 'all') {
+            $rowsQuery->where('status', $statusFilter);
+        }
+
+        $rows = $rowsQuery->paginate(25);
+        $rows->appends($request->query());
+
+        $statusStats = (clone $baseQuery)
+            ->selectRaw('status, COUNT(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status');
+
+        $totalRegistrations = (int) $statusStats->sum();
 
         return view('subscriber.events.registrations-review', [
             'event' => $event,
             'rows' => $rows,
             'dynamicFields' => $this->registrationFormService->normalizeFields(optional($event->registrationForm)->fields),
+            'search' => $search,
+            'statusFilter' => $statusFilter,
+            'statusStats' => $statusStats,
+            'totalRegistrations' => $totalRegistrations,
         ]);
     }
 
@@ -188,6 +226,24 @@ class PublicRegistrationController extends Controller
         }
 
         return back()->with('success', 'Registration reviewed successfully.');
+    }
+
+    public function destroy(Request $request, Event $event, PublicEventRegistration $registration)
+    {
+        $this->authorizeEvent($request, $event);
+
+        if ((int) $registration->event_id !== (int) $event->id) {
+            abort(404);
+        }
+
+        $this->authorize('delete', $registration);
+
+        DB::transaction(function () use ($registration) {
+            $registration->accessPasses()->delete();
+            $registration->delete();
+        });
+
+        return back()->with('success', 'تم حذف التسجيل بنجاح.');
     }
 
     public function showPass($token, QrCodeService $qrCodeService)
