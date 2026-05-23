@@ -28,6 +28,47 @@
             color: white;
         }
 
+        .invitation-filter-group {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: stretch;
+            gap: 0;
+        }
+
+        .invitation-filter-group .form-select {
+            max-width: 210px;
+        }
+
+        .invitation-filter-group .form-control {
+            min-width: 240px;
+        }
+
+        .btn-icon {
+            width: 34px;
+            height: 34px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            transition: all 0.2s;
+            color: #64748b;
+            background: #f8fafc;
+            text-decoration: none;
+        }
+
+        .btn-icon:hover {
+            background: #e2e8f0;
+            color: #334155;
+            transform: translateY(-1px);
+        }
+
+        .btn-icon-primary:hover {
+            background: #eff6ff;
+            color: #3b82f6;
+            border-color: #dbeafe;
+        }
+
         .custom-card {
             background: white;
             border-radius: 24px;
@@ -107,10 +148,6 @@
             flex-wrap: wrap;
             gap: .4rem;
             justify-content: flex-end;
-        }
-
-        .registration-actions .btn {
-            border-radius: 10px;
         }
 
         .registration-meta {
@@ -294,15 +331,15 @@
                                     <form action="{{ route('events.registrations.review', [$event, $row]) }}" method="POST" class="d-inline">
                                         @csrf
                                         <input type="hidden" name="decision" value="accepted">
-                                        <button class="btn btn-sm btn-success">
-                                            <i class="fas fa-check me-1"></i> قبول
+                                        <button class="btn-icon btn-icon-primary" type="submit" title="قبول">
+                                            <i class="fas fa-check"></i>
                                         </button>
                                     </form>
                                     <form action="{{ route('events.registrations.review', [$event, $row]) }}" method="POST" class="d-inline">
                                         @csrf
                                         <input type="hidden" name="decision" value="rejected">
-                                        <button class="btn btn-sm btn-outline-danger">
-                                            <i class="fas fa-xmark me-1"></i> رفض
+                                        <button class="btn-icon" type="submit" title="رفض">
+                                            <i class="fas fa-xmark"></i>
                                         </button>
                                     </form>
                                 @endif
@@ -314,8 +351,8 @@
                                           onsubmit="return confirm('هل تريد حذف هذا التسجيل نهائياً؟');">
                                         @csrf
                                         @method('DELETE')
-                                        <button class="btn btn-sm btn-outline-danger">
-                                            <i class="fas fa-trash me-1"></i> حذف
+                                        <button class="btn-icon" type="submit" title="حذف">
+                                            <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </form>
                                 @endcan
