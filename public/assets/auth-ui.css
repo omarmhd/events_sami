@@ -501,13 +501,12 @@ body.auth-body {
     outline: none;
 }
 
-.auth-password-field .auth-toggle-pw-icon {
     .auth-password-field .auth-toggle-pw-icon {
-        font-size: 0.85rem;
+        font-size: 0.95rem;
         color: #5f7a76;
+        line-height: 1;
+        display: inline-block;
     }
-    border-width: 1px;
-}
 
 .auth-footer {
     padding: 0 1rem 2.25rem;
