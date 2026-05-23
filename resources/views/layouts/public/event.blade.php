@@ -41,18 +41,20 @@
         }
 
         .hero-shell {
-            border-radius: 28px;
-            overflow: hidden;
-            background: #ffffff;
+            border-radius: 0;
+            overflow: visible;
+            background: transparent;
             color: var(--primary-dark);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
-            border: 1px solid rgba(34, 34, 34, 0.08);
+            box-shadow: none;
+            border: none;
         }
 
         .hero-banner {
             position: relative;
             min-height: 240px;
             background: linear-gradient(135deg, #0d3b37 0%, #0f6b62 50%, var(--primary-accent) 100%);
+            border-radius: 28px;
+            overflow: hidden;
         }
 
         .hero-banner img {
@@ -88,8 +90,8 @@
         }
 
         .hero-body {
-            padding: 2.4rem 2.6rem 2.2rem;
-            text-align: right;
+            padding: 1.8rem 0 0;
+            text-align: center;
         }
 
         @media (max-width: 767px) {
@@ -114,6 +116,8 @@
             font-weight: 700;
             width: fit-content;
             margin-bottom: 1.2rem;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .hero-body h1 {
@@ -121,6 +125,7 @@
             font-weight: 700;
             margin-bottom: 0.8rem;
             line-height: 1.2;
+            text-align: center;
         }
 
         @media (max-width: 767px) {
@@ -134,6 +139,7 @@
             line-height: 1.7;
             color: #4b5563;
             margin-bottom: 1.3rem;
+            text-align: center;
         }
 
         .meta-pills {
@@ -141,6 +147,7 @@
             flex-wrap: wrap;
             gap: 0.8rem;
             margin-bottom: 1.4rem;
+            justify-content: center;
         }
 
         .meta-pill {
@@ -309,10 +316,11 @@
             .meta-pills {
                 flex-direction: column;
                 gap: 0.6rem;
+                align-items: center;
             }
 
             .meta-pill {
-                width: 100%;
+                width: auto;
             }
         }
 
