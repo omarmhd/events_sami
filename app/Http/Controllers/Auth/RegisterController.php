@@ -12,6 +12,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
+use libphonenumber\PhoneNumberUtil;
+use libphonenumber\PhoneNumberFormat;
+use libphonenumber\NumberParseException;
 
 class RegisterController extends Controller
 {
@@ -66,6 +69,28 @@ class RegisterController extends Controller
             'annual_events_estimate.required'  => 'عدد الفعاليات المتوقعة مطلوب.',
             'annual_events_estimate.integer'   => 'يجب أن يكون عدد الفعاليات رقمًا صحيحًا.',
         ]);
+
+        // Normalize and validate phone number using libphonenumber if available.
+        $phoneRaw = $request->input('phone');
+        if ($phoneRaw) {
+            if (class_exists(PhoneNumberUtil::class)) {
+                $phoneUtil = PhoneNumberUtil::getInstance();
+                try {
+                    $numberProto = $phoneUtil->parse($phoneRaw, null);
+                    if (! $phoneUtil->isValidNumber($numberProto)) {
+                        return back()->withErrors(['phone' => 'رقم جوال غير صالح'])->withInput();
+                    }
+                    $e164 = $phoneUtil->format($numberProto, PhoneNumberFormat::E164);
+                    $request->merge(['phone' => $e164]);
+                } catch (NumberParseException $e) {
+                    return back()->withErrors(['phone' => 'رقم جوال غير صالح'])->withInput();
+                }
+            } else {
+                // Fallback: basic cleanup (remove spaces)
+                $clean = preg_replace('/\s+/', '', $phoneRaw);
+                $request->merge(['phone' => $clean]);
+            }
+        }
 
         // 1. إنشاء المستخدم
         $user = User::create([

@@ -26,19 +26,7 @@
             @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
         </div>
 
-        <div class="mb-3">
-            <label class="form-label" for="email">البريد الإلكتروني</label>
-            <input type="email" id="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email') }}" placeholder="you@company.com" required>
-            @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
-        </div>
 
-        <div class="mb-3">
-            <label class="form-label" for="phone">رقم الجوال</label>
-            <div class="d-flex gap-2">
-                    <input type="tel" id="phone_local" name="phone_local" class="form-control @error('phone') is-invalid @enderror" value="{{ old('phone') }}" placeholder="أدخل رقم الجوال" required>
-            </div>
-            @error('phone')<div class="invalid-feedback">{{ $message }}</div>@enderror
-        </div>
             <div class="row g-2">
                 <div class="col-12 col-md-7">
                     <label for="email" class="form-label">البريد الإلكتروني</label>
