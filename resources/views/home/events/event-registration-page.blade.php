@@ -36,7 +36,6 @@
             </div>
         @else
             <div class="hero-banner hero-banner--fallback">
-                <h3 class="hero-banner-fallback-title">{{ $eventTitle }}</h3>
             </div>
         @endif
 

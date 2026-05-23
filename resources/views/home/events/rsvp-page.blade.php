@@ -156,7 +156,6 @@
             </div>
         @else
             <div class="hero-banner hero-banner--fallback">
-                <h3 class="hero-banner-fallback-title">{{ $title }}</h3>
             </div>
         @endif
 
